@@ -18,6 +18,6 @@ type 'a formule =
 | FBinop of binop * 'a formule * 'a formule
 
 (* Le combinateur f *)
-let f x = EU (B true, x)
+val f : 'a state -> 'a formule
 (* Le combinateur g *)
-let g x = FNot (f (SNot x))
+val g : 'a state -> 'a formule
