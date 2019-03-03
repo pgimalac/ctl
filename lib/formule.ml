@@ -21,3 +21,8 @@ type 'a formule =
 let f x = EU (B true, x)
 (* Le combinateur g *)
 let g x = FNot (f (SNot x))
+
+let getop c =
+  match c with
+  | And -> (&&)
+  | Or -> (||)

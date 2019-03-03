@@ -21,3 +21,5 @@ type 'a formule =
 val f : 'a state -> 'a formule
 (* Le combinateur g *)
 val g : 'a state -> 'a formule
+
+val getop : binop -> bool -> bool -> bool
