@@ -32,5 +32,5 @@ let rec marquage f m =
      M.mapi (fun k e -> op e (M.find k b')) a'
   | EX psi ->
      let m' = marquageS psi m in
-     M.map (fun s -> if S.exists (fun e -> M.find e m') s then true else false) m
+     M.map (S.exists (fun e -> M.find e m')) m
   | _ -> failwith "todo"
