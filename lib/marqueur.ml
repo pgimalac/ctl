@@ -30,4 +30,7 @@ let rec marquage f m =
      let op = getop c in
      let a',b' = marquage a m, marquage b m in
      M.mapi (fun k e -> op e (M.find k b')) a'
+  | EX psi ->
+     let m' = marquageS psi m in
+     M.map (fun s -> if S.exists (fun e -> M.find e m') s then true else false) m
   | _ -> failwith "todo"
