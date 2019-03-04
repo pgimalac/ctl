@@ -10,7 +10,6 @@ type 'a formule =
   State of 'a state (* Juste un état *)
 (* Combinateurs temporels *)
 | EX of 'a state
-| AX of 'a state
 | EU of 'a state * 'a state
 | AU of 'a state * 'a state
 (* Récursivité *)
@@ -21,5 +20,7 @@ type 'a formule =
 val f : 'a state -> 'a formule
 (* Le combinateur g *)
 val g : 'a state -> 'a formule
+  (* Le combinateur AX *)
+val ax : 'a state -> 'a formule
 
 val getop : binop -> bool -> bool -> bool

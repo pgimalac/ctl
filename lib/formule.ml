@@ -10,7 +10,6 @@ type 'a formule =
   State of 'a state (* Juste un état *)
 (* Combinateurs temporels *)
 | EX of 'a state
-| AX of 'a state
 | EU of 'a state * 'a state
 | AU of 'a state * 'a state
 (* Récursivité *)
@@ -21,6 +20,8 @@ type 'a formule =
 let f x = EU (B true, x)
 (* Le combinateur g *)
 let g x = FNot (f (SNot x))
+(* Le combinateur AX *)
+let ax x = FNot (EX (SNot x))
 
 let getop c =
   match c with
