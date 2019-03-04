@@ -11,6 +11,11 @@ module S = Set.Make(L)
 
 module M = Map.Make(L)
 
+let opt_map f k =
+  match k with
+  | Some x -> Some (f x)
+  | None -> None
+
 (* Prend un graphe et renvoit une map int bool *)
 let rec marquageS f m =
   match f with
@@ -33,4 +38,38 @@ let rec marquage f m =
   | EX psi ->
      let m' = marquageS psi m in
      M.map (S.exists (fun e -> M.find e m')) m
+  | EU (psi1,psi2) ->
+     let mpsi1 = marquageS psi1 m in
+     let mpsi2 = marquageS psi2 m in
+     let todo = ref [] in (* todo est L *)
+     let res =
+       M.mapi
+         (fun i _ ->
+           if M.find i mpsi2
+           then
+             begin
+               todo := i :: !todo;
+               (false,true)
+             end
+           else (false,false)) m in
+     let rec tantque todo res =
+       match todo with
+       | [] -> M.map fst res
+       | q::xs ->
+          let res = M.update q (opt_map (fun (_,y) -> (true,y))) res in
+          let (newlist,res) =
+            M.fold (fun q' s (newlist,res) ->
+                (* C'est un prédécesseur que l'on n'a pas vu *)
+                if S.mem q s && (not (snd (M.find q' res)))
+                then
+                  let res = M.update q' (opt_map (fun (x,_) -> (x,true))) res in
+                  if M.find q' mpsi1
+                  then (q'::newlist,res)
+                  else (newlist,res)
+                else (newlist,res)
+              )
+              m (xs,res) in
+          tantque newlist res
+     in tantque !todo res
+
   | _ -> failwith "todo"
