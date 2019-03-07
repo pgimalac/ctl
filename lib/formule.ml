@@ -23,6 +23,9 @@ let g x = FNot (f (SNot x))
 (* Le combinateur AX *)
 let ax x = FNot (EX (SNot x))
 
+(* Implies for states *)
+let impliesS x y = SBinop (Or,(SNot x),y)
+
 let getop c =
   match c with
   | And -> (&&)

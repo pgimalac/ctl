@@ -103,3 +103,5 @@ let rec marquage f m =
               m (xs,res) in
           tantque newlist res
      in tantque !todo res
+
+let check phi g x = M.find x (marquage phi g)

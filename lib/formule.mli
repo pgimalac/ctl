@@ -23,4 +23,7 @@ val g : 'a state -> 'a formule
   (* Le combinateur AX *)
 val ax : 'a state -> 'a formule
 
+(* Implies for states *)
+val impliesS : 'a state -> 'a state -> 'a state
+
 val getop : binop -> bool -> bool -> bool
