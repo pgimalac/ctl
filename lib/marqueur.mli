@@ -1,7 +1,4 @@
-open Formule
-
 module L : sig type t = int val compare : 'a -> 'a -> int end
-
 module S :
   sig
     type elt = L.t
@@ -46,7 +43,6 @@ module S :
     val add_seq : elt Seq.t -> t -> t
     val of_seq : elt Seq.t -> t
   end
-
 module M :
   sig
     type key = L.t
@@ -91,7 +87,56 @@ module M :
     val add_seq : (key * 'a) Seq.t -> 'a t -> 'a t
     val of_seq : (key * 'a) Seq.t -> 'a t
   end
-
-val marquageS : S.elt state -> (S.t * S.t) M.t -> bool M.t
-val marquage : S.elt formule -> (S.t * S.t) M.t -> bool M.t
-val check : int Formule.formule -> (S.t * S.t) M.t -> int -> bool
+module type VARIABLES = sig type t val compare : t -> t -> int end
+module Make :
+  functor (V : VARIABLES) ->
+    sig
+      module SV :
+        sig
+          type elt = V.t
+          type t = Set.Make(V).t
+          val empty : t
+          val is_empty : t -> bool
+          val mem : elt -> t -> bool
+          val add : elt -> t -> t
+          val singleton : elt -> t
+          val remove : elt -> t -> t
+          val union : t -> t -> t
+          val inter : t -> t -> t
+          val diff : t -> t -> t
+          val compare : t -> t -> int
+          val equal : t -> t -> bool
+          val subset : t -> t -> bool
+          val iter : (elt -> unit) -> t -> unit
+          val map : (elt -> elt) -> t -> t
+          val fold : (elt -> 'a -> 'a) -> t -> 'a -> 'a
+          val for_all : (elt -> bool) -> t -> bool
+          val exists : (elt -> bool) -> t -> bool
+          val filter : (elt -> bool) -> t -> t
+          val partition : (elt -> bool) -> t -> t * t
+          val cardinal : t -> int
+          val elements : t -> elt list
+          val min_elt : t -> elt
+          val min_elt_opt : t -> elt option
+          val max_elt : t -> elt
+          val max_elt_opt : t -> elt option
+          val choose : t -> elt
+          val choose_opt : t -> elt option
+          val split : elt -> t -> t * bool * t
+          val find : elt -> t -> elt
+          val find_opt : elt -> t -> elt option
+          val find_first : (elt -> bool) -> t -> elt
+          val find_first_opt : (elt -> bool) -> t -> elt option
+          val find_last : (elt -> bool) -> t -> elt
+          val find_last_opt : (elt -> bool) -> t -> elt option
+          val of_list : elt list -> t
+          val to_seq_from : elt -> t -> elt Seq.t
+          val to_seq : t -> elt Seq.t
+          val add_seq : elt Seq.t -> t -> t
+          val of_seq : elt Seq.t -> t
+        end
+      val opt_map : ('a -> 'b) -> 'a option -> 'b option
+      val marquageS : SV.elt Formule.state -> (SV.t * 'a) M.t -> bool M.t
+      val marquage : SV.elt Formule.formule -> (SV.t * S.t) M.t -> bool M.t
+      val check : SV.elt Formule.formule -> (SV.t * S.t) M.t -> M.key -> bool
+    end
