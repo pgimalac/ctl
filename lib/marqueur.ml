@@ -1,6 +1,6 @@
 open Formule
 
-(* On représente les graphes comme une Map (Int,(Set Int))*)
+(* On représente les graphes comme une Map (Int,(Set Int,Set Int))*)
 
 module L = struct
   type t = int
