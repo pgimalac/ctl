@@ -19,7 +19,7 @@ let opt_map f k =
 (* Prend un graphe et renvoit une map int bool *)
 let rec marquageS f m =
   match f with
-  | P q -> M.map (S.mem q) m
+  | P q -> M.map (fun (e,_) -> S.mem q e) m
   | B b -> M.map (fun _ -> b) m
   | SNot q -> M.map not (marquageS q m) (* Todo opti ? *)
   | SBinop (c,a,b) ->  (* Todo opti ? *)
@@ -37,7 +37,7 @@ let rec marquage f m =
      M.mapi (fun k e -> op e (M.find k b')) a'
   | EX psi ->
      let m' = marquageS psi m in
-     M.map (S.exists (fun e -> M.find e m')) m
+     M.map (fun (_,s) -> S.exists (fun e -> M.find e m') s) m
   | EU (psi1,psi2) ->
      let mpsi1 = marquageS psi1 m in
      let mpsi2 = marquageS psi2 m in
@@ -58,7 +58,7 @@ let rec marquage f m =
        | q::xs ->
           let res = M.update q (opt_map (fun (_,y) -> (true,y))) res in
           let (newlist,res) =
-            M.fold (fun q' s (newlist,res) ->
+            M.fold (fun q' (_,s) (newlist,res) ->
                 (* C'est un prédécesseur que l'on n'a pas vu *)
                 if S.mem q s && (not (snd (M.find q' res)))
                 then
@@ -77,7 +77,7 @@ let rec marquage f m =
      let todo = ref [] in
      let res = (* Map (rex, nb) *)
        M.mapi
-         (fun q s ->
+         (fun q (_,s) ->
            if M.find q mpsi2
            then
              todo := q :: !todo;
@@ -89,7 +89,7 @@ let rec marquage f m =
        | q::xs ->
           let res = M.update q (opt_map (fun (_,y) -> (true,y))) res in
           let (newlist,res) =
-            M.fold (fun q' s (newlist,res) ->
+            M.fold (fun q' (_,s) (newlist,res) ->
                 (* C'est un prédécesseur que l'on n'a pas vu *)
                 if S.mem q s
                 then

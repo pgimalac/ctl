@@ -92,6 +92,6 @@ module M :
     val of_seq : (key * 'a) Seq.t -> 'a t
   end
 
-val marquageS : S.elt state -> S.t M.t -> bool M.t
-val marquage : S.elt formule -> S.t M.t -> bool M.t
-val check : int Formule.formule -> S.t M.t -> int -> bool
+val marquageS : S.elt state -> (S.t * S.t) M.t -> bool M.t
+val marquage : S.elt formule -> (S.t * S.t) M.t -> bool M.t
+val check : int Formule.formule -> (S.t * S.t) M.t -> int -> bool
