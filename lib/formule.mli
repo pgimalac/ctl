@@ -25,5 +25,6 @@ val ax : 'a state -> 'a formule
 
 (* Implies for states *)
 val impliesS : 'a state -> 'a state -> 'a state
+val impliesF : 'a formule -> 'a formule -> 'a formule
 
 val getop : binop -> bool -> bool -> bool

@@ -25,6 +25,7 @@ let ax x = FNot (EX (SNot x))
 
 (* Implies for states *)
 let impliesS x y = SBinop (Or,(SNot x),y)
+let impliesF x y = FBinop (Or,(FNot x),y)
 
 let getop c =
   match c with
