@@ -48,6 +48,8 @@ module Make (V : VARIABLES) = struct
     | TempBinop (b, psi1, psi2) ->
        begin
        match b with
+       | AW -> M.map (fun _ -> true) m (* TODO *)
+       | EW -> M.map (fun _ -> true) m (* TODO *)
        | EU ->
           let mpsi1 = marquage psi1 m in
           let mpsi2 = marquage psi2 m in

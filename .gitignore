@@ -21,3 +21,8 @@ setup.log
 
 # Merlin configuring file for Vim and Emacs
 .merlin
+
+# Lexer/Parser files
+lexer.ml
+parser.ml
+parser.mli
