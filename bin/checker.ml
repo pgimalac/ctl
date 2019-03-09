@@ -16,8 +16,8 @@ module T =
       struct
         type t = etat
         let compare = compare_etat
-      end) 
-  
+      end)
+
 (* page 29 *)
 let fig2D1 =
   let adj =
@@ -27,13 +27,15 @@ let fig2D1 =
     ]
   in List.fold_left (fun acc (x,(y1,y2)) -> M.add x (T.SV.of_list y1, S.of_list y2) acc) M.empty adj
 
-let phiT = impliesS (P Erreur) (SNot (P Chaud))
-let psiT = EU (P Ok,P Erreur)
-let gammaT = EX (P Erreur)
+let phi1 = Binop(Impl, P Erreur, Not (P Chaud))
+let phi2 = TempBinop(EU, P Ok, P Erreur)
+let phi3 = TempUnop(EX, P Erreur)
+let phi4 = TempUnop(AG, TempUnop(EF, P Ok))
 
 let main () =
-  print_endline (string_of_bool (T.check (State phiT) fig2D1 0));
-  print_endline (string_of_bool (T.check psiT fig2D1 0));
-  print_endline (string_of_bool (T.check gammaT fig2D1 0))
+  print_endline (string_of_bool (T.check phi1 fig2D1 0));
+  print_endline (string_of_bool (T.check phi2 fig2D1 0));
+  print_endline (string_of_bool (T.check phi3 fig2D1 0));
+  print_endline (string_of_bool (T.check phi4 fig2D1 0))
 
 let _ = main ()

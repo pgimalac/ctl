@@ -136,7 +136,6 @@ module Make :
           val of_seq : elt Seq.t -> t
         end
       val opt_map : ('a -> 'b) -> 'a option -> 'b option
-      val marquageS : SV.elt Formule.state -> (SV.t * 'a) M.t -> bool M.t
       val marquage : SV.elt Formule.formule -> (SV.t * S.t) M.t -> bool M.t
       val check : SV.elt Formule.formule -> (SV.t * S.t) M.t -> M.key -> bool
     end

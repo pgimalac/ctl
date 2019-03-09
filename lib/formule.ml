@@ -1,33 +1,21 @@
-type binop = And | Or
-
-type 'a state =
-  P of 'a (* Juste un état *)
-| B of bool
-| SNot of 'a state
-| SBinop of binop * 'a state * 'a state
+type binop = And | Or | Xor | Impl | Eq
+type tempUnop = AX | EX | AF | EF | AG | EG
+type tempBinop = EU | AU (* | EW | AW *)
 
 type 'a formule =
-  State of 'a state (* Juste un état *)
+(* Logique propositionnelle *)
+  B of bool
+| P of 'a
+| Not of 'a formule
+| Binop of binop * 'a formule * 'a formule
 (* Combinateurs temporels *)
-| EX of 'a state
-| EU of 'a state * 'a state
-| AU of 'a state * 'a state
-(* Récursivité *)
-| FNot of 'a formule
-| FBinop of binop * 'a formule * 'a formule
-
-(* Le combinateur f *)
-let f x = EU (B true, x)
-(* Le combinateur g *)
-let g x = FNot (f (SNot x))
-(* Le combinateur AX *)
-let ax x = FNot (EX (SNot x))
-
-(* Implies for states *)
-let impliesS x y = SBinop (Or,(SNot x),y)
-let impliesF x y = FBinop (Or,(FNot x),y)
+| TempUnop of tempUnop * 'a formule
+| TempBinop of tempBinop * 'a formule * 'a formule
 
 let getop c =
   match c with
   | And -> (&&)
   | Or -> (||)
+  | Impl -> (fun a b -> not a || b)
+  | Xor -> (fun a b -> if a then not b else b)
+  | Eq -> (=)
