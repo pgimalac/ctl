@@ -27,3 +27,6 @@ setup.log
 lexer.ml
 parser.ml
 parser.mli
+
+# Sublime project
+*.sublime-*
