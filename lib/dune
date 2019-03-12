@@ -1,2 +1,6 @@
 (library
-  (name lib))
+  (name lib)
+)
+(ocamlyacc parser)
+(ocamllex
+ (modules lexer))

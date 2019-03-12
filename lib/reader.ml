@@ -1,5 +1,4 @@
 open Formule
-open Marqueur
 
 let ex1 = "e->-c" (* erreur implique non chaud *)
 let ex2 = "EoUe" (* il existe un chemin pour lequel on a ok jusqu'à avoir erreur*)
