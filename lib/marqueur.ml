@@ -1,7 +1,5 @@
 open Formule
 
-(* On représente les graphes comme une Map (Int,(Set Int,Set Int))*)
-
 module L = struct
   type t = int
   let compare = compare
@@ -120,3 +118,10 @@ module Make (V : VARIABLES) = struct
   let check phi g x = M.find x (marquage phi g)
 
 end
+
+module T =
+  Make(
+      struct
+        type t = string
+        let compare = compare
+      end)

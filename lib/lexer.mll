@@ -30,6 +30,11 @@ let weakUntil = 'W'
 let all   = 'A'
 let exist = 'E'
 
+(* For graphs *)
+let eol = '\n'
+let dot = ':'
+let int = ['0'-'9']+
+
 rule token = parse
       [' ' '\t']
         { token lexbuf }
@@ -37,6 +42,8 @@ rule token = parse
         { LPAR }
     | ')'
         { RPAR }
+    | int as i
+        { INT(int_of_string i) }
     | var as v
         { VAR(v) }
     | top
@@ -71,5 +78,9 @@ rule token = parse
         { EXIST }
     | eof
         { EOF }
+    | dot
+        { DOT }
+    | eol
+        { EOL }
     | _ as c
         { failwith (String.make 1 c ^ "Unexpected character") }

@@ -1,36 +1,28 @@
 open Lib.Formule
 open Lib.Marqueur
+open Lib.Parser
 
-type etat = Chaud | Ok | Erreur
-
-let int_of_etat x =
-  match x with
-    Chaud -> 1
-  | Ok -> 2
-  | Erreur -> 3
-
-let compare_etat x y = compare (int_of_etat x) (int_of_etat y)
-
-module T =
-  Lib.Marqueur.Make(
-      struct
-        type t = etat
-        let compare = compare_etat
-      end)
-
+let string_of_file filename =
+  let lines = ref [] in
+  let chan = open_in filename in
+  try
+    while true; do
+      lines := input_line chan :: !lines
+    done; ""
+  with End_of_file ->
+    close_in chan;
+    String.concat "\n" (List.rev !lines)
+    
 (* page 29 *)
 let fig2D1 =
-  let adj =
-    [ (0,([Chaud;Ok],[1]))
-    ; (1,([Ok],[0;2]))
-    ; (2,([Erreur],[0;2]))
-    ]
-  in List.fold_left (fun acc (x,(y1,y2)) -> M.add x (T.SV.of_list y1, S.of_list y2) acc) M.empty adj
-
-let phi1 = Binop(Impl, P Erreur, Not (P Chaud))
-let phi2 = TempBinop(EU, P Ok, P Erreur)
-let phi3 = TempUnop(EX, P Erreur)
-let phi4 = TempUnop(AG, TempUnop(EF, P Ok))
+  let lexbuf = Lexing.from_string (string_of_file "test/g1.ctl") in
+  graph_main Lib.Lexer.token lexbuf
+  
+  
+let phi1 = Binop(Impl, P "erreur", Not (P "chaud"))
+let phi2 = TempBinop(EU, P "ok", P "erreur")
+let phi3 = TempUnop(EX, P "erreur")
+let phi4 = TempUnop(AG, TempUnop(EF, P "ok"))
 
 let main () =
   print_endline (string_of_bool (T.check phi1 fig2D1 0));
