@@ -15,7 +15,7 @@ let string_of_file filename =
     
 (* page 29 *)
 let fig2D1 =
-  let lexbuf = Lexing.from_string (string_of_file "test/g1.ctl") in
+  let lexbuf = Lexing.from_string (string_of_file "graphs/g1.ctl") in
   graph_main Lib.Lexer.token lexbuf
   
   

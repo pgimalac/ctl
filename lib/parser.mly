@@ -22,7 +22,6 @@
 %type <S.t>    intlist
 %type <(Marqueur.T.SV.t * Marqueur.S.t) Marqueur.M.t> graph
 
-
 %start graph_main
 %type <(Marqueur.T.SV.t * Marqueur.S.t) Marqueur.M.t> graph_main
 %%
@@ -52,15 +51,16 @@ expr:
 ;
 
 graph_main:
-  graph EOF {$1}
+    graph EOF {$1}
+;
 
 graph:
     line {let (x,y) = $1 in M.singleton x y}
-  | line graph {let (x,y) = $1 in M.add x y $2}
+  | line EOL graph {let (x,y) = $1 in M.add x y $3}
 ;
 
 line:
-    INT DOT varlist DOT intlist EOL {($1,($3,$5))}
+    INT DOT varlist DOT intlist {($1,($3,$5))}
 ;
 
 varlist:
