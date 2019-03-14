@@ -61,6 +61,9 @@ graph:
 
 line:
     INT DOT varlist DOT intlist {($1,($3,$5))}
+  | INT DOT DOT intlist {($1,(T.SV.empty,$4))}
+  | INT DOT varlist DOT {($1,($3,S.empty))}
+  | INT DOT DOT {($1,(T.SV.empty,S.empty))}
 ;
 
 varlist:
