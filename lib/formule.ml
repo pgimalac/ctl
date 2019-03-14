@@ -42,15 +42,16 @@ let print_formule printer f =
         match f with
         | B(b) -> if b then "⊤" else "⊥"
         | P(p) -> printer p
-        | Not (f) -> "¬" ^ (to_string f)
-        | Binop(b, phi, psi) -> (to_string phi) ^ (get_string b) ^ (to_string psi)
-        | TempUnop(u, phi) -> (get_string_temp u) ^ (to_string phi)
+        | Not (f) -> "¬ (" ^ (to_string f) ^")"
+        | Binop(b, phi, psi) ->
+           "(" ^ (to_string phi) ^ ") " ^ (get_string b) ^ " (" ^ (to_string psi) ^")"
+        | TempUnop(u, phi) -> (get_string_temp u) ^ " (" ^ (to_string phi) ^")"
         | TempBinop(b, phi, psi) ->
             let phi = to_string phi in
             let psi = to_string psi in
             match b with
-            | EU -> "E" ^ phi ^ "U" ^ psi
-            | AU -> "A" ^ phi ^ "U" ^ psi
-            | EW -> "E" ^ phi ^ "W" ^ psi
-            | AW -> "A" ^ phi ^ "W" ^ psi
+            | EU -> "E (" ^ phi ^ ") U (" ^ psi ^")"
+            | AU -> "A (" ^ phi ^ ") U (" ^ psi ^")"
+            | EW -> "E (" ^ phi ^ ") W (" ^ psi ^")"
+            | AW -> "A (" ^ phi ^ ") W (" ^ psi ^")"
     in print_endline (to_string f)
