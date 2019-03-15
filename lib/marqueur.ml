@@ -46,8 +46,8 @@ module Make (V : VARIABLES) = struct
     | TempBinop (b, psi1, psi2) ->
        begin
        match b with
-       | AW -> M.map (fun _ -> true) m (* TODO *)
-       | EW -> M.map (fun _ -> true) m (* TODO *)
+       | AW -> marquage (Not (TempBinop(EU, Not psi1, Not (Binop(Or, psi1, psi2))))) m
+       | EW -> marquage (Binop(Or, TempUnop(EG, psi1), TempBinop(EU, psi1, psi2))) m
        | EU ->
           let mpsi1 = marquage psi1 m in
           let mpsi2 = marquage psi2 m in
