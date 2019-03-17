@@ -78,12 +78,19 @@ let rec desc_neg f =
      | TempUnop (u, phi) ->
         let newop =
           match u with
-            | AX -> TempUnop (EX, Not phi)
-            | EX -> TempUnop (AX, Not phi)
-            | AF -> TempUnop (EG, Not phi)
-            | EG -> TempUnop (AF, Not phi)
-            | EF -> TempUnop (AG, Not phi)
-            | AG -> TempUnop (EF, Not phi)
-        in desc_neg newop
-     | TempBinop _ -> failwith "todo"
+            | AX -> EX
+            | EX -> AX
+            | AF -> EG
+            | EG -> AF
+            | EF -> AG
+            | AG -> EF
+        in desc_neg (TempUnop (newop, Not phi))
+     | TempBinop (b, phi, psi) ->
+        let newop = (* TODO verify *)
+          match b with
+          | AU -> EW
+          | EW -> AU
+          | EU -> AW
+          | AW -> EU
+        in desc_neg (TempBinop (newop, Not phi, Not psi))
      | Not f -> desc_neg f
