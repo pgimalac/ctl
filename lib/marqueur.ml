@@ -35,10 +35,6 @@ module Make (V : VARIABLES) = struct
        begin
        match u with
        | AX -> marquage (Not (TempUnop (EX, Not phi))) m
-       | AF -> marquage (TempBinop (AU, B true, phi)) m
-       | EF -> marquage (TempBinop (EU, B true, phi)) m
-       | AG -> marquage (Not (TempBinop (EU, B true, Not phi))) m
-       | EG -> marquage (Not (TempBinop (AU, B true, Not phi))) m
        | EX ->
            let m' = marquage phi m in
            M.map (fun (_,s) -> S.exists (fun e -> M.find e m') s) m
@@ -47,7 +43,7 @@ module Make (V : VARIABLES) = struct
        begin
        match b with
        | AW -> marquage (Not (TempBinop(EU, Not psi1, Not (Binop(Or, psi1, psi2))))) m
-       | EW -> marquage (Binop(Or, TempUnop(EG, psi1), TempBinop(EU, psi1, psi2))) m
+       | EW -> marquage (Binop(Or, eg psi1, TempBinop(EU, psi1, psi2))) m
        | EU ->
           let mpsi1 = marquage psi1 m in
           let mpsi2 = marquage psi2 m in

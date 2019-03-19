@@ -1,18 +1,20 @@
-type binop = And | Or | Xor | Impl | Eq
-type tempUnop = AX | EX | AF | EF | AG | EG
+type binop = And | Or
+type tempUnop = AX | EX
 type tempBinop = EU | AU | EW | AW
 
 type 'a formule =
-(* Logique propositionnelle *)
-  B of bool
-| P of 'a
-| Not of 'a formule
-| Binop of binop * 'a formule * 'a formule
-(* Combinateurs temporels *)
-| TempUnop of tempUnop * 'a formule
-| TempBinop of tempBinop * 'a formule * 'a formule
+  (* Logique propositionnelle *)
+  | B of bool
+  | P of 'a
+  | Not of 'a formule
+  | Binop of binop * 'a formule * 'a formule
+  (* Combinateurs temporels *)
+  | TempUnop of tempUnop * 'a formule
+  | TempBinop of tempBinop * 'a formule * 'a formule
 
+val af : 'a formule -> 'a formule
+val eg : 'a formule -> 'a formule
 val getop : binop -> bool -> bool -> bool
-val get_string : binop -> string
-val get_string_temp : tempUnop -> string
-val print_formule : ('a -> string) -> 'a formule -> unit
+
+val desc_neg : 'a formule -> 'a formule
+val formule_from_pretty : 'a Pretty_formule.pretty_formule -> 'a formule

@@ -1,5 +1,5 @@
 %{
-    open Formule
+    open Pretty_formule
     open Marqueur
 %}
 
@@ -13,7 +13,7 @@
 %token UNTIL WEAKUNTIL
 %token EOF
 %start main
-%type <string Formule.formule> main
+%type <string Pretty_formule.pretty_formule> main
 
 %token <int> INT
 %token EOL

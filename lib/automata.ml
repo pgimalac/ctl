@@ -32,14 +32,12 @@ let rec tau d (phi,sigma) =
        match t with
        | And -> Et_pbf (tau d (phi, sigma), tau d (psi, sigma))
        | Or ->  Ou_pbf (tau d (phi, sigma), tau d (psi, sigma))
-       | _ -> failwith "todo"
      end
   | TempUnop (t,phi) ->
      begin
        match t with
        | EX -> mult (fun (x,y) -> Ou_pbf (x,y)) d phi
        | AX -> mult (fun (x,y) -> Et_pbf (x,y)) d phi
-       | _ -> failwith "todo"
      end
   | TempBinop (t,psi1,psi2) ->
      begin
