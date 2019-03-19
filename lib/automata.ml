@@ -1,8 +1,6 @@
 open Formule
 open Marqueur
 
-(* TODO Utiliser un meilleur type pour les formules *)
-
 type 'a pbf =
   | P_pbf of 'a
   | Et_pbf of ('a pbf * 'a pbf)
