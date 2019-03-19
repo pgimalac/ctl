@@ -47,5 +47,22 @@ let rec tau d (phi,sigma) =
             let right' = mult (fun (x,y) -> Ou_pbf (x,y)) d phi in
             Et_pbf (left',right') in
           Ou_pbf (left,right)
+       | AU -> (* P 14 Pres *)
+          let left = tau d (psi2, sigma) in
+          let right =
+            let left' = tau d (psi1, sigma) in
+            let right' = mult (fun (x,y) -> Et_pbf (x,y)) d phi in
+            Et_pbf (left',right') in
+          Ou_pbf (left,right)
        | _ -> failwith "todo"
      end
+
+let poids f =
+  match f with
+  | TempBinop (a,_,_) ->
+     begin
+       match a with
+       | EU | AU -> 1
+       | EW | AW -> 2
+     end
+  | _ -> 0
