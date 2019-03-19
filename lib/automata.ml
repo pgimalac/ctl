@@ -19,13 +19,11 @@ let rec tau d (phi,sigma) =
   in
   match phi with
   | B b -> B_pbf b
-  | P p -> B_pbf (S.mem p sigma)
-  | Not p ->
+  | L p ->
      begin
        match p with
-       | B b -> B_pbf (not b)
-       | P p -> B_pbf (not (S.mem p sigma))
-       | _ -> failwith "Not in good form for tau"
+       | P p -> B_pbf (S.mem p sigma)
+       | N p -> B_pbf (not (S.mem p sigma))
      end
   | Binop (t, phi, psi) ->
      begin

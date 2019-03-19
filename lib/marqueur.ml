@@ -25,8 +25,12 @@ module Make (V : VARIABLES) = struct
   let rec marquage f m =
     match f with
     | B b -> M.map (fun _ -> b) m
-    | P q -> M.map (fun (e,_) -> SV.mem q e) m
-    | Not q -> M.map not (marquage q m) (* Todo opti ? *)
+    | L q ->
+       begin
+         match q with
+         | P q -> M.map (fun (e,_) -> SV.mem q e) m
+         | N q ->  M.map (fun (e,_) -> not (SV.mem q e)) m
+       end
     | Binop (c, a, b) ->  (* Todo opti ? *)
        let op = getop c in
        let a',b' = marquage a m, marquage b m in
@@ -34,7 +38,7 @@ module Make (V : VARIABLES) = struct
     | TempUnop (u, phi) ->
        begin
        match u with
-       | AX -> marquage (Not (TempUnop (EX, Not phi))) m
+       | AX -> marquage (neg (TempUnop (EX, neg phi))) m
        | EX ->
            let m' = marquage phi m in
            M.map (fun (_,s) -> S.exists (fun e -> M.find e m') s) m
@@ -42,7 +46,7 @@ module Make (V : VARIABLES) = struct
     | TempBinop (b, psi1, psi2) ->
        begin
        match b with
-       | AW -> marquage (Not (TempBinop(EU, Not psi1, Not (Binop(Or, psi1, psi2))))) m
+       | AW -> M.map not (marquage (TempBinop(EU, neg psi1, neg (Binop(Or, psi1, psi2)))) m)
        | EW -> marquage (Binop(Or, eg psi1, TempBinop(EU, psi1, psi2))) m
        | EU ->
           let mpsi1 = marquage psi1 m in
