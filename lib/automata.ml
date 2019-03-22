@@ -20,8 +20,8 @@ let rec tau d (phi,sigma) =
   | L p ->
      begin
        match p with
-       | P p -> B_pbf (S.mem p sigma)
-       | N p -> B_pbf (not (S.mem p sigma))
+       | P p -> B_pbf (T.SV.mem p sigma)
+       | N p -> B_pbf (not (T.SV.mem p sigma))
      end
   | Binop (t, phi, psi) ->
      begin

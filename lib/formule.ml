@@ -45,6 +45,7 @@ let rec neg f =
        | AX -> EX
      in TempUnop (t,a)
   | TempBinop (t,a,b) -> (* TODO vérifier *)
+     (* TODO: - (EU a b) = AW (-b) (-a et -b) *)
      let a = neg a in
      let b = neg b in
      let t =
