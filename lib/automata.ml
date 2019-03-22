@@ -36,24 +36,13 @@ let rec tau d (phi,sigma) =
        | AX -> mult (fun (x,y) -> Et_pbf (x,y)) d phi
      end
   | TempBinop (t,psi1,psi2) ->
-     begin
+     let left = tau d (psi2, sigma) in
+     let left' = tau d (psi1, sigma) in
+     let right' =
        match t with
-       | EU ->
-          let left = tau d (psi2, sigma) in
-          let right =
-            let left' = tau d (psi1, sigma) in
-            let right' = mult (fun (x,y) -> Ou_pbf (x,y)) d phi in
-            Et_pbf (left',right') in
-          Ou_pbf (left,right)
-       | AU -> (* P 14 Pres *)
-          let left = tau d (psi2, sigma) in
-          let right =
-            let left' = tau d (psi1, sigma) in
-            let right' = mult (fun (x,y) -> Et_pbf (x,y)) d phi in
-            Et_pbf (left',right') in
-          Ou_pbf (left,right)
-       | _ -> failwith "todo"
-     end
+       | EU | EW -> mult (fun (x,y) -> Ou_pbf (x,y)) d phi
+       | AU | AW ->  mult (fun (x,y) -> Et_pbf (x,y)) d phi in
+    Ou_pbf (left, Et_pbf (left',right'))
 
 let poids f =
   match f with
