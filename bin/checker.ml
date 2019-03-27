@@ -1,4 +1,3 @@
-open Lib.Pretty_formule
 open Lib.Formule
 open Lib.Marqueur
 
@@ -14,26 +13,19 @@ let strings_of_file filename =
     List.rev !lines
 
 (* page 29 *)
-let fig2D1 =
-  let lexbuf = Lexing.from_string (String.concat "\n" (strings_of_file "graphs/g1.ctl")) in
+let extract x =
+  let lexbuf = Lexing.from_string (String.concat "\n" (strings_of_file x)) in
   Lib.Parser.graph_main Lib.Lexer.token lexbuf
 
-let fig2D1_formules =
-  strings_of_file "graphs/f1.ctl"
+let parse_formule x = Lib.Parser.main Lib.Lexer.token (Lexing.from_string x)
 
-let phi1 = Lib.Parser.main Lib.Lexer.token (Lexing.from_string (List.nth fig2D1_formules 0))
-let phi2 = Lib.Parser.main Lib.Lexer.token (Lexing.from_string (List.nth fig2D1_formules 1))
-let phi3 = Lib.Parser.main Lib.Lexer.token (Lexing.from_string (List.nth fig2D1_formules 2))
-let phi4 = Lib.Parser.main Lib.Lexer.token (Lexing.from_string (List.nth fig2D1_formules 3))
+let check_forumla_in kripke x =
+  print_endline (string_of_bool (T.check (formule_from_pretty (parse_formule x)) kripke 0))
 
 let main () =
-  print_formule (fun x -> x) phi1;
-  print_endline (string_of_bool (T.check (formule_from_pretty phi1) fig2D1 0));
-  print_formule (fun x -> x) phi2;
-  print_endline (string_of_bool (T.check (formule_from_pretty phi2) fig2D1 0));
-  print_formule (fun x -> x) phi3;
-  print_endline (string_of_bool (T.check (formule_from_pretty phi3) fig2D1 0));
-  print_formule (fun x -> x) phi4;
-  print_endline (string_of_bool (T.check (formule_from_pretty phi4) fig2D1 0))
+  let fig2D1 = extract "graphs/g1.ctl" in
+  List.iter (check_forumla_in fig2D1) (strings_of_file "graphs/f1.ctl");
+  let g2 = extract "graphs/g2.ctl" in
+  List.iter (check_forumla_in g2) (strings_of_file "graphs/f2.ctl")
 
 let _ = main ()
