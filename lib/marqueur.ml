@@ -13,14 +13,19 @@ module type VARIABLES = sig
   val compare : t -> t -> int
 end
 
+let insert_no_dup x xs =
+  if List.mem x xs
+  then xs
+  else x::xs
+
+let opt_map f k =
+  match k with
+  | Some x -> Some (f x)
+  | None -> None
+
 module Make (V : VARIABLES) = struct
 
   module SV = Set.Make(V)
-
-  let opt_map f k =
-    match k with
-    | Some x -> Some (f x)
-    | None -> None
 
   let rec marquage f m =
     match f with
@@ -77,7 +82,7 @@ module Make (V : VARIABLES) = struct
                      then
                        let res = M.update q' (opt_map (fun (x,_) -> (x,true))) res in
                        if M.find q' mpsi1
-                       then (q'::newlist,res)
+                       then (insert_no_dup q' newlist,res)
                        else (newlist,res)
                      else (newlist,res)
                    )
@@ -94,7 +99,7 @@ module Make (V : VARIABLES) = struct
                 if M.find q mpsi2
                 then
                   todo := q :: !todo;
-                (false,S.cardinal s)
+                (false, S.cardinal s)
               ) m in
           let rec tantque todo res =
             match todo with
@@ -109,7 +114,7 @@ module Make (V : VARIABLES) = struct
                        let newqnb = ref (true,0) in
                        let res = M.update q' (opt_map (fun (x,y) -> newqnb := (x,y-1); !newqnb)) res in
                        if (snd !newqnb = 0) && (M.find q' mpsi1) && not (fst !newqnb)
-                       then (q'::newlist,res)
+                       then (insert_no_dup q' newlist,res)
                        else (newlist,res)
                      else (newlist,res)
                    )
