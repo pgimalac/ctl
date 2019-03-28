@@ -4,4 +4,4 @@ EX b
 A a W b
 EX (E a U c)
 - (EF z)
-AX (b | a)
+AX (a | b)

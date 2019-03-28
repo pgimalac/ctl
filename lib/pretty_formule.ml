@@ -29,7 +29,7 @@ let get_string c =
     | Xor -> "⊕"
     | Eq -> "⇔"
 
-let print_formule printer f =
+let string_of_formule printer f =
   let rec to_string f =
     match f with
     | B b -> if b then "⊤" else "⊥"
@@ -46,4 +46,6 @@ let print_formule printer f =
        | AU -> "A (" ^ phi ^ ") U (" ^ psi ^")"
        | EW -> "E (" ^ phi ^ ") W (" ^ psi ^")"
        | AW -> "A (" ^ phi ^ ") W (" ^ psi ^")"
-  in print_endline (to_string f)
+  in to_string f
+           
+let print_formule printer f = print_endline (string_of_formule printer f)

@@ -15,3 +15,4 @@ type 'a pretty_formule =
 val get_string : binop -> string
 val get_string_temp : tempUnop -> string
 val print_formule : ('a -> string) -> 'a pretty_formule -> unit
+val string_of_formule : ('a -> string) -> 'a pretty_formule -> string
