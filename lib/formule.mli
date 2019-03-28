@@ -21,3 +21,5 @@ val getop : binop -> bool -> bool -> bool
 
 val neg : 'a formule -> 'a formule
 val formule_from_pretty : 'a Pretty_formule.pretty_formule -> 'a formule
+val pretty_from_formule : 'a formule -> 'a Pretty_formule.pretty_formule
+val string_of_formule : ('a -> string) -> 'a formule -> string

@@ -1,5 +1,4 @@
 open Lib.Formule
-open Lib.Pretty_formule
 open Lib.Marqueur
 
 let strings_of_file filename =
@@ -22,10 +21,12 @@ let parse_formule x = Lib.Parser.main Lib.Lexer.token (Lexing.from_string x)
 
 let check_forumla_in kripke start x =
   let form = parse_formule x in
-  print_string (string_of_formule (fun x -> x) form);
-  print_string ": ";
+  print_string ("[" ^ Lib.Pretty_formule.string_of_formule (fun x -> x) form ^ "]");
+  print_string " -> ";
+  print_string ("[" ^ string_of_formule (fun x -> x) (formule_from_pretty form) ^"]");
+  print_string ": \n ";
   print_endline
-    (string_of_bool (T.check (formule_from_pretty (parse_formule x)) kripke start))
+    (string_of_bool (T.check (formule_from_pretty form) kripke start))
 
 let main () =
   let fig2D1 = extract "graphs/g1.ctl" in

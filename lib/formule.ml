@@ -61,6 +61,41 @@ let eg x = neg (af (neg x))
 let ef x = TempBinop (EU,B true,x)
 let ag x = neg (ef (neg x))
 
+let rec pretty_from_formule f =
+  match f with
+  | B b -> Pretty_formule.B b
+  | L c ->
+     begin
+       match c with
+       | P b -> Pretty_formule.P b
+       | N b -> Pretty_formule.Not (Pretty_formule.P b)
+     end
+  | Binop (t,a,b) ->
+     let a = pretty_from_formule a in
+     let b = pretty_from_formule b in
+     let t =
+       match t with
+       | And -> Pretty_formule.And
+       | Or -> Pretty_formule.Or in
+     Pretty_formule.Binop (t,a,b)
+  | TempUnop (t,a) ->
+      let a = pretty_from_formule a in
+      let t =
+        match t with
+        | EX -> Pretty_formule.EX
+        | AX -> Pretty_formule.AX in
+      Pretty_formule.TempUnop (t,a)
+  | TempBinop (t,a,b) ->
+     let a = pretty_from_formule a in
+     let b = pretty_from_formule b in
+     let t =
+       match t with
+       | EU -> Pretty_formule.EU
+       | EW -> Pretty_formule.EW
+       | AU -> Pretty_formule.AU
+       | AW -> Pretty_formule.AW  in
+     Pretty_formule.TempBinop (t,a,b)
+
 let rec formule_from_pretty f =
   match f with
   | Pretty_formule.B b -> B b
@@ -106,3 +141,5 @@ let rec formule_from_pretty f =
        | Pretty_formule.AG -> ag a
        | Pretty_formule.EG -> eg a
      end
+
+let string_of_formule printer f = Pretty_formule.string_of_formule printer (pretty_from_formule f)
