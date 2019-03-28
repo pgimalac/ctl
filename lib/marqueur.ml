@@ -38,7 +38,7 @@ module Make (V : VARIABLES) = struct
     | TempUnop (u, phi) ->
        begin
        match u with
-       | AX -> marquage (neg (TempUnop (EX, neg phi))) m
+       | AX -> M.map not (marquage (TempUnop (EX, neg phi)) m)
        | EX ->
            let m' = marquage phi m in
            M.map (fun (_,s) -> S.exists (fun e -> M.find e m') s) m
