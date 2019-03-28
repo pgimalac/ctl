@@ -1,5 +1,6 @@
 (library
   (name lib)
+  (flags -g)
 )
 (ocamlyacc parser)
 (ocamllex

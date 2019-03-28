@@ -19,13 +19,14 @@ let extract x =
 
 let parse_formule x = Lib.Parser.main Lib.Lexer.token (Lexing.from_string x)
 
-let check_forumla_in kripke x =
-  print_endline (string_of_bool (T.check (formule_from_pretty (parse_formule x)) kripke 0))
+let check_forumla_in kripke start x =
+  print_endline (string_of_bool (T.check (formule_from_pretty (parse_formule x)) kripke start))
 
 let main () =
   let fig2D1 = extract "graphs/g1.ctl" in
-  List.iter (check_forumla_in fig2D1) (strings_of_file "graphs/f1.ctl");
+  List.iter (check_forumla_in fig2D1 0) (strings_of_file "graphs/f1.ctl");
+  print_endline "\ngraph 2:";
   let g2 = extract "graphs/g2.ctl" in
-  List.iter (check_forumla_in g2) (strings_of_file "graphs/f2.ctl")
+  List.iter (check_forumla_in g2 1) (strings_of_file "graphs/f2.ctl")
 
 let _ = main ()
