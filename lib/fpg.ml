@@ -32,3 +32,20 @@ let gsphi (m : T.kripke)  ((s,qt) : game_state) : game_state list =
      | P_pbf (c,q) ->
         [(set_nth c (snd (M.find s m)),Left q)]
      | B_pbf _ -> []
+
+module T =
+  struct
+    type t = game_state
+    let compare = compare
+  end
+
+module GM = Map.Make(T)
+module GS = Set.Make(T)
+
+let get_coul ((_,c) : game_state) =
+  match c with
+  | Left x -> Some (poids x)
+  | Right _ -> None
+
+type winner = Adam | Eve
+  
