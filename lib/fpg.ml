@@ -32,3 +32,69 @@ let gsphi (m : T.kripke)  ((s,qt) : game_state) : game_state list =
      | P_pbf (c,q) ->
         [(set_nth c (snd (M.find s m)),Left q)]
      | B_pbf _ -> []
+
+(* type node = {
+  state: game_state;
+  mutable index: int option;
+  mutable onStack: bool;
+  mutable lowlink: int;
+} *)
+
+(* let to_cfc (m : T.kripke) (start : int) (phi : string formule) : (GM.t * SM.t) array =
+  let arr = [||] in
+  let rec strong_connect v (index, stack) =
+    v.index <- Some index;
+    v.lowlink <- index;
+    v.onStack <- true;
+    let index, stack =
+      List.fold_left (
+        fun (index, stack) w ->
+          if w.index = None
+          then
+            let index, stack = strong_connect w in
+            w.lowlink <- min v.lowlink w.lowlink;
+            index, stack
+          else if
+
+      ) (index, stack) (gsphi m v.state) in
+    ()
+
+ *)
+(*
+  input: graph G = (V, E)
+  output: set of strongly connected components (sets of vertices)
+
+  index := 0
+  S := empty stack
+  for each v in V do
+    if (v.index is undefined) then
+      strongconnect(v)
+    end if
+  end for
+
+  function strongconnect(v)
+    v.index := index
+    v.lowlink := index
+    index := index + 1
+    S.push(v)
+    v.onStack := true
+
+    for each (v, w) in E do
+      if (w.index is undefined) then
+        strongconnect(w)
+        v.lowlink  := min(v.lowlink, w.lowlink)
+      else if (w.onStack) then
+        v.lowlink  := min(v.lowlink, w.index)
+      end if
+    end for
+
+    if (v.lowlink = v.index) then
+      start a new strongly connected component
+      repeat
+        w := S.pop()
+        w.onStack := false
+        add w to current strongly connected component
+      while (w != v)
+      output the current strongly connected component
+    end if
+*)
