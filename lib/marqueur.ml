@@ -13,10 +13,17 @@ module type VARIABLES = sig
   val compare : t -> t -> int
 end
 
-let insert_no_dup x xs =
-  if List.mem x xs
-  then xs
-  else x::xs
+let rec insert_no_dup_in_sorted x xs =
+  match xs with
+  | [] -> [x]
+  |  y :: ys ->
+      let b = compare x y in
+      if b = -1
+      then x :: xs
+      else
+        if b = 0
+        then xs
+        else y :: (insert_no_dup_in_sorted x ys)
 
 let opt_map f k =
   match k with
@@ -84,7 +91,7 @@ module Make (V : VARIABLES) = struct
                      then
                        let res = M.update q' (opt_map (fun (x,_) -> (x,true))) res in
                        if M.find q' mpsi1
-                       then (insert_no_dup q' newlist,res)
+                       then (insert_no_dup_in_sorted q' newlist,res)
                        else (newlist,res)
                      else (newlist,res)
                    )
@@ -116,7 +123,7 @@ module Make (V : VARIABLES) = struct
                        let newqnb = ref (true,0) in
                        let res = M.update q' (opt_map (fun (x,y) -> newqnb := (x,y-1); !newqnb)) res in
                        if (snd !newqnb = 0) && (M.find q' mpsi1) && not (fst !newqnb)
-                       then (insert_no_dup q' newlist,res)
+                       then (insert_no_dup_in_sorted q' newlist,res)
                        else (newlist,res)
                      else (newlist,res)
                    )
