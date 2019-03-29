@@ -21,7 +21,7 @@ let set_nth n s =
   with
   | Found_elem i -> i
 
-let gsphi (m : T.kripke)  ((s,qt) : game_state) : game_state list =
+let gsphi (m : Marqueur.T.kripke)  ((s,qt) : game_state) : game_state list =
   match qt with
   | Left q ->
      [(s, Right (tau (deg s m) (q, fst (M.find s m))))]
@@ -33,68 +33,111 @@ let gsphi (m : T.kripke)  ((s,qt) : game_state) : game_state list =
         [(set_nth c (snd (M.find s m)),Left q)]
      | B_pbf _ -> []
 
-(* type node = {
+module T =
+  struct
+    type t = game_state
+    let compare = compare
+  end
+
+module GM = Map.Make(T)
+module GS = Set.Make(T)
+
+let get_coul ((_,c) : game_state) =
+  match c with
+  | Left x -> Some (poids x)
+  | Right _ -> None
+
+type winner = Adam | Eve
+
+(*
+from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm#The_algorithm_in_pseudocode
+*)
+
+type node = {
   state: game_state;
+  transitions: game_state list;
+  mutable cfc: int;
   mutable index: int option;
   mutable onStack: bool;
   mutable lowlink: int;
-} *)
+}
 
-(* let to_cfc (m : T.kripke) (start : int) (phi : string formule) : (GM.t * SM.t) array =
-  let arr = [||] in
-  let rec strong_connect v (index, stack) =
-    v.index <- Some index;
-    v.lowlink <- index;
-    v.onStack <- true;
-    let index, stack =
-      List.fold_left (
-        fun (index, stack) w ->
-          if w.index = None
-          then
-            let index, stack = strong_connect w in
-            w.lowlink <- min v.lowlink w.lowlink;
-            index, stack
-          else if
+let new_node m state =
+  { state = state; transitions = gsphi m state; cfc = -1; index = None; onStack = false; lowlink = -1 }
 
-      ) (index, stack) (gsphi m v.state) in
-    ()
+let partition_while predicate =
+  let rec aux partition l =
+    match l with
+    | h :: q ->
+        if predicate h
+        then List.rev (h :: partition), q
+        else aux (h :: partition) q
+    | [] -> List.rev partition, []
+  in aux []
 
- *)
-(*
-  input: graph G = (V, E)
-  output: set of strongly connected components (sets of vertices)
+(* the main part of the algorithm *)
+let rec strong_connect map v (cfc, index, stack) =
+  (* set the nodes's values *)
+  v.index <- Some index;
+  v.lowlink <- index;
+  v.onStack <- true;
+  (* for each transition from v, if not already done call strong_connect on the target and then update the node *)
+  let cfc, index, stack =
+    List.fold_left (
+      fun (cfc, index, stack) w_state ->
+        let w = GM.find w_state map in
+        match w.index with
+        | None ->
+            let cfc, index, stack = strong_connect map w (cfc, index, stack) in
+            v.lowlink <- min v.lowlink w.lowlink;
+            cfc, index, stack
+        | Some ind ->
+            if w.onStack
+            then
+              v.lowlink <- min v.lowlink ind;
+            cfc, index, stack
+    ) (cfc, index + 1, v :: stack) v.transitions in
+  (* when done with the neighbours, if v is the root of a cfc then for each w in the stack, pop it and add it to the current cfc *)
+  match v.index with
+  | Some ind ->
+      if v.lowlink = ind
+      then
+        let to_add, stack = partition_while ((=) v) stack in
+        let to_add = List.map (fun w -> w.onStack <- false; w.state) to_add in
+        let set = GS.of_list to_add in
+        (set :: cfc), index, stack
+      else cfc, index, stack
+  | None -> failwith "Not possible" (* to avoid any warning *)
 
-  index := 0
-  S := empty stack
-  for each v in V do
-    if (v.index is undefined) then
-      strongconnect(v)
-    end if
-  end for
-
-  function strongconnect(v)
-    v.index := index
-    v.lowlink := index
-    index := index + 1
-    S.push(v)
-    v.onStack := true
-
-    for each (v, w) in E do
-      if (w.index is undefined) then
-        strongconnect(w)
-        v.lowlink  := min(v.lowlink, w.lowlink)
-      else if (w.onStack) then
-        v.lowlink  := min(v.lowlink, w.index)
-      end if
-    end for
-
-    if (v.lowlink = v.index) then
-      start a new strongly connected component
-      repeat
-        w := S.pop()
-        w.onStack := false
-        add w to current strongly connected component
-      while (w != v)
-      output the current strongly connected component
-    end if
-*)
+let to_cfc (m : Marqueur.T.kripke) (start : int) (phi : string formule) : (GS.t * S.t) list =
+  (* used to fill a map that associate each state to its node *)
+  let rec fill_map map state =
+    if GM.mem state map
+    then map
+    else
+      let map = GM.add state (new_node m state) map in
+      let state_list = gsphi m state in
+      List.fold_left fill_map map state_list
+  in
+  let map = fill_map GM.empty (start, Left phi) in
+  (* for each node, if not already done call strong_connect *)
+  let cfc, _, _ = GM.fold (fun _ v a ->
+    if v.index = None
+    then strong_connect map v a
+    else a
+  ) map ([], 0, []) in
+  (* set the cfc's number on each node *)
+  List.iteri (fun i s ->
+    GS.iter (fun st -> let node = GM.find st map in node.cfc <- i) s
+  ) cfc;
+  (* eventually create the set of transitions for each cfc *)
+  List.map (fun cfc ->
+    let set = GS.fold (fun st set ->
+      let node = GM.find st map in
+      List.fold_left (fun set st ->
+        let node = GM.find st map in
+        S.add node.cfc set
+      ) set node.transitions
+    ) cfc S.empty in
+    cfc, set
+  ) cfc

@@ -19,7 +19,7 @@ let extract x =
 
 let parse_formule x = Lib.Parser.main Lib.Lexer.token (Lexing.from_string x)
 
-let check_forumla_in kripke start x =
+let check_formula_in kripke start x =
   let form = parse_formule x in
   print_string ("[" ^ Lib.Pretty_formule.string_of_formule (fun x -> x) form ^ "]");
   print_string " -> ";
@@ -30,9 +30,9 @@ let check_forumla_in kripke start x =
 
 let main () =
   let fig2D1 = extract "graphs/g1.ctl" in
-  List.iter (check_forumla_in fig2D1 0) (strings_of_file "graphs/f1.ctl");
+  List.iter (check_formula_in fig2D1 0) (strings_of_file "graphs/f1.ctl");
   print_endline "\ngraph 2:";
   let g2 = extract "graphs/g2.ctl" in
-  List.iter (check_forumla_in g2 1) (strings_of_file "graphs/f2.ctl")
+  List.iter (check_formula_in g2 1) (strings_of_file "graphs/f2.ctl")
 
 let _ = main ()
