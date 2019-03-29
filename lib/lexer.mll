@@ -35,6 +35,11 @@ let eol = '\n'
 let dot = ':'
 let int = ['0'-'9']+
 
+(* for comments *)
+
+let start_com = "(*"
+let end_com   = "*)"
+
 rule token = parse
       [' ' '\t']
         { token lexbuf }
@@ -82,5 +87,13 @@ rule token = parse
         { DOT }
     | eol
         { EOL }
+    | start_com
+        { comment lexbuf }
     | _ as c
         { failwith (String.make 1 c ^ "Unexpected character") }
+
+and comment = parse
+    | end_com
+        { token lexbuf }
+    | _
+        { comment lexbuf }
