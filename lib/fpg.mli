@@ -10,4 +10,4 @@ type game_state =
   int * (T.SV.elt formule, (int * T.SV.elt formule) pbf) either
 
 val gsphi :
-  (T.SV.t * S.t) M.t -> game_state -> game_state list
+  T.kripke -> game_state -> game_state list

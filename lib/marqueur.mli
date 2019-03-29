@@ -135,8 +135,11 @@ module Make :
           val add_seq : elt Seq.t -> t -> t
           val of_seq : elt Seq.t -> t
         end
-      val marquage : SV.elt Formule.formule -> (SV.t * S.t) M.t -> bool M.t
-      val check : SV.elt Formule.formule -> (SV.t * S.t) M.t -> M.key -> bool
+
+      type kripke = (SV.t * S.t) M.t
+
+      val marquage : SV.elt Formule.formule -> kripke -> bool M.t
+      val check : SV.elt Formule.formule -> kripke -> M.key -> bool
     end
 module T :
   sig
@@ -184,6 +187,9 @@ module T :
         val add_seq : elt Seq.t -> t -> t
         val of_seq : elt Seq.t -> t
       end
-    val marquage : SV.elt Formule.formule -> (SV.t * S.t) M.t -> bool M.t
-    val check : SV.elt Formule.formule -> (SV.t * S.t) M.t -> M.key -> bool
+
+    type kripke = (SV.t * S.t) M.t
+
+    val marquage : SV.elt Formule.formule -> kripke -> bool M.t
+    val check : SV.elt Formule.formule -> kripke -> M.key -> bool
   end

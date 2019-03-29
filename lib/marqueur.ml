@@ -27,7 +27,9 @@ module Make (V : VARIABLES) = struct
 
   module SV = Set.Make(V)
 
-  let rec marquage f m =
+  type kripke = (SV.t * S.t) M.t
+
+  let rec marquage f (m : kripke) =
     match f with
     | B b -> M.map (fun _ -> b) m
     | L q ->
@@ -124,7 +126,6 @@ module Make (V : VARIABLES) = struct
        end
 
   let check phi g x = M.find x (marquage phi g)
-
 end
 
 module T =

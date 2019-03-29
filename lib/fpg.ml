@@ -9,7 +9,7 @@ type ('a, 'b) either =
 type game_state =
   int * (T.SV.elt formule, (int * T.SV.elt formule) pbf) either
 
-let deg s m =
+let deg s (m : T.kripke) =
   S.cardinal (snd (M.find s m))
 
 exception Found_elem of int
@@ -21,7 +21,7 @@ let set_nth n s =
   with
   | Found_elem i -> i
 
-let gsphi (m : (T.SV.t * S.t) M.t)  ((s,qt) : game_state) : game_state list =
+let gsphi (m : T.kripke)  ((s,qt) : game_state) : game_state list =
   match qt with
   | Left q ->
      [(s, Right (tau (deg s m) (q, fst (M.find s m))))]
