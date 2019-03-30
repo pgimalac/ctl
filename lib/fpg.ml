@@ -9,6 +9,12 @@ type ('a, 'b) either =
 type game_state =
   int * (T.SV.elt formule, (int * T.SV.elt formule) pbf) either
 
+let print_state i f =
+  let s = match f with
+  | Left f -> string_of_formule (fun x -> x) f
+  | Right (c, f) -> "(" ^ (string_of_int c) ^ ", " ^ (string_of_formule (fun x -> x) f) ^ ")"
+  in string_of_int i ^ " : " ^ s
+
 let deg s (m : T.kripke) =
   S.cardinal (snd (M.find s m))
 
@@ -141,3 +147,16 @@ let to_cfc (m : Marqueur.T.kripke) (start : int) (phi : string formule) : (GS.t 
     ) cfc S.empty in
     cfc, set
   ) cfc
+
+let write_cfc_into_file file cfc =
+  let st_out = open_out file in
+  Printf.fprintf st_out "digraph {\n";
+  List.iteri (fun i (_, transitions) ->
+    if transitions != S.empty
+    then
+      let left = string_of_int i in
+      let right = S.fold (fun e -> (^) (string_of_int e ^ " ")) transitions "" in
+      Printf.fprintf st_out "    %s -> { %s}\n" left right
+  ) cfc;
+  Printf.fprintf st_out "}\n";
+  close_out st_out

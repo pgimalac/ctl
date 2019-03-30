@@ -102,3 +102,5 @@ module GS :
 
 val to_cfc :
   Marqueur.T.kripke -> int -> string formule -> (GS.t * S.t) list
+
+val write_cfc_into_file: string -> (GS.t * S.t) list -> unit
