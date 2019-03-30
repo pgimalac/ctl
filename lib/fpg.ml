@@ -195,7 +195,7 @@ let get_win (m : Marqueur.T.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) 
     let gamma' = get_coul (GS.min_elt (fst ind)) in (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans la CFC *)
     match gamma' with
     | None -> (* Il n'y a pas de boucles, c'est un état seul *)
-       assert (GS.cardinal (fst ind) = 1); (* on vérifie *)
+       assert (GS.cardinal (fst ind) = 1); (* on vérifie: TODO enlever *)
        let elem = GS.min_elt (fst ind) in
        let player = get_player (snd elem) in
        let xs = gsphi m elem in

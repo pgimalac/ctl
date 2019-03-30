@@ -6,6 +6,9 @@ type 'a pbf =
   | Ou_pbf of ('a pbf * 'a pbf)
   | B_pbf of bool
 
+val et : 'a pbf -> 'a pbf -> 'a pbf
+val ou : 'a pbf -> 'a pbf -> 'a pbf
+
 val tau :
   int ->
   T.SV.elt Formule.formule * Marqueur.T.SV.t ->

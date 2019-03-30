@@ -7,6 +7,24 @@ type 'a pbf =
   | Ou_pbf of ('a pbf * 'a pbf)
   | B_pbf of bool
 
+(* Permet de simplifier le Et_pbf si possible *)
+let et x y =
+  match x with
+  | B_pbf b -> if b then y else x
+  | _ ->
+     match y with
+     | B_pbf b -> if b then x else y
+     | _ -> Et_pbf (x,y)
+
+(* Permet de simplifier le Ou_pbf si possible *)
+let ou x y =
+  match x with
+  | B_pbf b -> if b then x else y
+  | _ ->
+     match y with
+     | B_pbf b -> if b then y else x
+     | _ -> Ou_pbf (x,y)
+
 let string_of_pbf stringer f =
   let rec aux f =
     match f with
@@ -24,11 +42,11 @@ let rec tau d (phi,sigma) =
       then B_pbf true
       else B_pbf false
     else
-      let f t = if f then Et_pbf t else Ou_pbf t in
+      let f = if f then et else ou in
       let rec mult' i =
         if i <= 1
         then P_pbf (i,phi)
-        else f (P_pbf (i,phi), mult' (i-1))
+        else f (P_pbf (i,phi)) (mult' (i-1))
       in mult' i
   in
   match phi with
@@ -42,8 +60,8 @@ let rec tau d (phi,sigma) =
   | Binop (t, phi, psi) ->
      begin
        match t with
-       | And -> Et_pbf (tau d (phi, sigma), tau d (psi, sigma))
-       | Or ->  Ou_pbf (tau d (phi, sigma), tau d (psi, sigma))
+       | And -> et (tau d (phi, sigma)) (tau d (psi, sigma))
+       | Or ->  ou (tau d (phi, sigma)) (tau d (psi, sigma))
      end
   | TempUnop (t,phi) ->
      begin
@@ -58,7 +76,7 @@ let rec tau d (phi,sigma) =
        match t with
        | EU | EW -> mult false d phi
        | AU | AW ->  mult true d phi in
-    Ou_pbf (left, Et_pbf (left',right'))
+    ou left (et left' right')
 
 let poids f =
   match f with
