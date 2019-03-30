@@ -12,3 +12,5 @@ val tau :
   (int * T.SV.elt Formule.formule) pbf
 
 val poids : 'a Formule.formule -> int
+
+val string_of_pbf : ('a -> string) -> 'a pbf -> string

@@ -7,6 +7,15 @@ type 'a pbf =
   | Ou_pbf of ('a pbf * 'a pbf)
   | B_pbf of bool
 
+let string_of_pbf stringer f =
+  let rec aux f =
+    match f with
+    | P_pbf x -> stringer x
+    | Et_pbf (x,y) -> "Et_pbf (" ^ aux x  ^ ") (" ^ aux y ^ ")"
+    | Ou_pbf (x,y) -> "Ou_pbf (" ^ aux x  ^ ") (" ^ aux y ^ ")"
+    | B_pbf x -> string_of_bool x
+  in aux f
+
 let rec tau d (phi,sigma) =
   let mult f i phi = (* f = true -> Et_pbf | f = false -> Ou_pbf *) (* TODO boolean blindlness *)
     if i = 0 (* clause vide *)

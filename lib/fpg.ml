@@ -9,11 +9,13 @@ type ('a, 'b) either =
 type game_state =
   int * (T.SV.elt formule, (int * T.SV.elt formule) pbf) either
 
-let print_state i f =
+let string_of_state i f =
   let s = match f with
   | Left f -> string_of_formule (fun x -> x) f
-  | Right (c, f) -> "(" ^ (string_of_int c) ^ ", " ^ (string_of_formule (fun x -> x) f) ^ ")"
-  in string_of_int i ^ " : " ^ s
+  | Right f ->
+     string_of_pbf
+       (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
+  in string_of_int i ^ ", " ^ s
 
 let deg s (m : T.kripke) =
   S.cardinal (snd (M.find s m))
@@ -216,4 +218,50 @@ let get_win (m : Marqueur.T.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) 
        in GS.fold combi (fst ind) computed
   in GM.map fromSome (List.fold_left aux GM.empty cfc)
 
-let check phi m start = Eve = GM.find (start, Left phi) (get_win m (to_cfc m start phi))
+type game = GS.t GM.t
+
+(* Generate a whole _finite_ game *)
+let gen_all_game (m : Marqueur.T.kripke) (phi : string formule) (start : int) : game =
+  let rec insert res gs =
+    if GM.mem gs res
+    then res
+    else
+      let xs = gsphi m gs in
+      let res = GM.add gs (GS.of_list xs) res in
+      List.fold_left insert res xs in
+  insert GM.empty (start,Left phi)
+
+(* Write a game into a DOT file *)
+let write_game_into_file file (game : game) =
+  let get_ind x g =
+    snd (GM.fold (fun v _ ((b,j) as acc)-> if b then acc else (x=v,j+1)) g (false,0)) in
+  let st_out = open_out file in
+  Printf.fprintf st_out "digraph {\n";
+  let all_states = ref GS.empty in
+  GM.iter (fun x v ->
+    if v != GS.empty
+    then
+      all_states := GS.add x !all_states;
+      let left = string_of_int (get_ind x game) in
+      let right =
+        GS.fold
+          (fun x acc ->
+            all_states := GS.add x !all_states;
+            (string_of_int (get_ind x game) ^ " ") ^ acc)
+          v "" in
+      Printf.fprintf st_out "   %s -> { %s};\n" left right
+    ) game;
+  GS.iter
+    (fun ((i,j) as x) ->
+      let left = string_of_int (get_ind x game) in
+      let right = string_of_state i j in
+      Printf.fprintf st_out "   %s [label=\"%s\"];\n" left right
+    )
+    !all_states;
+  Printf.fprintf st_out "}\n";
+  close_out st_out
+
+let check phi m start =
+  let g = gen_all_game m phi start in
+  write_game_into_file "graphs/graphviz_testok" g;
+  Eve = GM.find (start, Left phi) (get_win m (to_cfc m start phi))
