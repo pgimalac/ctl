@@ -8,12 +8,19 @@ type 'a pbf =
   | B_pbf of bool
 
 let rec tau d (phi,sigma) =
-  let mult f i phi =
-    let rec mult' i =
-      if i <= 0
-      then P_pbf (i,phi)
-      else f (P_pbf (i,phi), mult' (i-1))
-    in mult' i
+  let mult f i phi = (* f = true -> Et_pbf | f = false -> Ou_pbf *) (* TODO boolean blindlness *)
+    if i = 0 (* clause vide *)
+    then
+      if f
+      then B_pbf true
+      else B_pbf false
+    else
+      let f t = if f then Et_pbf t else Ou_pbf t in
+      let rec mult' i =
+        if i <= 1
+        then P_pbf (i,phi)
+        else f (P_pbf (i,phi), mult' (i-1))
+      in mult' i
   in
   match phi with
   | B b -> B_pbf b
@@ -32,16 +39,16 @@ let rec tau d (phi,sigma) =
   | TempUnop (t,phi) ->
      begin
        match t with
-       | EX -> mult (fun (x,y) -> Ou_pbf (x,y)) d phi
-       | AX -> mult (fun (x,y) -> Et_pbf (x,y)) d phi
+       | EX -> mult false d phi
+       | AX -> mult true d  phi
      end
   | TempBinop (t,psi1,psi2) ->
      let left = tau d (psi2, sigma) in
      let left' = tau d (psi1, sigma) in
      let right' =
        match t with
-       | EU | EW -> mult (fun (x,y) -> Ou_pbf (x,y)) d phi
-       | AU | AW ->  mult (fun (x,y) -> Et_pbf (x,y)) d phi in
+       | EU | EW -> mult false d phi
+       | AU | AW ->  mult true d phi in
     Ou_pbf (left, Et_pbf (left',right'))
 
 let poids f =

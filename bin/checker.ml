@@ -26,7 +26,7 @@ let check_formula_in kripke start x =
   print_string ("[" ^ string_of_formule (fun x -> x) (formule_from_pretty form) ^"]");
   print_string ": \n ";
   print_endline
-    (string_of_bool (T.check (formule_from_pretty form) kripke start))
+    (string_of_bool (Lib.Fpg.check (formule_from_pretty form) kripke start))
 
 let main () =
   print_endline "graph 1:";
