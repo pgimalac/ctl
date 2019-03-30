@@ -11,3 +11,5 @@ type game_state =
 
 val gsphi :
   T.kripke -> game_state -> game_state list
+
+val check : string Formule.formule -> T.kripke -> int -> bool
