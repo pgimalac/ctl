@@ -32,7 +32,7 @@ let set_nth n s =
 let gsphi (m : KripkeS.kripke)  ((s,qt) : game_state) : game_state list =
   match qt with
   | Left q ->
-     [(s, Right (tau (deg s m) (q, fst (M.find s m))))]
+     [(s, Right (AutomataS.tau (deg s m) (q, fst (M.find s m))))]
   | Right t ->
      match t with
      | Et_pbf (a,b) | Ou_pbf (a,b) ->

@@ -34,49 +34,54 @@ let string_of_pbf stringer f =
     | B_pbf x -> string_of_bool x
   in aux f
 
-let rec tau d (phi,sigma) =
-  let mult f i phi = (* f = true -> Et_pbf | f = false -> Ou_pbf *) (* TODO boolean blindlness *)
-    if i = 0 (* clause vide *)
-    then
-      if f
-      then B_pbf true
-      else B_pbf false
-    else
-      let f = if f then et else ou in
-      let rec mult' i =
-        if i <= 1
-        then P_pbf (i,phi)
-        else f (P_pbf (i,phi)) (mult' (i-1))
-      in mult' i
-  in
-  match phi with
-  | B b -> B_pbf b
-  | L p ->
-     begin
-       match p with
-       | P p -> B_pbf (KripkeS.SV.mem p sigma)
-       | N p -> B_pbf (not (KripkeS.SV.mem p sigma))
-     end
-  | Binop (t, phi, psi) ->
-     begin
-       match t with
-       | And -> et (tau d (phi, sigma)) (tau d (psi, sigma))
-       | Or ->  ou (tau d (phi, sigma)) (tau d (psi, sigma))
-     end
-  | TempUnop (t,phi) ->
-     begin
-       match t with
-       | EX -> mult false d phi
-       | AX -> mult true d  phi
-     end
-  | TempBinop (t,psi1,psi2) ->
-     let left = tau d (psi2, sigma) in
-     let left' = tau d (psi1, sigma) in
-     let right' =
-       match t with
-       | EU | EW -> mult false d phi
-       | AU | AW ->  mult true d phi in
-    ou left (et left' right')
+module Make (K : Kripke.K) = struct
+
+  let rec tau d (phi,sigma) =
+    let mult f i phi = (* f = true -> Et_pbf | f = false -> Ou_pbf *) (* TODO boolean blindlness *)
+      if i = 0 (* clause vide *)
+      then
+        if f
+        then B_pbf true
+        else B_pbf false
+      else
+        let f = if f then et else ou in
+        let rec mult' i =
+          if i <= 1
+          then P_pbf (i,phi)
+          else f (P_pbf (i,phi)) (mult' (i-1))
+        in mult' i
+    in
+    match phi with
+    | B b -> B_pbf b
+    | L p ->
+       begin
+         match p with
+         | P p -> B_pbf (K.SV.mem p sigma)
+         | N p -> B_pbf (not (K.SV.mem p sigma))
+       end
+    | Binop (t, phi, psi) ->
+       begin
+         match t with
+         | And -> et (tau d (phi, sigma)) (tau d (psi, sigma))
+         | Or ->  ou (tau d (phi, sigma)) (tau d (psi, sigma))
+       end
+    | TempUnop (t,phi) ->
+       begin
+         match t with
+         | EX -> mult false d phi
+         | AX -> mult true d  phi
+       end
+    | TempBinop (t,psi1,psi2) ->
+       let left = tau d (psi2, sigma) in
+       let left' = tau d (psi1, sigma) in
+       let right' =
+         match t with
+         | EU | EW -> mult false d phi
+         | AU | AW ->  mult true d phi in
+       ou left (et left' right')
+end
+
+module AutomataS = Make(KripkeS)
 
 let poids f =
   match f with
