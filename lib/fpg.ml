@@ -181,6 +181,11 @@ let get_other x =
   | Eve -> Adam
   | Adam -> Eve
 
+let string_of_player x =
+  match x with
+  | Eve -> "Eve"
+  | Adam -> "Adam"
+
 (*
 - cfc représente les cfc calculées DANS L'ORDRE TOPOLOGIQUE INVERSE
 - ind est l'indice de la cfc que l'on regarde.
@@ -190,33 +195,54 @@ let get_other x =
 let get_win (m : Marqueur.T.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
   let aux computed ind =
     (* Regarde si il y a une transition gagnante pour e dans une liste *)
-    let exists_in_succ e =
-      List.exists (fun x -> GM.find_opt x computed = Some (Some e)) in
-    let gamma' = get_coul (GS.min_elt (fst ind)) in (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans la CFC *)
+    let exists_in_succ computed e =
+      List.exists (fun x -> GM.find_opt x computed = Some e) in
+    (* Regarde si toutes les transitions sont gagnantes pour e dans une liste *)
+    let all_succ computed e =
+      List.for_all (fun x -> GM.find_opt x computed = Some e) in
+    let gamma' = (* TODO: valide ? *)
+      if GS.cardinal (fst ind) = 1
+      then None
+      else get_coul (GS.min_elt (fst ind)) in (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans la CFC *)
     match gamma' with
     | None -> (* Il n'y a pas de boucles, c'est un état seul *)
-       assert (GS.cardinal (fst ind) = 1); (* on vérifie: TODO enlever *)
        let elem = GS.min_elt (fst ind) in
        let player = get_player (snd elem) in
        let xs = gsphi m elem in
        GM.add
          elem
-         (Some (if exists_in_succ player xs then player else (get_other player)))
+         (if exists_in_succ computed player xs then player else (get_other player))
          computed
     | Some x ->
        let gamma = if x mod 2 = 0 then Eve else Adam in
        let gammabarre = get_other gamma in
-       let combi (v : game_state) acc =
-         if get_player (snd v) = gammabarre
-         then
-           let xs = gsphi m v in
-           let b = exists_in_succ gammabarre xs in
-           let res = GM.add v (Some (if b then gammabarre else gamma)) acc in
-           res
+       (* Fonction de recherche de point fixe où l'on essaye d'attribuer les états à gammabarre *)
+       let rec propagate_gammabare computed =
+         (* Les états de la CFC où gammabarre va forcément gagner *)
+         let interesting_states =
+           GS.fold
+             (fun v acc ->
+               if not (GM.mem v computed)
+               then
+                 let xs = gsphi m v in
+                 let b = (* Si j'ai le droit de jouer et qu'un de mes successeurs est gagnant pour moi OU que je n'ai pas le droit mais tous les sucesseurs sont gagnants pour moi *)
+                   (get_player (snd v) = gammabarre && exists_in_succ computed gammabarre xs)
+                   || all_succ computed gammabarre xs in
+                 if b then v::acc else acc
+               else acc
+             )
+             (fst ind)
+             [] in
+         if interesting_states = [] (* Point fixe atteint *)
+         then computed
          else
-           GM.add v (Some gamma) acc
-       in GS.fold combi (fst ind) computed
-  in GM.map fromSome (List.fold_left aux GM.empty cfc)
+           let newcomputed =
+             List.fold_left (fun acc v -> GM.add v gammabarre acc) computed interesting_states
+           in propagate_gammabare newcomputed
+       in
+       (* On donne les états restants à gamma *)
+       GS.fold (fun v acc -> if GM.mem v acc then acc else GM.add v gamma acc) (fst ind) (propagate_gammabare computed)
+  in List.fold_left aux GM.empty cfc
 
 type game = GS.t GM.t
 
@@ -264,4 +290,6 @@ let write_game_into_file file (game : game) =
 let check phi m start =
   let g = gen_all_game m phi start in
   write_game_into_file "graphs/graphviz_testok" g;
-  Eve = GM.find (start, Left phi) (get_win m (to_cfc m start phi))
+  let win = get_win m (List.rev (to_cfc m start phi)) in
+  (* GM.iter (fun (i,j) v -> print_endline (string_of_state i j ^" :: " ^ string_of_bool (if v = Eve then true else false ))) win; *)
+  Eve = GM.find (start, Left phi) win
