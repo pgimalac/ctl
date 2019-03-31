@@ -60,7 +60,11 @@ module Make (V : VARIABLES) = struct
     | TempBinop (b, psi1, psi2) ->
        begin
        match b with
-       | AW -> M.map not (marquage (TempBinop(EU, neg psi1, neg (Binop(Or, psi1, psi2)))) m)
+       | AW -> (* A phi U psi == (A phi U psi) \/ (AG phi) *)
+          (* AG phi == neg (E True U (neg phi)) *)
+          let a' = marquage (TempBinop (AU, psi1, psi2)) m in
+          let b' = M.map not (marquage (TempBinop (EU, B true, neg psi1)) m) in
+          M.mapi (fun k e -> e || (M.find k b')) a'
        | EW -> (* EW == Or (eg psi1, EU psi1 psi2) *)
           let a' = M.map not (marquage (af (neg psi1)) m) in
           let b' = marquage (TempBinop (EU, psi1,psi2)) m in
