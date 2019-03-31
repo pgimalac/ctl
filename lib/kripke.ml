@@ -57,7 +57,6 @@ module type K =
 
   end
 
-
 module type VARIABLES = sig
   type t
   val compare : t -> t -> int

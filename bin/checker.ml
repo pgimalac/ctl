@@ -1,6 +1,8 @@
 open Lib.Formule
-open Lib.Marqueur
 open Lib.Kripke
+
+module MarqueurS = Lib.Marqueur.Make(KripkeS)
+module FpgS = Lib.Fpg.Make(KripkeS)
 
 let strings_of_file filename =
   let lines = ref [] in
@@ -29,7 +31,7 @@ let check_formula_in kripke start x =
   print_endline
     ("* Marquage : " ^ string_of_bool (MarqueurS.check (formule_from_pretty form) kripke start));
   print_endline
-    ("* Jeu      : " ^ string_of_bool (Lib.Fpg.check (formule_from_pretty form) kripke start))
+    ("* Jeu      : " ^ string_of_bool (FpgS.check (formule_from_pretty form) kripke start))
 
 let main () =
   print_endline "graph 1:";
@@ -40,12 +42,3 @@ let main () =
   List.iter (check_formula_in g2 1) (strings_of_file "graphs/f2.ctl")
 
 let _ = main ()
-
-let _ =
-  let tr1 = S.of_list [0; 2] in
-  let tr2 = S.of_list [0; 3] in
-  let tr3 = S.of_list [1; 2; 3] in
-  let tr4 = S.of_list [0; 1; 2] in
-  let set = Lib.Fpg.GS.empty in
-  let cfc = List.map (fun x -> set, x) [tr1; tr2; tr3; tr4] in
-  Lib.Fpg.write_cfc_into_file "graphs/graphviz_test" cfc

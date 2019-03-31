@@ -122,5 +122,3 @@ module Make (K : Kripke.K) = struct
 
   let check phi g x = M.find x (marquage phi g)
 end
-
-module MarqueurS = Make(KripkeS)
