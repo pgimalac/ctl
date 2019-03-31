@@ -20,6 +20,22 @@ let getop c =
   | And -> (&&)
   | Or -> (||)
 
+let et x y =
+  match x with
+  | B b -> if b then y else x
+  | _ ->
+     match y with
+     | B b -> if b then x else y
+     | _ -> Binop (And,x,y)
+
+let ou x y =
+  match x with
+  | B b -> if b then x else y
+  | _ ->
+     match y with
+     | B b -> if b then y else x
+     | _ -> Binop (Or,x,y)
+
 let rec neg f =
   match f with
   | B b -> B (not b)
@@ -34,9 +50,9 @@ let rec neg f =
      let b = neg b in
      let t =
        match t with
-       | And -> Or
-       | Or -> And
-     in Binop (t,a,b)
+       | And -> ou
+       | Or -> et
+     in t a b
   | TempUnop (t,a) ->
      let a = neg a in
      let t =
@@ -53,7 +69,7 @@ let rec neg f =
        | EW -> AU (* TODO vérifier celui-ci *)
        | EU -> AW
        | AW -> EU
-     in TempBinop (t,b,Binop (And,a,b))
+     in TempBinop (t,b,et a b)
 
 let af x = TempBinop (AU,B true,x)
 let eg x = neg (af (neg x))
@@ -106,19 +122,13 @@ let rec formule_from_pretty f =
      let b = formule_from_pretty b in
      begin
        match t with
-       | Pretty_formule.And -> Binop (And, a, b)
-       | Pretty_formule.Or -> Binop (Or, a, b)
+       | Pretty_formule.And -> et a b
+       | Pretty_formule.Or -> ou a b
        | Pretty_formule.Xor ->
-          Binop
-            (And,
-             Binop (Or, a, b),
-             Binop (Or,eg a,neg b))
+          et (ou a b) (ou (neg a) (neg b))
        | Pretty_formule.Impl -> Binop (Or,neg a, b)
        | Pretty_formule.Eq ->
-          Binop
-            (Or,
-             Binop (And, a, b),
-             Binop (And, neg a, neg b))
+          ou (et a b) (et (neg a) (neg b))
      end
   | Pretty_formule.TempBinop (t,a,b) ->
      let a = formule_from_pretty a in

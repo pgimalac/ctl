@@ -29,12 +29,12 @@ let check_formula_in kripke start x =
     (string_of_bool (Lib.Fpg.check (formule_from_pretty form) kripke start))
 
 let main () =
-  print_endline "graph 1:";
+  (* print_endline "graph 1:";
   let fig2D1 = extract "graphs/g1.ctl" in
-  List.iter (check_formula_in fig2D1 0) (strings_of_file "graphs/f1.ctl")
-  (* print_endline "\ngraph 2:";
+  List.iter (check_formula_in fig2D1 0) (strings_of_file "graphs/f1.ctl"); *)
+  print_endline "\ngraph 2:";
   let g2 = extract "graphs/g2.ctl" in
-  List.iter (check_formula_in g2 1) (strings_of_file "graphs/f2.ctl") *)
+  List.iter (check_formula_in g2 1) (strings_of_file "graphs/f2.ctl")
 
 let _ = main ()
 

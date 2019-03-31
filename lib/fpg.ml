@@ -110,7 +110,7 @@ let rec strong_connect map v (cfc, index, stack) =
       else cfc, index, stack
   | None -> failwith "Not possible" (* to avoid any warning *)
 
-(* Renvoit les CFC dans l'ordre topologie INVERSE *)
+(* Renvoit les CFC dans l'ordre topologique INVERSE *)
 let to_cfc (m : Marqueur.T.kripke) (start : int) (phi : string formule) : (GS.t * S.t) list =
   (* used to fill a map that associate each state to its node *)
   let rec fill_map map state =
@@ -300,5 +300,5 @@ let check phi m start =
   let g = gen_all_game m phi start in
   let win = get_win m (to_cfc m start phi) in
   write_game_into_file "graphs/graphviz_testok" g (Some win);
-  GM.iter (fun (i,j) v -> print_endline (string_of_state i j ^" :: " ^ string_of_bool (if v = Eve then true else false ))) win;
+  (* GM.iter (fun (i,j) v -> print_endline (string_of_state i j ^" :: " ^ string_of_bool (if v = Eve then true else false ))) win; *)
   Eve = GM.find (start, Left phi) win
