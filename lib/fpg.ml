@@ -1,13 +1,13 @@
 open Formule
 open Automata
-open Marqueur
+open Kripke
 
 type ('a, 'b) either =
   | Left of 'a
   | Right of 'b
 
 type game_state =
-  int * (T.SV.elt formule, (int * T.SV.elt formule) pbf) either
+  int * (KripkeS.SV.elt formule, (int * Kripke.SV.elt formule) pbf) either
 
 let string_of_state i f =
   let s = match f with
@@ -17,7 +17,7 @@ let string_of_state i f =
        (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
   in string_of_int i ^ ", " ^ s
 
-let deg s (m : T.kripke) =
+let deg s (m : KripkeS.kripke) =
   S.cardinal (snd (M.find s m))
 
 exception Found_elem of int
@@ -29,7 +29,7 @@ let set_nth n s =
   with
   | Found_elem i -> i
 
-let gsphi (m : Marqueur.T.kripke)  ((s,qt) : game_state) : game_state list =
+let gsphi (m : KripkeS.kripke)  ((s,qt) : game_state) : game_state list =
   match qt with
   | Left q ->
      [(s, Right (tau (deg s m) (q, fst (M.find s m))))]
@@ -111,7 +111,7 @@ let rec strong_connect map v (cfc, index, stack) =
   | None -> failwith "Not possible" (* to avoid any warning *)
 
 (* Renvoit les CFC dans l'ordre topologique INVERSE *)
-let to_cfc (m : Marqueur.T.kripke) (start : int) (phi : string formule) : (GS.t * S.t) list =
+let to_cfc (m : KripkeS.kripke) (start : int) (phi : string formule) : (GS.t * S.t) list =
   (* used to fill a map that associate each state to its node *)
   let rec fill_map map state =
     if GM.mem state map
@@ -194,7 +194,7 @@ let string_of_player x =
 - computed représente une array avec les réponses.
 - num est l'indice de actual dans cfc.
  *)
-let get_win (m : Marqueur.T.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
+let get_win (m : KripkeS.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
   let aux computed ind =
     (* Regarde si il y a une transition gagnante pour e dans une liste *)
     let exists_in_succ computed e =
@@ -249,7 +249,7 @@ let get_win (m : Marqueur.T.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) 
 type game = GS.t GM.t
 
 (* Generate a whole _finite_ game *)
-let gen_all_game (m : Marqueur.T.kripke) (phi : string formule) (start : int) : game =
+let gen_all_game (m : KripkeS.kripke) (phi : string formule) (start : int) : game =
   let rec insert res gs =
     if GM.mem gs res
     then res

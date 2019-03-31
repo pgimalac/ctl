@@ -1,5 +1,5 @@
 open Formule
-open Marqueur
+open Kripke
 
 type 'a pbf =
   | P_pbf of 'a
@@ -54,8 +54,8 @@ let rec tau d (phi,sigma) =
   | L p ->
      begin
        match p with
-       | P p -> B_pbf (T.SV.mem p sigma)
-       | N p -> B_pbf (not (T.SV.mem p sigma))
+       | P p -> B_pbf (KripkeS.SV.mem p sigma)
+       | N p -> B_pbf (not (KripkeS.SV.mem p sigma))
      end
   | Binop (t, phi, psi) ->
      begin

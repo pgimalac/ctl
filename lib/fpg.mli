@@ -1,16 +1,16 @@
 open Automata
 open Formule
-open Marqueur
+open Kripke
 
 type ('a, 'b) either =
   | Left of 'a
   | Right of 'b
 
 type game_state =
-  int * (T.SV.elt formule, (int * T.SV.elt formule) pbf) either
+  int * (KripkeS.SV.elt formule, (int * KripkeS.SV.elt formule) pbf) either
 
 val gsphi :
-  Marqueur.T.kripke -> game_state -> game_state list
+  KripkeS.kripke -> game_state -> game_state list
 
 module T :
 sig
@@ -101,8 +101,8 @@ module GS :
   end
 
 val to_cfc :
-  Marqueur.T.kripke -> int -> string formule -> (GS.t * S.t) list
+  KripkeS.kripke -> int -> string formule -> (GS.t * S.t) list
 
 val write_cfc_into_file: string -> (GS.t * S.t) list -> unit
 
-val check : string formule -> Marqueur.T.kripke -> int -> bool
+val check : string formule -> KripkeS.kripke -> int -> bool

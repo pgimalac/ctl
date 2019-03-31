@@ -1,4 +1,4 @@
-open Marqueur
+open Kripke
 
 type 'a pbf =
   | P_pbf of 'a
@@ -11,8 +11,8 @@ val ou : 'a pbf -> 'a pbf -> 'a pbf
 
 val tau :
   int ->
-  T.SV.elt Formule.formule * Marqueur.T.SV.t ->
-  (int * T.SV.elt Formule.formule) pbf
+  KripkeS.SV.elt Formule.formule * KripkeS.SV.t ->
+  (int * KripkeS.SV.elt Formule.formule) pbf
 
 val poids : 'a Formule.formule -> int
 

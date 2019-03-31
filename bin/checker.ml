@@ -1,5 +1,6 @@
 open Lib.Formule
 open Lib.Marqueur
+open Lib.Kripke
 
 let strings_of_file filename =
   let lines = ref [] in
@@ -26,7 +27,7 @@ let check_formula_in kripke start x =
   print_string ("[" ^ string_of_formule (fun x -> x) (formule_from_pretty form) ^"]");
   print_endline ":";
   print_endline
-    ("* Marquage : " ^ string_of_bool (T.check (formule_from_pretty form) kripke start));
+    ("* Marquage : " ^ string_of_bool (MarqueurS.check (formule_from_pretty form) kripke start));
   print_endline
     ("* Jeu      : " ^ string_of_bool (Lib.Fpg.check (formule_from_pretty form) kripke start))
 

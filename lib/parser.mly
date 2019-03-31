@@ -1,6 +1,6 @@
 %{
     open Pretty_formule
-    open Marqueur
+    open Kripke
 %}
 
 %token <string> VAR
@@ -18,12 +18,12 @@
 %token <int> INT
 %token EOL
 %token DOT
-%type <T.SV.t> varlist
+%type <Kripke.KripkeS.SV.t> varlist
 %type <S.t>    intlist
-%type <(Marqueur.T.SV.t * Marqueur.S.t) Marqueur.M.t> graph
+%type <Kripke.KripkeS.kripke> graph
 
 %start graph_main
-%type <(Marqueur.T.SV.t * Marqueur.S.t) Marqueur.M.t> graph_main
+%type <Kripke.KripkeS.kripke> graph_main
 %%
 main:
     expr EOF                  { $1 }
@@ -61,14 +61,14 @@ graph:
 
 line:
     INT DOT varlist DOT intlist {($1,($3,$5))}
-  | INT DOT DOT intlist {($1,(T.SV.empty,$4))}
+  | INT DOT DOT intlist {($1,(KripkeS.SV.empty,$4))}
   | INT DOT varlist DOT {($1,($3,S.empty))}
-  | INT DOT DOT {($1,(T.SV.empty,S.empty))}
+  | INT DOT DOT {($1,(KripkeS.SV.empty,S.empty))}
 ;
 
 varlist:
-    VAR                       {T.SV.singleton $1}
-  | VAR varlist               {T.SV.add $1 $2}
+    VAR                       {KripkeS.SV.singleton $1}
+  | VAR varlist               {KripkeS.SV.add $1 $2}
 ;
 
 intlist:
