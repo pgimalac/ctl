@@ -110,6 +110,7 @@ let rec strong_connect map v (cfc, index, stack) =
       else cfc, index, stack
   | None -> failwith "Not possible" (* to avoid any warning *)
 
+(* Renvoit les CFC dans l'ordre topologie INVERSE *)
 let to_cfc (m : Marqueur.T.kripke) (start : int) (phi : string formule) : (GS.t * S.t) list =
   (* used to fill a map that associate each state to its node *)
   let rec fill_map map state =
@@ -132,7 +133,7 @@ let to_cfc (m : Marqueur.T.kripke) (start : int) (phi : string formule) : (GS.t 
     GS.iter (fun st -> let node = GM.find st map in node.cfc <- i) s
   ) cfc;
   (* eventually create the set of transitions for each cfc *)
-  List.map (fun cfc ->
+  let lst = List.map (fun cfc ->
     let set = GS.fold (fun st set ->
       let node = GM.find st map in
       List.fold_left (fun set st ->
@@ -141,7 +142,8 @@ let to_cfc (m : Marqueur.T.kripke) (start : int) (phi : string formule) : (GS.t 
       ) set node.transitions
     ) cfc S.empty in
     cfc, set
-  ) cfc
+              ) cfc in
+  List.rev lst
 
 let write_cfc_into_file file cfc =
   let st_out = open_out file in
@@ -296,7 +298,7 @@ let write_game_into_file file (game : game) (sol : (winner GM.t) option) =
 
 let check phi m start =
   let g = gen_all_game m phi start in
-  let win = get_win m (List.rev (to_cfc m start phi)) in
+  let win = get_win m (to_cfc m start phi) in
   write_game_into_file "graphs/graphviz_testok" g (Some win);
   GM.iter (fun (i,j) v -> print_endline (string_of_state i j ^" :: " ^ string_of_bool (if v = Eve then true else false ))) win;
   Eve = GM.find (start, Left phi) win
