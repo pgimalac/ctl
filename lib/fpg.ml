@@ -258,7 +258,7 @@ let gen_all_game (m : Marqueur.T.kripke) (phi : string formule) (start : int) : 
   insert GM.empty (start,Left phi)
 
 (* Write a game into a DOT file *)
-let write_game_into_file file (game : game) =
+let write_game_into_file file (game : game) (sol : (winner GM.t) option) =
   let get_ind x g =
     snd (GM.fold (fun v _ ((b,j) as acc)-> if b then acc else (x=v,j+1)) g (false,0)) in
   let st_out = open_out file in
@@ -281,7 +281,14 @@ let write_game_into_file file (game : game) =
     (fun ((i,j) as x) ->
       let left = string_of_int (get_ind x game) in
       let right = string_of_state i j in
-      Printf.fprintf st_out "   %s [label=\"%s\"];\n" left right
+      match sol with
+      | None -> Printf.fprintf st_out "   %s [label=\"%s\"];\n" left right
+      | Some sol ->
+         let right' =
+           if GM.find x sol = Eve
+           then "green"
+           else "red" in
+         Printf.fprintf st_out "   %s [label=\"%s\", color=%s];\n" left right right'
     )
     !all_states;
   Printf.fprintf st_out "}\n";
@@ -289,7 +296,7 @@ let write_game_into_file file (game : game) =
 
 let check phi m start =
   let g = gen_all_game m phi start in
-  write_game_into_file "graphs/graphviz_testok" g;
   let win = get_win m (List.rev (to_cfc m start phi)) in
-  (* GM.iter (fun (i,j) v -> print_endline (string_of_state i j ^" :: " ^ string_of_bool (if v = Eve then true else false ))) win; *)
+  write_game_into_file "graphs/graphviz_testok" g (Some win);
+  GM.iter (fun (i,j) v -> print_endline (string_of_state i j ^" :: " ^ string_of_bool (if v = Eve then true else false ))) win;
   Eve = GM.find (start, Left phi) win
