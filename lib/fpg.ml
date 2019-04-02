@@ -30,9 +30,6 @@ module Make (K : Kripke.K) = struct
            (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
     in string_of_int i ^ ", " ^ s
 
-  let deg s (m : K.kripke) =
-    S.cardinal (snd (M.find s m))
-
   exception Found_elem of int
 
   let set_nth n s =
@@ -45,13 +42,13 @@ module Make (K : Kripke.K) = struct
   let gsphi (m : K.kripke)  ((s,qt) : game_state) : game_state list =
     match qt with
     | Left q ->
-       [(s, Right (Autom.tau (deg s m) (q, fst (M.find s m))))]
+       [(s, Right (Autom.tau (K.deg s m) (q, K.etiquettes s m)))]
     | Right t ->
        match t with
        | Et_pbf (a,b) | Ou_pbf (a,b) ->
           [(s, Right a); (s, Right b)]
        | P_pbf (c,q) ->
-          [(set_nth (c-1) (snd (M.find s m)),Left q)]
+          [(set_nth (c-1) (K.succ s m),Left q)]
        | B_pbf _ -> []
 
   (*
@@ -199,7 +196,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
 - num est l'indice de actual dans cfc.
    *)
   let get_win (m : K.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
-    let aux computed ind =
+    let aux computed (ind,_) =
       (* Regarde si il y a une transition gagnante pour e dans une liste *)
       let exists_in_succ computed e =
         List.exists (fun x -> GM.find_opt x computed = Some e) in
@@ -207,12 +204,12 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
       let all_succ computed e =
         List.for_all (fun x -> GM.find_opt x computed = Some e) in
       let gamma' = (* TODO: valide ? *)
-        if GS.cardinal (fst ind) = 1
+        if GS.cardinal ind = 1
         then None
-        else get_coul (GS.min_elt (fst ind)) in (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans la CFC *)
+        else get_coul (GS.min_elt ind) in (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans la CFC *)
       match gamma' with
       | None -> (* Il n'y a pas de boucles, c'est un état seul *)
-         let elem = GS.min_elt (fst ind) in
+         let elem = GS.min_elt ind in
          let player = get_player (snd elem) in
          let xs = gsphi m elem in
          GM.add
@@ -237,7 +234,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
                    if b then v::acc else acc
                  else acc
                )
-               (fst ind)
+               ind
                [] in
            if interesting_states = [] (* Point fixe atteint *)
            then computed
@@ -247,7 +244,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
              in propagate_gammabare newcomputed
          in
          (* On donne les états restants à gamma *)
-         GS.fold (fun v acc -> if GM.mem v acc then acc else GM.add v gamma acc) (fst ind) (propagate_gammabare computed)
+         GS.fold (fun v acc -> if GM.mem v acc then acc else GM.add v gamma acc) ind (propagate_gammabare computed)
     in List.fold_left aux GM.empty cfc
 
   type game = GS.t GM.t

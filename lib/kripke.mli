@@ -134,8 +134,14 @@ module type K =
         val of_seq : elt Seq.t -> t
       end
     type kripke = (SV.t * S.t) M.t
+
+    val deg : int -> kripke -> int
+    val etiquettes : int -> kripke -> SV.t
+    val succ : int -> kripke -> S.t
   end
+
 module type VARIABLES = sig type t val compare : t -> t -> int end
+
 module Make :
   functor (V : Set.S) ->
     sig
@@ -184,7 +190,12 @@ module Make :
           val of_seq : elt Seq.t -> t
         end
       type kripke = (SV.t * S.t) M.t
+
+      val deg : int -> kripke -> int
+      val etiquettes : int -> kripke -> SV.t
+      val succ : int -> kripke -> S.t
     end
+
 module SV :
   sig
     type elt = string
@@ -276,4 +287,8 @@ module KripkeS :
         val of_seq : elt Seq.t -> t
       end
     type kripke = (SV.t * S.t) M.t
+
+    val deg : int -> kripke -> int
+    val etiquettes : int -> kripke -> SV.t
+    val succ : int -> kripke -> S.t
   end

@@ -54,7 +54,10 @@ module type K =
     end
 
     type kripke = (SV.t * S.t) M.t
+    val deg : int -> kripke -> int
 
+    val etiquettes : int -> kripke -> SV.t
+    val succ : int -> kripke -> S.t
   end
 
 module type VARIABLES = sig
@@ -67,6 +70,11 @@ module Make (V : Set.S) = struct
   module SV = V
   type kripke = (SV.t * S.t) M.t
 
+  let deg s (m : kripke) =
+    S.cardinal (snd (M.find s m))
+
+  let etiquettes s m = fst (M.find s m)
+  let succ s m = snd (M.find s m)
 end
 
 module SV =
