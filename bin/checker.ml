@@ -33,12 +33,18 @@ let check_formula_in kripke start x =
   print_endline
     ("* Jeu      : " ^ string_of_bool (FpgS.check (formule_from_pretty form) kripke start))
 
+let tests = [("graphs/g1.ctl", "graphs/f1.ctl", 0); ("graphs/g2.ctl", "graphs/f2.ctl", 1); ("graphs/g3.ctl", "graphs/f3.ctl", 0)]
+
 let main () =
-  print_endline "graph 1:";
-  let fig2D1 = extract "graphs/g1.ctl" in
-  List.iter (check_formula_in fig2D1 0) (strings_of_file "graphs/f1.ctl");
-  print_endline "\ngraph 2:";
-  let g2 = extract "graphs/g2.ctl" in
-  List.iter (check_formula_in g2 1) (strings_of_file "graphs/f2.ctl")
+  List.iteri (fun i (g, f, start) ->
+    let num = string_of_int (i + 1) in
+    let s = "graph " ^ num ^ ":" in
+    print_endline s;
+    let fig = extract g in
+    let check = check_formula_in fig start in
+    let file = strings_of_file f in
+    List.iter check file;
+    print_newline ()
+  ) tests
 
 let _ = main ()

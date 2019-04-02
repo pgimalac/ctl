@@ -6,13 +6,13 @@ let var = ['a'-'z']['a'-'z''0'-'9']*
 
 (* PROPOSITIONNAL LOGIC CONNECTORS *)
 (* 0 *)
-let top  = "⊤" | '1'
-let bot  = "⊥" | '0'
+let top  = "⊤"
+let bot  = "⊥"
 (* 1 *)
 let not  = "¬" | '~' | '-'
 (* 2 *)
 let an   = '^' | "∧" | '&'
-let or   = '|' | "∨" | '+' | "∥"
+let or   = '|' | '+' | "∥"
 let impl = "⇒" | "→" | "->" | "=>"
 let equ  = "⇔" | "≡" | "<->" | "<=>"
 let xor  = "⊕" | "⊻"
@@ -90,7 +90,7 @@ rule token = parse
     | start_com
         { comment lexbuf }
     | _ as c
-        { failwith (String.make 1 c ^ "Unexpected character") }
+        { failwith (String.make 1 c ^ " : Unexpected character") }
 
 and comment = parse
     | end_com
