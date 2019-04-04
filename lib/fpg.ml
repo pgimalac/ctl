@@ -306,7 +306,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
     let win = get_win m (to_cfc m start phi) in
     write_game_into_file filename printer g (Some win)
 
-  (* La fonction de mocel-checking *)
+  (* La fonction de model-checking *)
   let check phi m start =
     Eve = GM.find (start, Left phi) (get_win m (to_cfc m start phi))
 end
