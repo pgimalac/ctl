@@ -50,10 +50,12 @@ let string_of_formule printer f =
 
 let print_formule printer f = print_endline (string_of_formule printer f)
 
+(* prend un tableau pour limiter le temps de génération... *)
 let generate_formulas number labels =
   Random.self_init ();
   let len = Array.length labels in
   let rec aux x =
+(* plus x est élevé, plus la probabilité de tirer une variable ou un booléen est grande (évite trop de récursion) *)
     let rec constructors = [|
       (fun () -> Binop(And, aux (x + 1), aux (x + 1)));
       (fun () -> Binop(Or, aux (x + 1), aux (x + 1)));
