@@ -22,8 +22,7 @@ let extract x =
 
 let parse_formule x = Lib.Parser.main Lib.Lexer.token (Lexing.from_string x)
 
-let check_formula_in kripke start x =
-  let form = parse_formule x in
+let check_formula_in kripke start form =
   print_string ("[" ^ Lib.Pretty_formule.string_of_formule (fun x -> x) form ^ "]");
   print_string " -> ";
   print_string ("[" ^ string_of_formule (fun x -> x) (formule_from_pretty form) ^"]");
@@ -42,7 +41,7 @@ let main () =
     print_endline s;
     let fig = extract g in
     let check = check_formula_in fig start in
-    let file = strings_of_file f in
+    let file = List.map parse_formule (strings_of_file f) in
     List.iter check file;
     print_newline ()
   ) tests

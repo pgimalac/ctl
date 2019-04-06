@@ -16,3 +16,4 @@ val get_string : binop -> string
 val get_string_temp : tempUnop -> string
 val print_formule : ('a -> string) -> 'a pretty_formule -> unit
 val string_of_formule : ('a -> string) -> 'a pretty_formule -> string
+val generate_formulas : int -> 'a array -> 'a pretty_formule list

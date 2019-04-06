@@ -47,5 +47,38 @@ let string_of_formule printer f =
        | EW -> "E (" ^ phi ^ ") W (" ^ psi ^")"
        | AW -> "A (" ^ phi ^ ") W (" ^ psi ^")"
   in to_string f
-           
+
 let print_formule printer f = print_endline (string_of_formule printer f)
+
+let generate_formulas number labels =
+  Random.self_init ();
+  let len = Array.length labels in
+  let rec aux x =
+    let rec constructors = [|
+      (fun () -> Binop(And, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Or, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Xor, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Impl, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Eq, aux (x + 1), aux (x + 1)));
+      (fun () -> TempUnop(AX, aux (x + 1)));
+      (fun () -> TempUnop(EX, aux (x + 1)));
+      (fun () -> TempUnop(AF, aux (x + 1)));
+      (fun () -> TempUnop(EF, aux (x + 1)));
+      (fun () -> TempUnop(AG, aux (x + 1)));
+      (fun () -> TempUnop(EG, aux (x + 1)));
+      (fun () -> TempBinop(EU, aux (x + 1), aux (x + 1)));
+      (fun () -> TempBinop(AU, aux (x + 1), aux (x + 1)));
+      (fun () -> TempBinop(EW, aux (x + 1), aux (x + 1)));
+      (fun () -> TempBinop(AW, aux (x + 1), aux (x + 1)));
+      (fun () -> Not (aux (x + 1)))
+    |] in
+    let size = Array.length constructors in
+    let n = Random.int (size + x) in
+    if n < x then begin
+      let v = Random.int (len + 2) in
+      if v = 0 then B false
+      else if v = 1 then B true
+      else P labels.(v - 2)
+    end
+    else constructors.(n - x) ()
+  in List.init number (fun _ -> aux 3)
