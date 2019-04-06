@@ -8,10 +8,12 @@ type ('a, 'b) either =
 
 module Make (K : Kripke.K) = struct
 
+  (* Le type de l'automate du jeu *)
+  module Autom = Automata.Make(K)
+
+  (* Les états du jeu *)
   type game_state =
     int * (K.SV.elt formule, (int * K.SV.elt formule) pbf) either
-
-  module Autom = Automata.Make(K)
 
   module T =
     struct
@@ -19,9 +21,14 @@ module Make (K : Kripke.K) = struct
       let compare = compare
     end
 
+  (* Un type de Map avec comme clé des états du jeu *)
   module GM = Map.Make(T)
+  (* Un type de Set avec comme clé des états du jeu *)
   module GS = Set.Make(T)
+  (* Le type du jeu *)
+  type game = GS.t GM.t
 
+  (* Convertit un état du jeu en string *)
   let string_of_state i f =
     let s = match f with
       | Left f -> string_of_formule (fun x -> x) f
@@ -30,8 +37,8 @@ module Make (K : Kripke.K) = struct
            (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
     in string_of_int i ^ ", " ^ s
 
+  (* Renvoit le n-ième élément d'un Set *)
   exception Found_elem of int
-
   let set_nth n s =
     try
       let _ = S.fold (fun x acc -> if acc = n then raise (Found_elem x) else acc+1) s 0 in
@@ -39,6 +46,7 @@ module Make (K : Kripke.K) = struct
     with
     | Found_elem i -> i
 
+  (* La fonction de transition du jeu*)
   let gsphi (m : K.kripke)  ((s,qt) : game_state) : game_state list =
     match qt with
     | Left q ->
@@ -50,6 +58,8 @@ module Make (K : Kripke.K) = struct
        | P_pbf (c,q) ->
           [(set_nth (c-1) (K.succ s m),Left q)]
        | B_pbf _ -> []
+
+  (* CALCUL DES CFC *)
 
   (*
 from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm#The_algorithm_in_pseudocode
@@ -146,6 +156,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
                 ) cfc in
     List.rev lst
 
+  (* Permet d'écrire les CFC dans un fichier au format DOT *)
   let write_cfc_into_file file cfc =
     let st_out = open_out file in
     Printf.fprintf st_out "digraph {\n";
@@ -159,13 +170,17 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
     Printf.fprintf st_out "}\n";
     close_out st_out
 
+  (* RÉSOLUTION DU JEU *)
+
+  type winner = Adam | Eve
+
+  (* Renvoit peut-être la couleur de l'état *)
   let get_coul ((_,c) : game_state) =
     match c with
     | Left x -> Some (poids x)
     | Right _ -> None
 
-  type winner = Adam | Eve
-
+  (* Renvoit le joueur correspondant à l'état *)
   let get_player x =
     match x with
     | Left _ -> Eve
@@ -174,36 +189,27 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
        | B_pbf false | Ou_pbf (_,_) -> Eve
        | _ -> Adam
 
-  let fromSome x =
-    match x with
-    | None -> failwith "fromSome"
-    | Some x -> x
-
+  (* Renvoit l'autre joueur *)
   let get_other x =
     match x with
     | Eve -> Adam
     | Adam -> Eve
 
-  let string_of_player x =
-    match x with
-    | Eve -> "Eve"
-    | Adam -> "Adam"
-
   (*
-- cfc représente les cfc calculées DANS L'ORDRE TOPOLOGIQUE INVERSE
-- ind est l'indice de la cfc que l'on regarde.
-- computed représente une array avec les réponses.
-- num est l'indice de actual dans cfc.
+    - m représente la structure de Kripke
+    - cfc représente les cfc calculées DANS L'ORDRE TOPOLOGIQUE INVERSE
+
+   Renvoit une Map indexé par les états et pointant vers le gagnant
    *)
   let get_win (m : K.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
+    (* Fonction appelée sur chaque CFC avec un accumulateur représentant la réponse "partielle" *)
     let aux computed (ind,_) =
+      let use_pred f computed e = f (fun x -> GM.find_opt x computed = Some e) in
       (* Regarde si il y a une transition gagnante pour e dans une liste *)
-      let exists_in_succ computed e =
-        List.exists (fun x -> GM.find_opt x computed = Some e) in
+      let exists_in_succ = use_pred List.exists in
       (* Regarde si toutes les transitions sont gagnantes pour e dans une liste *)
-      let all_succ computed e =
-        List.for_all (fun x -> GM.find_opt x computed = Some e) in
-      let gamma' = (* TODO: valide ? *)
+      let all_succ = use_pred List.for_all in
+      let gamma' =
         if GS.cardinal ind = 1
         then None
         else get_coul (GS.min_elt ind) in (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans la CFC *)
@@ -239,17 +245,14 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
            if interesting_states = [] (* Point fixe atteint *)
            then computed
            else
-             let newcomputed =
-               List.fold_left (fun acc v -> GM.add v gammabarre acc) computed interesting_states
-             in propagate_gammabare newcomputed
+             propagate_gammabare
+               (List.fold_left (fun acc v -> GM.add v gammabarre acc) computed interesting_states)
          in
          (* On donne les états restants à gamma *)
          GS.fold (fun v acc -> if GM.mem v acc then acc else GM.add v gamma acc) ind (propagate_gammabare computed)
     in List.fold_left aux GM.empty cfc
 
-  type game = GS.t GM.t
-
-  (* Generate a whole _finite_ game *)
+  (* Génère totalement un jeu fini *)
   let gen_all_game (m : K.kripke) (phi : K.SV.elt formule) (start : int) : game =
     let rec insert res gs =
       if GM.mem gs res
@@ -260,7 +263,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
         List.fold_left insert res xs in
     insert GM.empty (start,Left phi)
 
-  (* Write a game into a DOT file *)
+  (* Permet d'écrire un jeu dans un fichier au format DOT *)
   let write_game_into_file file printer (game : game) (sol : (winner GM.t) option) =
     let get_ind x g =
       snd (GM.fold (fun v _ ((b,j) as acc)-> if b then acc else (x=v,j+1)) g (false,0)) in
@@ -297,12 +300,13 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
     Printf.fprintf st_out "}\n";
     close_out st_out
 
+  (* Permet de créer un jeu de partié faible, le résout et l'écrit au format DOT dans un fichier *)
   let export_game_checked phi m start printer filename =
     let g = gen_all_game m phi start in
     let win = get_win m (to_cfc m start phi) in
     write_game_into_file filename printer g (Some win)
 
+  (* La fonction de model-checking *)
   let check phi m start =
     Eve = GM.find (start, Left phi) (get_win m (to_cfc m start phi))
-
 end
