@@ -21,7 +21,27 @@ La grammaire de CTL est définie de la manière suivante:
 \mbox{A }\phi \mbox{ U } \phi \mid \mbox{E }\phi \mbox{ U } \phi
 \end{align*}
 
-On peut définir d'autres opérateurs (AF, EF, AG, EG, NEG).
+On peut définir la fonction $neg:CTL \to CTL$:
+\begin{align*}
+&neg(\top) = \bot \quad neg(\bot) = \top\\
+&neg(p) = \neg p \quad neg(\neg p) = p\\
+&neg(a \lor b) = neg(a) \land neg(b)\\
+&neg(a \land b) = neg(a) \lor neg(b)\\
+&neg(\mbox{AX } \phi) = \mbox{EX }neg(\phi)\\
+&neg(\mbox{EX } \phi) = \mbox{AX }neg(\phi)\\
+&neg(\mbox{E } \phi \mbox{ U } \psi) =\mbox{A } (neg(\psi)) \mbox{ W } (neg(\phi) \land neg(\psi))\\
+&neg(\mbox{A } \phi \mbox{ U } \psi) =\mbox{E } (neg(\psi)) \mbox{ W } (neg(\phi) \land neg(\psi))\\
+&neg(\mbox{E } \phi \mbox{ W } \psi) =\mbox{A } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))\\
+&neg(\mbox{A } \phi \mbox{ W } \psi) =\mbox{E } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))
+\end{align*}
+
+On peut alors définir d'autres opérations :
+\begin{itemize}
+	\item $\mbox{AF } \phi := \mbox{A } \top \mbox{ U } \phi$
+	\item $\mbox{EG } \phi := neg(\mbox{AF } (neg (\phi)))$
+	\item $\mbox{EF } \phi := \mbox{E } \top \mbox{ U } \phi$
+	\item $\mbox{AG } \phi := neg(\mbox{EF } (neg (\phi)))$
+\end{itemize}
 
 \section{Model-checking de CTL: parcours de graphe}
 
