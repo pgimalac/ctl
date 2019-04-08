@@ -10,6 +10,18 @@
 \maketitle
 
 \section{CTL, une logique temporelle}
+CTL (pour Computation Tree Logic) est une logique temporelle.
+
+\subsection{Grammaire}
+La grammaire de CTL est définie de la manière suivante:
+\begin{align*}
+\phi &::= \bot \mid \top \mid p \mid \neg p \mid \phi\land\phi \mid \phi\lor\phi \mid \\
+&\quad \mbox{AX }\phi \mid \mbox{EX }\phi \mid
+\mbox{A }\phi \mbox{ W } \phi \mid \mbox{E }\phi \mbox{ W } \phi \mid
+\mbox{A }\phi \mbox{ U } \phi \mid \mbox{E }\phi \mbox{ U } \phi
+\end{align*}
+
+On peut définir d'autres opérateurs (AF, EF, AG, EG, NEG).
 
 \section{Model-checking de CTL: parcours de graphe}
 
