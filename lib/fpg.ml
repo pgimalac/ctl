@@ -1,4 +1,5 @@
 open Formule
+open Poor_formule
 open Automata
 open Kripke
 
@@ -13,7 +14,7 @@ module Make (K : Kripke.K) = struct
 
   (* Les états du jeu *)
   type game_state =
-    int * (K.SV.elt formule, (int * K.SV.elt formule) pbf) either
+    int * (K.SV.elt poor_formule, (int * K.SV.elt poor_formule) pbf) either
 
   module T =
     struct
@@ -122,7 +123,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
     | None -> failwith "Not possible" (* to avoid any warning *)
 
   (* Renvoit les CFC dans l'ordre topologique INVERSE *)
-  let to_cfc (m : K.kripke) (start : int) (phi : K.SV.elt formule) : (GS.t * S.t) list =
+  let to_cfc (m : K.kripke) (start : int) (phi : K.SV.elt poor_formule) : (GS.t * S.t) list =
     (* used to fill a map that associate each state to its node *)
     let rec fill_map map state =
       if GM.mem state map
@@ -253,7 +254,7 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
     in List.fold_left aux GM.empty cfc
 
   (* Génère totalement un jeu fini *)
-  let gen_all_game (m : K.kripke) (phi : K.SV.elt formule) (start : int) : game =
+  let gen_all_game (m : K.kripke) (phi : K.SV.elt poor_formule) (start : int) : game =
     let rec insert res gs =
       if GM.mem gs res
       then res

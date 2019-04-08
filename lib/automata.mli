@@ -1,3 +1,5 @@
+open Poor_formule
+
 type 'a pbf =
     P_pbf of 'a
   | Et_pbf of ('a pbf * 'a pbf)
@@ -11,14 +13,14 @@ module Make :
     sig
       val tau :
         int ->
-        K.SV.elt Formule.formule * K.SV.t ->
-        (int * K.SV.elt Formule.formule) pbf
+        K.SV.elt poor_formule * K.SV.t ->
+        (int * K.SV.elt poor_formule) pbf
     end
 module AutomataS :
   sig
     val tau :
       int ->
-      Kripke.KripkeS.SV.elt Formule.formule * Kripke.KripkeS.SV.t ->
-      (int * Kripke.KripkeS.SV.elt Formule.formule) pbf
+      (Kripke.KripkeS.SV.elt poor_formule * Kripke.KripkeS.SV.t) ->
+      (int * Kripke.KripkeS.SV.elt poor_formule) pbf
   end
-val poids : 'a Formule.formule -> int
+val poids : 'a poor_formule -> int

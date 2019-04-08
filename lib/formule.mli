@@ -1,25 +1,31 @@
-type binop = And | Or
-type tempUnop = AX | EX
+type rich = Rich
+type poor = Poor
+type 'a binop =
+    And : 'a binop
+  | Or : 'a binop
+  | Xor : rich binop
+  | Impl : rich binop
+  | Eq : rich binop
+type 'a tempUnop =
+    AX : 'a tempUnop
+  | EX : 'a tempUnop
+  | AF : rich tempUnop
+  | EF : rich tempUnop
+  | AG : rich tempUnop
+  | EG : rich tempUnop
 type tempBinop = EU | AU | EW | AW
-
-type 'a lit =
-  | P of 'a (* Une variable *)
-  | N of 'a (* Sa négation *)
-
-type 'a formule =
-  (* Logique propositionnelle *)
-  | B of bool
-  | L of 'a lit
-  | Binop of binop * 'a formule * 'a formule
-  (* Combinateurs temporels *)
-  | TempUnop of tempUnop * 'a formule
-  | TempBinop of tempBinop * 'a formule * 'a formule
-
-val af : 'a formule -> 'a formule
-val eg : 'a formule -> 'a formule
-val getop : binop -> bool -> bool -> bool
-
-val neg : 'a formule -> 'a formule
-val formule_from_pretty : 'a Pretty_formule.pretty_formule -> 'a formule
-val pretty_from_formule : 'a formule -> 'a Pretty_formule.pretty_formule
-val string_of_formule : ('a -> string) -> 'a formule -> string
+type 'a lit = N of 'a | P of 'a
+type (_, 'a) formule =
+    B : bool -> ('t, 'a) formule
+  | L : 'a lit -> ('t, 'a) formule
+  | Not : ('t, 'a) formule -> (rich, 'a) formule
+  | Binop : 't binop * ('t, 'a) formule *
+      ('t, 'a) formule -> ('t, 'a) formule
+  | TempUnop : 't tempUnop * ('t, 'a) formule -> ('t, 'a) formule
+  | TempBinop : tempBinop * ('t, 'a) formule *
+      ('t, 'a) formule -> ('t, 'a) formule
+val get_string_temp : 'a tempUnop -> string
+val get_string : 'a binop -> string
+val string_of_formule : ('a -> string) -> ('b, 'a) formule -> string
+val print_formule : ('a -> string) -> ('b, 'a) formule -> unit
+val generate_formulas : int -> 'a array -> (rich, 'a) formule list

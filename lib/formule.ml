@@ -1,155 +1,109 @@
-type binop = And | Or
-type tempUnop = AX | EX
+type rich = Rich
+type poor = Poor
+
+type 'a binop =
+  | And  : 'a binop
+  | Or   : 'a binop
+  | Xor  : rich binop
+  | Impl : rich binop
+  | Eq   : rich binop
+
+type 'a tempUnop =
+  | AX : 'a tempUnop
+  | EX : 'a tempUnop
+  | AF : rich tempUnop
+  | EF : rich tempUnop
+  | AG : rich tempUnop
+  | EG : rich tempUnop
+
 type tempBinop = EU | AU | EW | AW
 
 type 'a lit =
-  | P of 'a (* Une variable *)
-  | N of 'a (* Sa négation *)
+  | N of 'a
+  | P of 'a
 
-type 'a formule =
+(* GADT, useful for poor_formule *)
+type (_,'a) formule =
   (* Logique propositionnelle *)
-  | B of bool
-  | L of 'a lit
-  | Binop of binop * 'a formule * 'a formule
+  | B : bool -> ('t,'a) formule
+  | L : 'a lit -> ('t,'a) formule
+  | Not : ('t,'a) formule -> (rich,'a) formule
+  | Binop : 't binop * ('t,'a) formule * ('t,'a) formule -> ('t,'a) formule
   (* Combinateurs temporels *)
-  | TempUnop of tempUnop * 'a formule
-  | TempBinop of tempBinop * 'a formule * 'a formule
+  | TempUnop : 't tempUnop * ('t,'a) formule -> ('t,'a) formule
+  | TempBinop : tempBinop * ('t,'a) formule * ('t,'a) formule -> ('t,'a) formule
 
-let getop c =
-  match c with
-  | And -> (&&)
-  | Or -> (||)
+let get_string_temp : type t. t tempUnop -> string = function
+  | AX -> "AX"
+  | EX -> "EX"
+  | AF -> "AF"
+  | EF -> "EF"
+  | AG -> "AG"
+  | EG -> "EG"
 
-let et x y =
-  match x with
-  | B b -> if b then y else x
-  | _ ->
-     match y with
-     | B b -> if b then x else y
-     | _ -> Binop (And,x,y)
+let get_string : type t. t binop -> string = function
+  | And -> "∧"
+  | Or -> "∨"
+  | Impl -> "⇒"
+  | Xor -> "⊕"
+  | Eq -> "⇔"
 
-let ou x y =
-  match x with
-  | B b -> if b then x else y
-  | _ ->
-     match y with
-     | B b -> if b then y else x
-     | _ -> Binop (Or,x,y)
-
-let rec neg f =
-  match f with
-  | B b -> B (not b)
-  | L b ->
-     L (
+let string_of_formule printer f =
+  let rec to_string : type t. (t,'a) formule -> string = function
+    | B b -> if b then "⊤" else "⊥"
+    | L p ->
+       begin
+         match p with
+         | P p -> printer p
+         | N p -> "¬ (" ^ printer p ^")"
+       end
+    | Not f -> "¬ (" ^ (to_string f) ^")"
+    | Binop(b, phi, psi) ->
+       "(" ^ (to_string phi) ^ ") " ^ (get_string b) ^ " (" ^ (to_string psi) ^")"
+    | TempUnop(u, phi) -> (get_string_temp u) ^ " (" ^ (to_string phi) ^")"
+    | TempBinop(b, phi, psi) ->
+       let phi = to_string phi in
+       let psi = to_string psi in
        match b with
-       | P b -> N b
-       | N b -> P b
-       )
-  | Binop (t,a,b) ->
-     let a = neg a in
-     let b = neg b in
-     let t =
-       match t with
-       | And -> ou
-       | Or -> et
-     in t a b
-  | TempUnop (t,a) ->
-     let a = neg a in
-     let t =
-       match t with
-       | EX -> AX
-       | AX -> EX
-     in TempUnop (t,a)
-  | TempBinop (t,a,b) ->
-     let a = neg a in
-     let b = neg b in
-     let t =
-       match t with
-       | AU -> EW (* TODO vérifier celui-ci *)
-       | EW -> AU (* TODO vérifier celui-ci *)
-       | EU -> AW
-       | AW -> EU
-     in TempBinop (t,b,et a b)
+       | EU -> "E (" ^ phi ^ ") U (" ^ psi ^")"
+       | AU -> "A (" ^ phi ^ ") U (" ^ psi ^")"
+       | EW -> "E (" ^ phi ^ ") W (" ^ psi ^")"
+       | AW -> "A (" ^ phi ^ ") W (" ^ psi ^")"
+  in to_string f
 
-let af x = TempBinop (AU,B true,x)
-let eg x = neg (af (neg x))
+let print_formule printer f = print_endline (string_of_formule printer f)
 
-let ef x = TempBinop (EU,B true,x)
-let ag x = neg (ef (neg x))
-
-let rec pretty_from_formule f =
-  match f with
-  | B b -> Pretty_formule.B b
-  | L c ->
-     begin
-       match c with
-       | P b -> Pretty_formule.P b
-       | N b -> Pretty_formule.Not (Pretty_formule.P b)
-     end
-  | Binop (t,a,b) ->
-     let a = pretty_from_formule a in
-     let b = pretty_from_formule b in
-     let t =
-       match t with
-       | And -> Pretty_formule.And
-       | Or -> Pretty_formule.Or in
-     Pretty_formule.Binop (t,a,b)
-  | TempUnop (t,a) ->
-      let a = pretty_from_formule a in
-      let t =
-        match t with
-        | EX -> Pretty_formule.EX
-        | AX -> Pretty_formule.AX in
-      Pretty_formule.TempUnop (t,a)
-  | TempBinop (t,a,b) ->
-     let a = pretty_from_formule a in
-     let b = pretty_from_formule b in
-     let t =
-       match t with
-       | EU -> Pretty_formule.EU
-       | EW -> Pretty_formule.EW
-       | AU -> Pretty_formule.AU
-       | AW -> Pretty_formule.AW  in
-     Pretty_formule.TempBinop (t,a,b)
-
-let rec formule_from_pretty f =
-  match f with
-  | Pretty_formule.B b -> B b
-  | Pretty_formule.P b -> L (P b)
-  | Pretty_formule.Not b -> neg (formule_from_pretty b)
-  | Pretty_formule.Binop (t,a,b) ->
-     let a = formule_from_pretty a in
-     let b = formule_from_pretty b in
-     begin
-       match t with
-       | Pretty_formule.And -> et a b
-       | Pretty_formule.Or -> ou a b
-       | Pretty_formule.Xor ->
-          et (ou a b) (ou (neg a) (neg b))
-       | Pretty_formule.Impl -> Binop (Or,neg a, b)
-       | Pretty_formule.Eq ->
-          ou (et a b) (et (neg a) (neg b))
-     end
-  | Pretty_formule.TempBinop (t,a,b) ->
-     let a = formule_from_pretty a in
-     let b = formule_from_pretty b in
-     begin
-       match t with
-       | Pretty_formule.EU -> TempBinop (EU,a,b)
-       | Pretty_formule.AU -> TempBinop (AU,a,b)
-       | Pretty_formule.EW -> TempBinop (EW,a,b)
-       | Pretty_formule.AW -> TempBinop (AW,a,b)
-     end
-  | Pretty_formule.TempUnop (t,a) ->
-     let a = formule_from_pretty a in
-     begin
-       match t with
-       | Pretty_formule.AX -> TempUnop (AX,a)
-       | Pretty_formule.EX -> TempUnop (EX,a)
-       | Pretty_formule.AF -> af a
-       | Pretty_formule.EF -> ef a
-       | Pretty_formule.AG -> ag a
-       | Pretty_formule.EG -> eg a
-     end
-
-let string_of_formule printer f = Pretty_formule.string_of_formule printer (pretty_from_formule f)
+(* prend un tableau pour limiter le temps de génération... *)
+let generate_formulas number labels =
+  Random.self_init ();
+  let len = Array.length labels in
+  let rec aux x =
+(* plus x est élevé, plus la probabilité de tirer une variable ou un booléen est grande (évite trop de récursion) *)
+    let rec constructors = [|
+      (fun () -> Binop(And, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Or, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Xor, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Impl, aux (x + 1), aux (x + 1)));
+      (fun () -> Binop(Eq, aux (x + 1), aux (x + 1)));
+      (fun () -> TempUnop(AX, aux (x + 1)));
+      (fun () -> TempUnop(EX, aux (x + 1)));
+      (fun () -> TempUnop(AF, aux (x + 1)));
+      (fun () -> TempUnop(EF, aux (x + 1)));
+      (fun () -> TempUnop(AG, aux (x + 1)));
+      (fun () -> TempUnop(EG, aux (x + 1)));
+      (fun () -> TempBinop(EU, aux (x + 1), aux (x + 1)));
+      (fun () -> TempBinop(AU, aux (x + 1), aux (x + 1)));
+      (fun () -> TempBinop(EW, aux (x + 1), aux (x + 1)));
+      (fun () -> TempBinop(AW, aux (x + 1), aux (x + 1)));
+      (fun () -> Not (aux (x + 1)))
+    |] in
+    let size = Array.length constructors in
+    let n = Random.int (size + x) in
+    if n < x then begin
+      let v = Random.int (len + 2) in
+      if v = 0 then B false
+      else if v = 1 then B true
+      else L (P labels.(v - 2))
+    end
+    else constructors.(n - x) ()
+  in List.init number (fun _ -> aux 3)

@@ -1,5 +1,5 @@
 %{
-    open Pretty_formule
+    open Formule
     open Kripke
 %}
 
@@ -13,7 +13,7 @@
 %token UNTIL WEAKUNTIL
 %token EOF
 %start main
-%type <string Pretty_formule.pretty_formule> main
+%type <(Formule.rich,string) Formule.formule> main
 
 %token <int> INT
 %token EOL
@@ -29,7 +29,7 @@ main:
     expr EOF                  { $1 }
 ;
 expr:
-    VAR                       { P($1) }
+    VAR                       { L (P($1)) }
   | BOOL                      { B($1) }
   | LPAR expr RPAR            { $2 }
   | NOT expr                  { Not($2) }

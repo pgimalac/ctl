@@ -1,4 +1,5 @@
 open Lib.Formule
+open Lib.Poor_formule
 open Lib.Kripke
 
 module MarqueurS = Lib.Marqueur.Make(KripkeS)
@@ -23,14 +24,14 @@ let extract x =
 let parse_formule x = Lib.Parser.main Lib.Lexer.token (Lexing.from_string x)
 
 let check_formula_in kripke start form =
-  print_string ("[" ^ Lib.Pretty_formule.string_of_formule (fun x -> x) form ^ "]");
+  print_string ("[" ^ string_of_formule (fun x -> x) form ^ "]");
   print_string " -> ";
-  print_string ("[" ^ string_of_formule (fun x -> x) (formule_from_pretty form) ^"]");
+  print_string ("[" ^ string_of_formule (fun x -> x) (poor_from_rich form) ^"]");
   print_endline ":";
   print_endline
-    ("* Marquage : " ^ string_of_bool (MarqueurS.check (formule_from_pretty form) kripke start));
+    ("* Marquage : " ^ string_of_bool (MarqueurS.check (poor_from_rich form) kripke start));
   print_endline
-    ("* Jeu      : " ^ string_of_bool (FpgS.check (formule_from_pretty form) kripke start))
+    ("* Jeu      : " ^ string_of_bool (FpgS.check (poor_from_rich form) kripke start))
 
 let tests = [("graphs/g1.ctl", "graphs/f1.ctl", 0); ("graphs/g2.ctl", "graphs/f2.ctl", 1); ("graphs/g3.ctl", "graphs/f3.ctl", 0)]
 

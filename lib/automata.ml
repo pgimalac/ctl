@@ -1,4 +1,4 @@
-open Formule
+open Poor_formule
 open Kripke
 
 type 'a pbf =
@@ -36,7 +36,7 @@ let string_of_pbf stringer f =
 
 module Make (K : Kripke.K) = struct
 
-  let rec tau d (phi,sigma) =
+  let rec tau d ((phi,sigma) : K.SV.elt poor_formule * K.SV.t) =
     let mult f i phi = (* f = true -> Et_pbf | f = false -> Ou_pbf *) (* TODO boolean blindlness *)
       if i = 0 (* clause vide *)
       then
@@ -83,7 +83,7 @@ end
 
 module AutomataS = Make(KripkeS)
 
-let poids f =
+let poids (f : 'a poor_formule) =
   match f with
   | TempBinop (a,_,_) ->
      begin

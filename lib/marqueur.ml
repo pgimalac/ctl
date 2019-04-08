@@ -1,4 +1,5 @@
 open Formule
+open Poor_formule
 open Kripke
 
 let rec insert_no_dup_in_sorted x xs =
@@ -20,7 +21,7 @@ let opt_map f k =
 
 module Make (K : Kripke.K) = struct
 
-  let rec marquage f (m : K.kripke) =
+  let rec marquage (f : K.SV.elt poor_formule) (m : K.kripke) =
     match f with
     | B b -> M.map (fun _ -> b) m
     | L q ->
