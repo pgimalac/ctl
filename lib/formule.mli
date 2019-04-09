@@ -1,12 +1,12 @@
 type rich = Rich
 type poor = Poor
-type 'a binop =
+type _ binop =
     And : 'a binop
   | Or : 'a binop
   | Xor : rich binop
   | Impl : rich binop
   | Eq : rich binop
-type 'a tempUnop =
+type _ tempUnop =
     AX : 'a tempUnop
   | EX : 'a tempUnop
   | AF : rich tempUnop
