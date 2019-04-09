@@ -39,20 +39,17 @@ let rec neg (f : 'a poor_formule) =
        | N b -> P b
        )
   | Binop (t,a,b) ->
-     let a = neg a in
-     let b = neg b in
      let t =
        match t with
        | And -> ou
        | Or -> et
-     in t a b
+     in t (neg a) (neg b)
   | TempUnop (t,a) ->
-     let a = neg a in
      let t =
        match t with
        | EX -> AX
        | AX -> EX
-     in TempUnop (t,a)
+     in TempUnop (t,neg a)
   | TempBinop (t,a,b) ->
      let a = neg a in
      let b = neg b in

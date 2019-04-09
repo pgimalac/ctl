@@ -44,7 +44,7 @@ let get_string : type t. t binop -> string = function
   | Xor -> "⊕"
   | Eq -> "⇔"
 
-let string_of_formule printer f =
+let string_of_formule printer =
   let rec to_string : type t. (t,'a) formule -> string = function
     | B b -> if b then "⊤" else "⊥"
     | L p -> printer p
@@ -53,14 +53,14 @@ let string_of_formule printer f =
        "(" ^ (to_string phi) ^ ") " ^ (get_string b) ^ " (" ^ (to_string psi) ^")"
     | TempUnop(u, phi) -> (get_string_temp u) ^ " (" ^ (to_string phi) ^")"
     | TempBinop(b, phi, psi) ->
-       let phi = to_string phi in
-       let psi = to_string psi in
-       match b with
-       | EU -> "E (" ^ phi ^ ") U (" ^ psi ^")"
-       | AU -> "A (" ^ phi ^ ") U (" ^ psi ^")"
-       | EW -> "E (" ^ phi ^ ") W (" ^ psi ^")"
-       | AW -> "A (" ^ phi ^ ") W (" ^ psi ^")"
-  in to_string f
+       let a,b =
+         match b with
+         | EU -> "E (", ") U ("
+         | AU -> "A (", ") U ("
+         | EW -> "E (", ") W ("
+         | AW -> "A (", ") W ("
+       in a ^ to_string phi ^ b ^ to_string psi ^ ")"
+  in to_string
 
 let print_formule printer f = print_endline (string_of_formule printer f)
 
