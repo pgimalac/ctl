@@ -1,6 +1,6 @@
 open Formule
 
-type poor = Poor
+type poor = unit
 
 type 't poor_formule = (poor, 't) formule
 

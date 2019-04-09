@@ -1,4 +1,4 @@
-type poor = Poor
+type poor = unit
 type 't poor_formule = (poor, 't) Formule.formule
 
 val getop : poor Formule.binop -> bool -> bool -> bool
