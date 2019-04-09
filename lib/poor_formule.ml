@@ -90,13 +90,7 @@ let rec to_poor : type t. (t,'a) formule -> 'a poor_formule = function
   | TempBinop (t,a,b) ->
      let a = to_poor a in
      let b = to_poor b in
-     begin
-       match t with
-       | EU -> TempBinop (EU,a,b)
-       | AU -> TempBinop (AU,a,b)
-       | EW -> TempBinop (EW,a,b)
-       | AW -> TempBinop (AW,a,b)
-     end
+     TempBinop (t,a,b)
   | TempUnop (t,a) ->
      let a = to_poor a in
      begin
