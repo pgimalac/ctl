@@ -88,9 +88,7 @@ let rec to_poor : type t. (t,'a) formule -> 'a poor_formule = function
           ou (et a b) (et (neg a) (neg b))
      end
   | TempBinop (t,a,b) ->
-     let a = to_poor a in
-     let b = to_poor b in
-     TempBinop (t,a,b)
+     TempBinop (t, to_poor a, to_poor b)
   | TempUnop (t,a) ->
      let a = to_poor a in
      begin
