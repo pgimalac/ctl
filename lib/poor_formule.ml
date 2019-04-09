@@ -2,7 +2,11 @@ open Formule
 
 type poor = unit
 
-type 't poor_formule = (poor, 't) formule
+type 'a lit =
+  | N of 'a
+  | P of 'a
+
+type 't poor_formule = (poor, 't lit) formule
 
 let getop (c : poor binop) =
   match c with
@@ -25,7 +29,7 @@ let ou x y =
      | B b -> if b then y else x
      | _ -> Binop (Or,x,y)
 
-let rec neg (f : (poor, 'a) formule) =
+let rec neg (f : 'a poor_formule) =
   match f with
   | B b -> B (not b)
   | L b ->
@@ -66,9 +70,9 @@ let eg x = neg (af (neg x))
 let ef x = TempBinop (EU,B true,x)
 let ag x = neg (ef (neg x))
 
-let rec to_poor : type t. (t,'a) formule -> (poor,'a) formule = function
+let rec to_poor : type t. (t,'a) formule -> 'a poor_formule = function
   | B b -> B b
-  | L b -> L b
+  | L b -> L (P b)
   | Not b -> neg (to_poor b)
   | Binop (t,a,b) ->
      let a = to_poor a in
@@ -104,3 +108,9 @@ let rec to_poor : type t. (t,'a) formule -> (poor,'a) formule = function
        | AG -> ag a
        | EG -> eg a
      end
+
+let string_of_poor_formule printer =
+  let aux = function
+    | N p ->  "¬ (" ^ (printer p) ^")"
+    | P p -> printer p
+  in string_of_formule aux

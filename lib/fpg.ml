@@ -1,4 +1,3 @@
-open Formule
 open Poor_formule
 open Automata
 open Kripke
@@ -32,10 +31,10 @@ module Make (K : Kripke.K) = struct
   (* Convertit un état du jeu en string *)
   let string_of_state i f =
     let s = match f with
-      | Left f -> string_of_formule (fun x -> x) f
+      | Left f -> string_of_poor_formule (fun x -> x) f
       | Right f ->
          string_of_pbf
-           (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
+           (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_poor_formule (fun x -> x) j ^")") f
     in string_of_int i ^ ", " ^ s
 
   (* Renvoit le n-ième élément d'un Set *)

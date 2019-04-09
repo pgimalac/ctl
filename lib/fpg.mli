@@ -17,11 +17,9 @@ sig
     (string poor_formule, (int * string poor_formule) pbf)
       either -> string
 
-
   val gsphi : K.kripke -> game_state -> game_state list
 
   val write_cfc_into_file : string -> ('a * Kripke.S.t) list -> unit
-
 
   val export_game_checked :
     K.SV.elt poor_formule ->

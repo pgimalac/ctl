@@ -29,7 +29,7 @@ main:
     expr EOF                  { $1 }
 ;
 expr:
-    VAR                       { L (P($1)) }
+    VAR                       { L($1) }
   | BOOL                      { B($1) }
   | LPAR expr RPAR            { $2 }
   | NOT expr                  { Not($2) }

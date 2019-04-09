@@ -14,10 +14,9 @@ type _ tempUnop =
   | AG : rich tempUnop
   | EG : rich tempUnop
 type tempBinop = EU | AU | EW | AW
-type 'a lit = N of 'a | P of 'a
 type (_, 'a) formule =
     B : bool -> ('t, 'a) formule
-  | L : 'a lit -> ('t, 'a) formule
+  | L : 'a -> ('t, 'a) formule
   | Not : ('t, 'a) formule -> (rich, 'a) formule
   | Binop : 't binop * ('t, 'a) formule *
       ('t, 'a) formule -> ('t, 'a) formule

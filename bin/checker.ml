@@ -26,7 +26,7 @@ let parse_formule x = Lib.Parser.main Lib.Lexer.token (Lexing.from_string x)
 let check_formula_in kripke start form =
   print_string ("[" ^ string_of_formule (fun x -> x) form ^ "]");
   print_string " -> ";
-  print_string ("[" ^ string_of_formule (fun x -> x) (to_poor form) ^"]");
+  print_string ("[" ^ string_of_poor_formule (fun x -> x) (to_poor form) ^"]");
   print_endline ":";
   print_endline
     ("* Marquage : " ^ string_of_bool (MarqueurS.check (to_poor form) kripke start));
