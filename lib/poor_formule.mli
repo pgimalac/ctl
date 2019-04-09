@@ -14,5 +14,5 @@ val af : 'a poor_formule -> 'a poor_formule
 val eg : 'a poor_formule -> 'a poor_formule
 val ef : 'a poor_formule -> 'a poor_formule
 val ag : 'a poor_formule -> 'a poor_formule
-val poor_from_rich :
-  (Formule.rich, 'a) Formule.formule -> 'a poor_formule
+val to_poor :
+  ('t, 'a) Formule.formule -> 'a poor_formule

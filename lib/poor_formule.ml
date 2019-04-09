@@ -66,13 +66,13 @@ let eg x = neg (af (neg x))
 let ef x = TempBinop (EU,B true,x)
 let ag x = neg (ef (neg x))
 
-let rec poor_from_rich : type t. (t,'a) formule -> (poor,'a) formule = function
+let rec to_poor : type t. (t,'a) formule -> (poor,'a) formule = function
   | B b -> B b
   | L b -> L b
-  | Not b -> neg (poor_from_rich b)
+  | Not b -> neg (to_poor b)
   | Binop (t,a,b) ->
-     let a = poor_from_rich a in
-     let b = poor_from_rich b in
+     let a = to_poor a in
+     let b = to_poor b in
      begin
        match t with
        | And -> et a b
@@ -84,8 +84,8 @@ let rec poor_from_rich : type t. (t,'a) formule -> (poor,'a) formule = function
           ou (et a b) (et (neg a) (neg b))
      end
   | TempBinop (t,a,b) ->
-     let a = poor_from_rich a in
-     let b = poor_from_rich b in
+     let a = to_poor a in
+     let b = to_poor b in
      begin
        match t with
        | EU -> TempBinop (EU,a,b)
@@ -94,7 +94,7 @@ let rec poor_from_rich : type t. (t,'a) formule -> (poor,'a) formule = function
        | AW -> TempBinop (AW,a,b)
      end
   | TempUnop (t,a) ->
-     let a = poor_from_rich a in
+     let a = to_poor a in
      begin
        match t with
        | AX -> TempUnop (AX,a)
