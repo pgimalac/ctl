@@ -28,7 +28,7 @@ module Make (K : Kripke.K) = struct
        begin
          match q with
          | P q -> M.map (fun (e,_) -> K.SV.mem q e) m
-         | N q ->  M.map (fun (e,_) -> not (K.SV.mem q e)) m
+         | N q -> M.map (fun (e,_) -> not (K.SV.mem q e)) m
        end
     | Binop (c, a, b) ->  (* Todo opti ? *)
        let op = getop c in
@@ -74,7 +74,7 @@ module Make (K : Kripke.K) = struct
               | q::xs ->
                  let res = M.update q (opt_map (fun (_,y) -> (true,y))) res in
                  let (newlist,res) =
-                   M.fold (fun q' (_,s) (newlist,res) ->
+                   M.fold (fun q' (_,s) ((newlist,res) as acc) ->
                        (* C'est un prédécesseur que l'on n'a pas vu *)
                        if S.mem q s && (not (snd (M.find q' res)))
                        then
@@ -82,7 +82,7 @@ module Make (K : Kripke.K) = struct
                          if M.find q' mpsi1
                          then (insert_no_dup_in_sorted q' newlist,res)
                          else (newlist,res)
-                       else (newlist,res)
+                       else acc
                      )
                      m (xs,res) in
                  tantque newlist res
@@ -105,7 +105,7 @@ module Make (K : Kripke.K) = struct
               | q::xs ->
                  let res = M.update q (opt_map (fun (_,y) -> (true,y))) res in
                  let (newlist,res) =
-                   M.fold (fun q' (_,s) (newlist,res) ->
+                   M.fold (fun q' (_,s) ((newlist,res) as acc)->
                        (* C'est un prédécesseur que l'on n'a pas vu *)
                        if S.mem q s
                        then
@@ -114,7 +114,7 @@ module Make (K : Kripke.K) = struct
                          if (snd !newqnb = 0) && (M.find q' mpsi1) && not (fst !newqnb)
                          then (insert_no_dup_in_sorted q' newlist,res)
                          else (newlist,res)
-                       else (newlist,res)
+                       else acc
                      )
                      m (xs,res) in
                  tantque newlist res
