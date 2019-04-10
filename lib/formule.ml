@@ -79,7 +79,7 @@ let string_of_formule printer f =
          | AU -> "A ", " U "
          | EW -> "E ", " W "
          | AW -> "A ", " W "
-       in a ^ pprint phi ^ b ^ pprint psi ^ ")"
+       in a ^ pprint phi ^ b ^ pprint psi
   in to_string f
 
 let print_formule printer f = print_endline (string_of_formule printer f)
