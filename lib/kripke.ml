@@ -55,7 +55,7 @@ module type K =
 
     type kripke = (SV.t * S.t) M.t
     val deg : int -> kripke -> int
-
+    val get_labels : kripke -> SV.elt list
     val etiquettes : int -> kripke -> SV.t
     val succ : int -> kripke -> S.t
   end
@@ -72,6 +72,11 @@ module Make (V : Set.S) = struct
 
   let deg s (m : kripke) =
     S.cardinal (snd (M.find s m))
+
+  let get_labels k =
+    M.fold (fun _ (e, _) ->
+      SV.fold List.cons e
+    ) k []
 
   let etiquettes s m = fst (M.find s m)
   let succ s m = snd (M.find s m)

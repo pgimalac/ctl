@@ -42,9 +42,11 @@ let main () =
     let s = "graph " ^ num ^ ":" in
     print_endline s;
     let fig = extract g in
+    let labels = KripkeS.get_labels fig in
     let check = check_formula_in fig start in
     let file = List.map parse_formule (strings_of_file f) in
-    List.iter check file;
+    let random_formulas = generate_formulas 10 10 labels in
+    List.iter check (random_formulas @ file);
     print_newline ()
   ) tests
 

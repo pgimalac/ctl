@@ -35,4 +35,4 @@ val get_string_temp : 'a tempUnop -> string
 val get_string : 'a binop -> string
 val string_of_formule : ('a -> string) -> ('b, 'a) formule -> string
 val print_formule : ('a -> string) -> ('b, 'a) formule -> unit
-val generate_formulas : int -> 'a array -> (rich, 'a) formule list
+val generate_formulas : int -> int -> 'a list -> (rich, 'a) formule list

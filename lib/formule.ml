@@ -85,36 +85,37 @@ let string_of_formule printer f =
 let print_formule printer f = print_endline (string_of_formule printer f)
 
 (* prend un tableau pour limiter le temps de génération... *)
-let generate_formulas number labels =
+let generate_formulas max_depth number labels =
+  let labels = Array.of_list labels in
   Random.self_init ();
   let len = Array.length labels in
-  let rec aux x =
-(* plus x est élevé, plus la probabilité de tirer une variable ou un booléen est grande (évite trop de récursion) *)
+  let rec aux depth =
+    let depth = depth + 1 in
     let constructors = [|
-      (fun () -> Binop(And, aux (x + 1), aux (x + 1)));
-      (fun () -> Binop(Or, aux (x + 1), aux (x + 1)));
-      (fun () -> Binop(Xor, aux (x + 1), aux (x + 1)));
-      (fun () -> Binop(Impl, aux (x + 1), aux (x + 1)));
-      (fun () -> Binop(Eq, aux (x + 1), aux (x + 1)));
-      (fun () -> TempUnop(AX, aux (x + 1)));
-      (fun () -> TempUnop(EX, aux (x + 1)));
-      (fun () -> TempUnop(AF, aux (x + 1)));
-      (fun () -> TempUnop(EF, aux (x + 1)));
-      (fun () -> TempUnop(AG, aux (x + 1)));
-      (fun () -> TempUnop(EG, aux (x + 1)));
-      (fun () -> TempBinop(EU, aux (x + 1), aux (x + 1)));
-      (fun () -> TempBinop(AU, aux (x + 1), aux (x + 1)));
-      (fun () -> TempBinop(EW, aux (x + 1), aux (x + 1)));
-      (fun () -> TempBinop(AW, aux (x + 1), aux (x + 1)));
-      (fun () -> Not (aux (x + 1)))
+      (fun () -> Binop(And, aux depth, aux depth));
+      (fun () -> Binop(Or, aux depth, aux depth));
+      (fun () -> Binop(Xor, aux depth, aux depth));
+      (fun () -> Binop(Impl, aux depth, aux depth));
+      (fun () -> Binop(Eq, aux depth, aux depth));
+      (fun () -> TempUnop(AX, aux depth));
+      (fun () -> TempUnop(EX, aux depth));
+      (fun () -> TempUnop(AF, aux depth));
+      (fun () -> TempUnop(EF, aux depth));
+      (fun () -> TempUnop(AG, aux depth));
+      (fun () -> TempUnop(EG, aux depth));
+      (fun () -> TempBinop(EU, aux depth, aux depth));
+      (fun () -> TempBinop(AU, aux depth, aux depth));
+      (fun () -> TempBinop(EW, aux depth, aux depth));
+      (fun () -> TempBinop(AW, aux depth, aux depth));
+      (fun () -> Not (aux depth))
     |] in
     let size = Array.length constructors in
-    let n = Random.int (size + x) in
-    if n < x then begin
+    let n = if depth >= max_depth then size else Random.int (size + 1) in
+    if n = size then begin
       let v = Random.int (len + 2) in
       if v = 0 then B false
       else if v = 1 then B true
       else L (P labels.(v - 2))
     end
-    else constructors.(n - x) ()
-  in List.init number (fun _ -> aux 3)
+    else constructors.(n) ()
+  in List.init number (fun _ -> aux 0)

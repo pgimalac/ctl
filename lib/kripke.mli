@@ -136,11 +136,15 @@ module type K =
     type kripke = (SV.t * S.t) M.t
 
     val deg : int -> kripke -> int
+    val get_labels : kripke -> SV.elt list
     val etiquettes : int -> kripke -> SV.t
     val succ : int -> kripke -> S.t
   end
 
-module type VARIABLES = sig type t val compare : t -> t -> int end
+module type VARIABLES = sig
+    type t
+    val compare : t -> t -> int
+  end
 
 module Make :
   functor (V : Set.S) ->
@@ -192,6 +196,7 @@ module Make :
       type kripke = (SV.t * S.t) M.t
 
       val deg : int -> kripke -> int
+    val get_labels : kripke -> SV.elt list
       val etiquettes : int -> kripke -> SV.t
       val succ : int -> kripke -> S.t
     end
@@ -289,6 +294,7 @@ module KripkeS :
     type kripke = (SV.t * S.t) M.t
 
     val deg : int -> kripke -> int
+    val get_labels : kripke -> SV.elt list
     val etiquettes : int -> kripke -> SV.t
     val succ : int -> kripke -> S.t
   end
