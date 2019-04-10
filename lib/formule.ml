@@ -47,28 +47,39 @@ let get_string : type t. t binop -> string = function
   | Xor -> "⊕"
   | Eq -> "⇔"
 
-let string_of_formule printer =
-  let rec to_string : type t. (t,'a) formule -> string = function
+let par_needed : type t. (t, 'a) formule -> bool = function
+  | B _ | L _ -> false
+  | _ -> true
+
+let pprint printer f =
+  let s = printer f in
+  if par_needed f
+  then "(" ^ s ^ ")"
+  else s
+
+let string_of_formule printer f =
+  let rec to_string : type t. (t,'a) formule -> string = fun x ->
+    match x with
     | B b -> if b then "⊤" else "⊥"
     | L p ->
        begin
          match p with
          | P p -> printer p
-         | N p -> "¬ (" ^ (printer p) ^")"
+         | N p -> "¬" ^ printer p
        end
-    | Not f -> "¬ (" ^ (to_string f) ^")"
+    | Not f -> "¬ " ^ pprint to_string f
     | Binop(b, phi, psi) ->
-       "(" ^ (to_string phi) ^ ") " ^ (get_string b) ^ " (" ^ (to_string psi) ^")"
-    | TempUnop(u, phi) -> (get_string_temp u) ^ " (" ^ (to_string phi) ^")"
+       pprint to_string phi ^ " " ^ get_string b ^ " " ^ pprint to_string psi
+    | TempUnop(u, phi) -> get_string_temp u ^ " " ^ pprint to_string phi
     | TempBinop(b, phi, psi) ->
        let a,b =
          match b with
-         | EU -> "E (", ") U ("
-         | AU -> "A (", ") U ("
-         | EW -> "E (", ") W ("
-         | AW -> "A (", ") W ("
-       in a ^ to_string phi ^ b ^ to_string psi ^ ")"
-  in to_string
+         | EU -> "E ", " U "
+         | AU -> "A ", " U "
+         | EW -> "E ", " W "
+         | AW -> "A ", " W "
+       in a ^ pprint to_string phi ^ b ^ pprint to_string psi ^ ")"
+  in to_string f
 
 let print_formule printer f = print_endline (string_of_formule printer f)
 
