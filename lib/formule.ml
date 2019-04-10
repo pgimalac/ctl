@@ -1,5 +1,8 @@
 type rich = Rich
-type poor = Poor
+
+type 'a lit =
+  | N of 'a
+  | P of 'a
 
 type _ binop =
   | And  : 'a binop
@@ -22,7 +25,7 @@ type tempBinop = EU | AU | EW | AW
 type (_,'a) formule =
   (* Logique propositionnelle *)
   | B : bool -> ('t,'a) formule
-  | L : 'a -> ('t,'a) formule
+  | L : 'a lit -> ('t,'a) formule
   | Not : ('t,'a) formule -> (rich,'a) formule
   | Binop : 't binop * ('t,'a) formule * ('t,'a) formule -> ('t,'a) formule
   (* Combinateurs temporels *)
@@ -47,7 +50,12 @@ let get_string : type t. t binop -> string = function
 let string_of_formule printer =
   let rec to_string : type t. (t,'a) formule -> string = function
     | B b -> if b then "⊤" else "⊥"
-    | L p -> printer p
+    | L p ->
+       begin
+         match p with
+         | P p -> printer p
+         | N p -> "¬ (" ^ (printer p) ^")"
+       end
     | Not f -> "¬ (" ^ (to_string f) ^")"
     | Binop(b, phi, psi) ->
        "(" ^ (to_string phi) ^ ") " ^ (get_string b) ^ " (" ^ (to_string psi) ^")"
@@ -94,7 +102,7 @@ let generate_formulas number labels =
       let v = Random.int (len + 2) in
       if v = 0 then B false
       else if v = 1 then B true
-      else L labels.(v - 2)
+      else L (P labels.(v - 2))
     end
     else constructors.(n - x) ()
   in List.init number (fun _ -> aux 3)
