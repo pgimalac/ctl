@@ -78,7 +78,7 @@ let generate_formulas number labels =
   let len = Array.length labels in
   let rec aux x =
 (* plus x est élevé, plus la probabilité de tirer une variable ou un booléen est grande (évite trop de récursion) *)
-    let rec constructors = [|
+    let constructors = [|
       (fun () -> Binop(And, aux (x + 1), aux (x + 1)));
       (fun () -> Binop(Or, aux (x + 1), aux (x + 1)));
       (fun () -> Binop(Xor, aux (x + 1), aux (x + 1)));
