@@ -29,10 +29,16 @@ let check_formula_in kripke start form =
   print_string " -> ";
   print_string ("[" ^ string_of_formule (fun x -> x) poorf ^"]");
   print_endline ":";
+  let marq = MarqueurS.check poorf kripke start in
   print_endline
-    ("* Marquage : " ^ string_of_bool (MarqueurS.check poorf kripke start));
+    ("* Marquage : " ^ string_of_bool marq);
+  let fpg = FpgS.check poorf kripke start in
+  FpgS.export_game_checked poorf kripke start (fun x -> x) "test";
   print_endline
-    ("* Jeu      : " ^ string_of_bool (FpgS.check poorf kripke start))
+    ("* Jeu      : " ^ string_of_bool fpg);
+  if marq != fpg
+  then failwith "ERROR"
+  else ()
 
 let tests = [("graphs/g1.ctl", "graphs/f1.ctl", 0); ("graphs/g2.ctl", "graphs/f2.ctl", 1); ("graphs/g3.ctl", "graphs/f3.ctl", 0)]
 
