@@ -99,14 +99,14 @@ module Make (K : Kripke.K) = struct
       let interesting_states =
         GS.fold
           (fun v acc ->
-            if not (GM.mem v computed)
-            then
+            if GM.mem v computed
+            then acc
+            else
               let xs = gsphi m v in
               let b = (* Si j'ai le droit de jouer et qu'un de mes successeurs est gagnant pour moi OU que je n'ai pas le droit mais tous les sucesseurs sont gagnants pour moi *)
                 (get_player (snd v) = gammabarre && exists_in_succ computed gammabarre xs)
                 || all_succ computed gammabarre xs in
               if b then v::acc else acc
-            else acc
           )
           ind
           [] in
@@ -116,6 +116,12 @@ module Make (K : Kripke.K) = struct
          aux
            (List.fold_left (fun acc v -> GM.add v gammabarre acc) computed interesting_states)
     in aux
+
+  let update_option v x =
+    match x with
+    | None -> Some v
+    | _ -> x
+
   (*
     - m représente la structure de Kripke
     - cfc représente les cfc calculées DANS L'ORDRE TOPOLOGIQUE INVERSE
@@ -142,7 +148,7 @@ module Make (K : Kripke.K) = struct
          let gamma = if x mod 2 = 0 then Eve else Adam in
          let gammabarre = get_other gamma in
          GS.fold
-           (fun v acc -> if GM.mem v acc then acc else GM.add v gamma acc)
+           (fun v acc -> GM.update v (update_option gamma) acc)
            ind
            (propagate_gammabare m ind gammabarre computed)
     in List.fold_left aux GM.empty cfc
