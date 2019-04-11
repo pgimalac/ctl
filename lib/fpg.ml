@@ -92,6 +92,9 @@ module Make (K : Kripke.K) = struct
   (* Regarde si toutes les transitions sont gagnantes pour e dans une liste *)
   let all_succ = use_pred List.for_all
 
+  let ex_all p =
+    List.fold_left (fun (a,b) x -> let y = p x in a || y, b && y ) (false,true)
+
   (* Fonction de recherche de point fixe où l'on essaye d'attribuer les états à gammabarre *)
   let propagate_gammabare m ind gammabarre  =
     let rec aux computed =
@@ -103,9 +106,9 @@ module Make (K : Kripke.K) = struct
             then acc
             else
               let xs = gsphi m v in
+              let ex,all = use_pred ex_all computed gammabarre xs in
               let b = (* Si j'ai le droit de jouer et qu'un de mes successeurs est gagnant pour moi OU que je n'ai pas le droit mais tous les sucesseurs sont gagnants pour moi *)
-                (get_player (snd v) = gammabarre && exists_in_succ computed gammabarre xs)
-                || all_succ computed gammabarre xs in
+                ((get_player (snd v) = gammabarre) && ex) || all in
               if b then v::acc else acc
           )
           ind
