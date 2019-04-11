@@ -29,10 +29,14 @@ let check_formula_in kripke start form =
 (*   print_string " -> ";
   print_string ("[" ^ string_of_formule (fun x -> x) poorf ^"]");
  *)  print_endline ":";
+  let marq = MarqueurS.check poorf kripke start in
   print_endline
-    ("* Marquage : " ^ string_of_bool (MarqueurS.check poorf kripke start));
+    ("* Marquage : " ^ string_of_bool marq);
+  let fpg = FpgS.check poorf kripke start in
+  FpgS.export_game_checked poorf kripke start (fun x -> x) "test";
   print_endline
-    ("* Jeu      : " ^ string_of_bool (FpgS.check poorf kripke start))
+    ("* Jeu      : " ^ string_of_bool fpg);
+  assert (marq == fpg)
 
 let tests = [("graphs/g1.ctl", "graphs/f1.ctl", 0); ("graphs/g2.ctl", "graphs/f2.ctl", 1); ("graphs/g3.ctl", "graphs/f3.ctl", 0)]
 
@@ -45,7 +49,7 @@ let main () =
     let labels = KripkeS.get_labels fig in
     let check = check_formula_in fig start in
     let file = List.map parse_formule (strings_of_file f) in
-    let random_formulas = generate_formulas 10 10 labels in
+    let random_formulas = generate_formulas 4 100 labels in
     List.iter check (random_formulas @ file);
     print_newline ()
   ) tests

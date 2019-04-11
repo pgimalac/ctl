@@ -1,7 +1,7 @@
 open Automata
 open Poor_formule
+open Either
 
-type ('a, 'b) either = Left of 'a | Right of 'b
 module Make :
 functor (K : Kripke.K) ->
 sig
@@ -18,8 +18,6 @@ sig
       either -> string
 
   val gsphi : K.kripke -> game_state -> game_state list
-
-  val write_cfc_into_file : string -> ('a * Kripke.S.t) list -> unit
 
   val export_game_checked :
     K.SV.elt poor_formule ->
