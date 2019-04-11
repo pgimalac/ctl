@@ -21,8 +21,8 @@ module Make (K : Kripke.K) (T: Set.OrderedType) = struct
       mutable lowlink: int;
     }
 
-  let new_node gsphi m state =
-    { state = state; transitions = gsphi m state; cfc = -1; index = None; onStack = false; lowlink = -1 }
+  let new_node state_list state =
+    { state = state; transitions = state_list; cfc = -1; index = None; onStack = false; lowlink = -1 }
 
   let partition_while predicate =
     let rec aux partition l =
@@ -43,18 +43,18 @@ module Make (K : Kripke.K) (T: Set.OrderedType) = struct
     (* for each transition from v, if not already done call strong_connect on the target and then update the node *)
     let cfc, index, stack =
       List.fold_left (
-          fun (cfc, index, stack) w_state ->
+          fun acc w_state ->
           let w = GM.find w_state map in
           match w.index with
           | None ->
-             let cfc, index, stack = strong_connect map w (cfc, index, stack) in
+             let acc = strong_connect map w acc in
              v.lowlink <- min v.lowlink w.lowlink;
-             cfc, index, stack
+             acc
           | Some ind ->
              if w.onStack
              then
                v.lowlink <- min v.lowlink ind;
-             cfc, index, stack
+             acc
         ) (cfc, index + 1, v :: stack) v.transitions in
     (* when done with the neighbours, if v is the root of a cfc then for each w in the stack, pop it and add it to the current cfc *)
     match v.index with
@@ -63,8 +63,7 @@ module Make (K : Kripke.K) (T: Set.OrderedType) = struct
        then
          let to_add, stack = partition_while ((=) v) stack in
          let to_add = List.map (fun w -> w.onStack <- false; w.state) to_add in
-         let set = GS.of_list to_add in
-         (set :: cfc), index, stack
+         (GS.of_list to_add :: cfc), index, stack
        else cfc, index, stack
     | None -> failwith "Not possible" (* to avoid any warning *)
 
@@ -75,8 +74,8 @@ module Make (K : Kripke.K) (T: Set.OrderedType) = struct
       if GM.mem state map
       then map
       else
-        let map = GM.add state (new_node gsphi m state) map in
         let state_list = gsphi m state in
+        let map = GM.add state (new_node  state_list state) map in
         List.fold_left fill_map map state_list
     in
     let map = fill_map GM.empty start in
