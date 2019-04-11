@@ -9,6 +9,7 @@ Il est organisé de la manière suivante :
   * `kripke.ml` définit un foncteur représentant une structure de Kripke où les états sont indicés par des entiers. Il prend en paramètre un module `Set` des variables qui étiquettent les états
   * `marqueur.ml` définit un foncteur permettant de faire le model-checking de CTL en utilisant des raisonnements de graphes. Il prend en paramètre un module `Kripke`.
   * `automata.ml` et `fpg.ml` définissent des foncteurs permettant de faire le model-checking de CTL en utilisant des raisonnements sur les automates d’arbres alternants et la théorie des jeux à parité faible. Ils prennent en paramètre un module `Kripke`.
+  * `cfc.ml` définit une fonction capable de calculer les Composantes Fortement Connexes d'un graphe (utile pour le modèle checking par jeu faible de parité).
   * `parser.mly` et `reader.mll` permettent de pouvoir lire des structures de Kripke et des formules depuis un fichier texte.
 
 * `bin/` contient le fichier principal exécutant les deux model-checker sur des exemples contenus dans le dossier `graphs/`.

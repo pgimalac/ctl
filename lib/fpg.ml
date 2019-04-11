@@ -2,10 +2,8 @@ open Formule
 open Poor_formule
 open Automata
 open Kripke
-
-type ('a, 'b) either =
-  | Left of 'a
-  | Right of 'b
+open Either
+open Cfc
 
 module Make (K : Kripke.K) = struct
 
@@ -22,12 +20,16 @@ module Make (K : Kripke.K) = struct
       let compare = compare
     end
 
-  (* Un type de Map avec comme clé des états du jeu *)
-  module GM = Map.Make(T)
+  module CFC = Cfc.Make(K)(T)
+
+  module GM = CFC.GM
   (* Un type de Set avec comme clé des états du jeu *)
-  module GS = Set.Make(T)
+  module GS = CFC.GS
+            
   (* Le type du jeu *)
   type game = GS.t GM.t
+
+  type winner = Adam | Eve
 
   (* Convertit un état du jeu en string *)
   let string_of_state i f =
@@ -59,121 +61,6 @@ module Make (K : Kripke.K) = struct
        | P_pbf (c,q) ->
           [(set_nth (c-1) (K.succ s m),Left q)]
        | B_pbf _ -> []
-
-  (* CALCUL DES CFC *)
-
-  (*
-from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm#The_algorithm_in_pseudocode
-   *)
-
-  type node = {
-      state: game_state;
-      transitions: game_state list;
-      mutable cfc: int;
-      mutable index: int option;
-      mutable onStack: bool;
-      mutable lowlink: int;
-    }
-
-  let new_node m state =
-    { state = state; transitions = gsphi m state; cfc = -1; index = None; onStack = false; lowlink = -1 }
-
-  let partition_while predicate =
-    let rec aux partition l =
-      match l with
-      | h :: q ->
-         if predicate h
-         then List.rev (h :: partition), q
-         else aux (h :: partition) q
-      | [] -> List.rev partition, []
-    in aux []
-
-  (* the main part of the algorithm *)
-  let rec strong_connect map v (cfc, index, stack) =
-    (* set the nodes's values *)
-    v.index <- Some index;
-    v.lowlink <- index;
-    v.onStack <- true;
-    (* for each transition from v, if not already done call strong_connect on the target and then update the node *)
-    let cfc, index, stack =
-      List.fold_left (
-          fun (cfc, index, stack) w_state ->
-          let w = GM.find w_state map in
-          match w.index with
-          | None ->
-             let cfc, index, stack = strong_connect map w (cfc, index, stack) in
-             v.lowlink <- min v.lowlink w.lowlink;
-             cfc, index, stack
-          | Some ind ->
-             if w.onStack
-             then
-               v.lowlink <- min v.lowlink ind;
-             cfc, index, stack
-        ) (cfc, index + 1, v :: stack) v.transitions in
-    (* when done with the neighbours, if v is the root of a cfc then for each w in the stack, pop it and add it to the current cfc *)
-    match v.index with
-    | Some ind ->
-       if v.lowlink = ind
-       then
-         let to_add, stack = partition_while ((=) v) stack in
-         let to_add = List.map (fun w -> w.onStack <- false; w.state) to_add in
-         let set = GS.of_list to_add in
-         (set :: cfc), index, stack
-       else cfc, index, stack
-    | None -> failwith "Not possible" (* to avoid any warning *)
-
-  (* Renvoit les CFC dans l'ordre topologique INVERSE *)
-  let to_cfc (m : K.kripke) (start : int) (phi : K.SV.elt poor_formule) : (GS.t * S.t) list =
-    (* used to fill a map that associate each state to its node *)
-    let rec fill_map map state =
-      if GM.mem state map
-      then map
-      else
-        let map = GM.add state (new_node m state) map in
-        let state_list = gsphi m state in
-        List.fold_left fill_map map state_list
-    in
-    let map = fill_map GM.empty (start, Left phi) in
-    (* for each node, if not already done call strong_connect *)
-    let cfc, _, _ = GM.fold (fun _ v a ->
-                        if v.index = None
-                        then strong_connect map v a
-                        else a
-                      ) map ([], 0, []) in
-    (* set the cfc's number on each node *)
-    List.iteri (fun i s ->
-        GS.iter (fun st -> let node = GM.find st map in node.cfc <- i) s
-      ) cfc;
-    (* eventually create the set of transitions for each cfc *)
-    let lst = List.map (fun cfc ->
-                  let set = GS.fold (fun st set ->
-                                let node = GM.find st map in
-                                List.fold_left (fun set st ->
-                                    let node = GM.find st map in
-                                    S.add node.cfc set
-                                  ) set node.transitions
-                              ) cfc S.empty in
-                  cfc, set
-                ) cfc in
-    List.rev lst
-
-  (* Permet d'écrire les CFC dans un fichier au format DOT *)
-  let write_cfc_into_file file cfc =
-    let st_out = open_out file in
-    Printf.fprintf st_out "digraph {\n";
-    List.iteri (fun i (_, transitions) ->
-        if transitions != S.empty
-        then
-          let left = string_of_int i in
-          let right = S.fold (fun e -> (^) (string_of_int e ^ " ")) transitions "" in
-          Printf.fprintf st_out "    %s -> { %s}\n" left right
-      ) cfc;
-    Printf.fprintf st_out "}\n";
-    close_out st_out
-
-  (* RÉSOLUTION DU JEU *)
-
-  type winner = Adam | Eve
 
   (* Renvoit peut-être la couleur de l'état *)
   let get_coul ((_,c) : game_state) =
@@ -304,10 +191,10 @@ from https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algo
   (* Permet de créer un jeu de partié faible, le résout et l'écrit au format DOT dans un fichier *)
   let export_game_checked phi m start printer filename =
     let g = gen_all_game m phi start in
-    let win = get_win m (to_cfc m start phi) in
+    let win = get_win m (CFC.to_cfc gsphi m (start, Left phi)) in
     write_game_into_file filename printer g (Some win)
 
   (* La fonction de model-checking *)
   let check phi m start =
-    Eve = GM.find (start, Left phi) (get_win m (to_cfc m start phi))
+    Eve = GM.find (start, Left phi) (get_win m (CFC.to_cfc gsphi m (start, Left phi)))
 end
