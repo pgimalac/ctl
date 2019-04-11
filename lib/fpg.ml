@@ -83,6 +83,39 @@ module Make (K : Kripke.K) = struct
     | Eve -> Adam
     | Adam -> Eve
 
+  (* Aux func *)
+  let use_pred f computed e = f (fun x -> GM.find_opt x computed = Some e)
+
+  (* Regarde si il y a une transition gagnante pour e dans une liste *)
+  let exists_in_succ = use_pred List.exists
+
+  (* Regarde si toutes les transitions sont gagnantes pour e dans une liste *)
+  let all_succ = use_pred List.for_all
+
+  (* Fonction de recherche de point fixe où l'on essaye d'attribuer les états à gammabarre *)
+  let propagate_gammabare m ind gammabarre  =
+    let rec aux computed =
+      (* Les états de la CFC où gammabarre va forcément gagner *)
+      let interesting_states =
+        GS.fold
+          (fun v acc ->
+            if not (GM.mem v computed)
+            then
+              let xs = gsphi m v in
+              let b = (* Si j'ai le droit de jouer et qu'un de mes successeurs est gagnant pour moi OU que je n'ai pas le droit mais tous les sucesseurs sont gagnants pour moi *)
+                (get_player (snd v) = gammabarre && exists_in_succ computed gammabarre xs)
+                || all_succ computed gammabarre xs in
+              if b then v::acc else acc
+            else acc
+          )
+          ind
+          [] in
+      match interesting_states with
+      | [] -> computed (* Point fixe atteint *)
+      | _  ->
+         aux
+           (List.fold_left (fun acc v -> GM.add v gammabarre acc) computed interesting_states)
+    in aux
   (*
     - m représente la structure de Kripke
     - cfc représente les cfc calculées DANS L'ORDRE TOPOLOGIQUE INVERSE
@@ -92,11 +125,6 @@ module Make (K : Kripke.K) = struct
   let get_win (m : K.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
     (* Fonction appelée sur chaque CFC avec un accumulateur représentant la réponse "partielle" *)
     let aux computed (ind,_) =
-      let use_pred f computed e = f (fun x -> GM.find_opt x computed = Some e) in
-      (* Regarde si il y a une transition gagnante pour e dans une liste *)
-      let exists_in_succ = use_pred List.exists in
-      (* Regarde si toutes les transitions sont gagnantes pour e dans une liste *)
-      let all_succ = use_pred List.for_all in
       let gamma' =
         if GS.cardinal ind = 1
         then None
@@ -108,36 +136,15 @@ module Make (K : Kripke.K) = struct
          let xs = gsphi m elem in
          GM.add
            elem
-           (if exists_in_succ computed player xs then player else (get_other player))
+           (if exists_in_succ computed player xs then player else get_other player)
            computed
       | Some x ->
          let gamma = if x mod 2 = 0 then Eve else Adam in
          let gammabarre = get_other gamma in
-         (* Fonction de recherche de point fixe où l'on essaye d'attribuer les états à gammabarre *)
-         let rec propagate_gammabare computed =
-           (* Les états de la CFC où gammabarre va forcément gagner *)
-           let interesting_states =
-             GS.fold
-               (fun v acc ->
-                 if not (GM.mem v computed)
-                 then
-                   let xs = gsphi m v in
-                   let b = (* Si j'ai le droit de jouer et qu'un de mes successeurs est gagnant pour moi OU que je n'ai pas le droit mais tous les sucesseurs sont gagnants pour moi *)
-                     (get_player (snd v) = gammabarre && exists_in_succ computed gammabarre xs)
-                     || all_succ computed gammabarre xs in
-                   if b then v::acc else acc
-                 else acc
-               )
-               ind
-               [] in
-           if interesting_states = [] (* Point fixe atteint *)
-           then computed
-           else
-             propagate_gammabare
-               (List.fold_left (fun acc v -> GM.add v gammabarre acc) computed interesting_states)
-         in
-         (* On donne les états restants à gamma *)
-         GS.fold (fun v acc -> if GM.mem v acc then acc else GM.add v gamma acc) ind (propagate_gammabare computed)
+         GS.fold
+           (fun v acc -> if GM.mem v acc then acc else GM.add v gamma acc)
+           ind
+           (propagate_gammabare m ind gammabarre computed)
     in List.fold_left aux GM.empty cfc
 
   (* Génère totalement un jeu fini *)
