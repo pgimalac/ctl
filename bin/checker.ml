@@ -49,7 +49,7 @@ let main () =
     let labels = KripkeS.get_labels fig in
     let check = check_formula_in fig start in
     let file = List.map parse_formule (strings_of_file f) in
-    let random_formulas = generate_formulas 4 100 labels in
+    let random_formulas = generate_formulas 5 1000 labels in
     List.iter check (file @ random_formulas);
     print_newline ()
   ) tests
