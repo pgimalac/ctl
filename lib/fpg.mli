@@ -1,6 +1,5 @@
 open Automata
 open Poor_formule
-open Either
 
 module Make :
 functor (K : Kripke.K) ->
@@ -18,7 +17,7 @@ sig
     int ->
     ((int * K.SV.elt Poor_formule.poor_formule) Automata.pbf ->
      (int * ('a, string) Formule.formule) Automata.pbf) ->
-    string -> unit
+    string -> bool
 
   val check : K.SV.elt poor_formule -> K.kripke -> int -> bool
 end

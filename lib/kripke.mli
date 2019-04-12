@@ -38,10 +38,6 @@ module S :
     val find_last : (elt -> bool) -> t -> elt
     val find_last_opt : (elt -> bool) -> t -> elt option
     val of_list : elt list -> t
-    val to_seq_from : elt -> t -> elt Seq.t
-    val to_seq : t -> elt Seq.t
-    val add_seq : elt Seq.t -> t -> t
-    val of_seq : elt Seq.t -> t
   end
 module M :
   sig
@@ -82,10 +78,6 @@ module M :
     val find_last_opt : (key -> bool) -> 'a t -> (key * 'a) option
     val map : ('a -> 'b) -> 'a t -> 'b t
     val mapi : (key -> 'a -> 'b) -> 'a t -> 'b t
-    val to_seq : 'a t -> (key * 'a) Seq.t
-    val to_seq_from : key -> 'a t -> (key * 'a) Seq.t
-    val add_seq : (key * 'a) Seq.t -> 'a t -> 'a t
-    val of_seq : (key * 'a) Seq.t -> 'a t
   end
 module type K =
   sig
@@ -128,10 +120,6 @@ module type K =
         val find_last : (elt -> bool) -> t -> elt
         val find_last_opt : (elt -> bool) -> t -> elt option
         val of_list : elt list -> t
-        val to_seq_from : elt -> t -> elt Seq.t
-        val to_seq : t -> elt Seq.t
-        val add_seq : elt Seq.t -> t -> t
-        val of_seq : elt Seq.t -> t
       end
     type kripke = (SV.t * S.t) M.t
 
@@ -188,10 +176,6 @@ module Make :
           val find_last : (elt -> bool) -> t -> elt
           val find_last_opt : (elt -> bool) -> t -> elt option
           val of_list : elt list -> t
-          val to_seq_from : elt -> t -> elt Seq.t
-          val to_seq : t -> elt Seq.t
-          val add_seq : elt Seq.t -> t -> t
-          val of_seq : elt Seq.t -> t
         end
       type kripke = (SV.t * S.t) M.t
 
@@ -240,10 +224,6 @@ module SV :
     val find_last : (elt -> bool) -> t -> elt
     val find_last_opt : (elt -> bool) -> t -> elt option
     val of_list : elt list -> t
-    val to_seq_from : elt -> t -> elt Seq.t
-    val to_seq : t -> elt Seq.t
-    val add_seq : elt Seq.t -> t -> t
-    val of_seq : elt Seq.t -> t
   end
 module KripkeS :
   sig
@@ -286,10 +266,6 @@ module KripkeS :
         val find_last : (elt -> bool) -> t -> elt
         val find_last_opt : (elt -> bool) -> t -> elt option
         val of_list : elt list -> t
-        val to_seq_from : elt -> t -> elt Seq.t
-        val to_seq : t -> elt Seq.t
-        val add_seq : elt Seq.t -> t -> t
-        val of_seq : elt Seq.t -> t
       end
     type kripke = (SV.t * S.t) M.t
 

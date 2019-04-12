@@ -2,7 +2,6 @@ open Formule
 open Poor_formule
 open Automata
 open Kripke
-open Either
 open Cfc
 
 module Make (K : Kripke.K) = struct
@@ -12,7 +11,7 @@ module Make (K : Kripke.K) = struct
 
   (* Les états du jeu *)
   type game_state =
-    int * ((int * K.SV.elt poor_formule) pbf)
+    int * (int * K.SV.elt poor_formule) pbf
 
   module T =
     struct
@@ -25,7 +24,7 @@ module Make (K : Kripke.K) = struct
   module GM = CFC.GM
   (* Un type de Set avec comme clé des états du jeu *)
   module GS = CFC.GS
-            
+
   (* Le type du jeu *)
   type game = GS.t GM.t
 
@@ -33,10 +32,10 @@ module Make (K : Kripke.K) = struct
 
   (* Convertit un état du jeu en string *)
   let string_of_state i f =
-    let s =
-      string_of_pbf
+    string_of_int i
+    ^ ", "
+    ^ string_of_pbf
         (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
-    in string_of_int i ^ ", " ^ s
 
   (* Renvoit le n-ième élément d'un Set *)
   exception Found_elem of int
@@ -66,8 +65,8 @@ module Make (K : Kripke.K) = struct
         GS.iter
           (function
            | (_,P_pbf (_,x)) -> raise (Found_elem (poids x))
-           | _ -> ()) s in
-      failwith "get_coul"
+           | _ -> ()
+          ) s in failwith "get_coul"
     with
     | Found_elem i -> i
 
@@ -125,6 +124,12 @@ module Make (K : Kripke.K) = struct
     | None -> Some v
     | _ -> x
 
+  let verif_not_only_self_loop m ind =
+    let x = GS.min_elt ind in
+    match gsphi m x with
+    | [(i,_)] -> i != (fst x)
+    | _ -> true
+
   (*
     - m représente la structure de Kripke
     - cfc représente les cfc calculées DANS L'ORDRE TOPOLOGIQUE INVERSE
@@ -134,15 +139,17 @@ module Make (K : Kripke.K) = struct
   let get_win (m : K.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
     (* Fonction appelée sur chaque CFC avec un accumulateur représentant la réponse "partielle" *)
     let aux computed (ind,_) =
-      if GS.cardinal ind = 1 && (let x = GS.min_elt ind in [x] != gsphi m x )
+      if GS.cardinal ind = 1 && (verif_not_only_self_loop m ind)
       then
-        let elem = GS.min_elt ind in
+        begin
+          let elem = GS.min_elt ind in
         let player = get_player (snd elem) in
         let xs = gsphi m elem in
         GM.add
           elem
           (if exists_in_succ computed player xs then player else get_other player)
           computed
+        end
       else (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans le même CFC *)
         let gamma = if (get_coul ind) mod 2 = 0 then Eve else Adam in
         let gammabarre = get_other gamma in
@@ -204,7 +211,8 @@ module Make (K : Kripke.K) = struct
   let export_game_checked phi m start printer filename =
     let g = gen_all_game m phi start in
     let win = get_win m (CFC.to_cfc gsphi m (start, automtau m start phi)) in
-    write_game_into_file filename printer g (Some win)
+    write_game_into_file filename printer g (Some win);
+    Eve = GM.find (start, automtau m start phi) win
 
   (* La fonction de model-checking *)
   let check phi m start =
