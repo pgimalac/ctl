@@ -6,6 +6,5 @@ module Make :
 functor (K : Kripke.K) ->
 sig
   val marquage : K.SV.elt poor_formule -> K.kripke -> bool Kripke.M.t
-  val check :
-    K.SV.elt poor_formule -> K.kripke -> Kripke.M.key -> bool
+  val check : K.SV.elt poor_formule -> K.kripke -> Kripke.M.key -> bool
 end

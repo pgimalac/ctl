@@ -45,11 +45,9 @@ module Make (K : Kripke.K) = struct
     | TempBinop (b, psi1, psi2) ->
        begin
          match b with
-         | AW -> (* A phi U psi == (A phi U psi) \/ (AG phi) *)
-            (* AG phi == neg (E True U (neg phi)) *)
-            let a' = marquage (TempBinop (AU, psi1, psi2)) m in
-            let b' = M.map not (marquage (TempBinop (EU, B true, neg psi1)) m) in
-            M.mapi (fun k e -> e || (M.find k b')) a'
+         | AW -> (* A phi W psi == not (E (not psi) U (not psi /\ neg psi))*)
+            let npsi2 = neg psi2 in
+            M.map not (marquage (TempBinop (EU, npsi2, Binop (And, npsi2, neg psi1))) m)
          | EW -> (* EW == Or (eg psi1, EU psi1 psi2) *)
             let a' = M.map not (marquage (af (neg psi1)) m) in
             let b' = marquage (TempBinop (EU, psi1,psi2)) m in

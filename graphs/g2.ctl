@@ -4,4 +4,4 @@
 4 : : 5 2 (* État sans étiquette *)
 5 : d : 5
 6 : b d : 1
-7 : z : (* État inaccessible *)
+7 : z : 7 (* État inaccessible *)

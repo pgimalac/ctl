@@ -1,3 +1,4 @@
+EX (A a W c)
 EG a
 E a W z
 E a U c
