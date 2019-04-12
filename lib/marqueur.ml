@@ -89,7 +89,7 @@ module Make (K : Kripke.K) = struct
             let mpsi1 = marquage psi1 m in
             let mpsi2 = marquage psi2 m in
             let todo = ref [] in
-            let res = (* Map (rex, nb) *)
+            let res = (* Map (res, nb) *)
               M.mapi
                 (fun q (_,s) ->
                   if M.find q mpsi2
@@ -97,6 +97,7 @@ module Make (K : Kripke.K) = struct
                     todo := q :: !todo;
                   (false, S.cardinal s)
                 ) m in
+            let todo = List.rev !todo in
             let rec tantque todo res =
               match todo with
               | [] -> M.map fst res
@@ -108,7 +109,9 @@ module Make (K : Kripke.K) = struct
                        if S.mem q s
                        then
                          let newqnb = ref (true,0) in
-                         let res = M.update q' (opt_map (fun (x,y) -> newqnb := (x,y-1); !newqnb)) res in
+                         let res =
+                           M.update q'
+                             (opt_map (fun (x,y) -> newqnb := (x,y-1); !newqnb)) res in
                          if (snd !newqnb = 0) && (M.find q' mpsi1) && not (fst !newqnb)
                          then (insert_no_dup_in_sorted q' newlist,res)
                          else (newlist,res)
@@ -116,7 +119,7 @@ module Make (K : Kripke.K) = struct
                      )
                      m (xs,res) in
                  tantque newlist res
-            in tantque !todo res
+            in tantque todo res
        end
 
   let check phi g x = M.find x (marquage phi g)
