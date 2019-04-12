@@ -63,10 +63,16 @@ module Make (K : Kripke.K) = struct
        | B_pbf _ -> []
 
   (* Renvoit peut-être la couleur de l'état *)
-  let get_coul ((_,c) : game_state) =
-    match c with
-    | Left x -> Some (poids x)
-    | Right _ -> None
+  let get_coul s =
+    try
+      let _ =
+        GS.iter
+          (function
+           | (_,Left x) -> raise (Found_elem (poids x))
+           | _ -> ()) s in
+      failwith "get_coul"
+    with
+    | Found_elem i -> i
 
   (* Renvoit le joueur correspondant à l'état *)
   let get_player x =
@@ -134,26 +140,22 @@ module Make (K : Kripke.K) = struct
   let get_win (m : K.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
     (* Fonction appelée sur chaque CFC avec un accumulateur représentant la réponse "partielle" *)
     let aux computed (ind,_) =
-      let gamma' =
-        if GS.cardinal ind = 1
-        then None
-        else get_coul (GS.min_elt ind) in (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans la CFC *)
-      match gamma' with
-      | None -> (* Il n'y a pas de boucles, c'est un état seul *)
-         let elem = GS.min_elt ind in
-         let player = get_player (snd elem) in
-         let xs = gsphi m elem in
-         GM.add
-           elem
-           (if exists_in_succ computed player xs then player else get_other player)
-           computed
-      | Some x ->
-         let gamma = if x mod 2 = 0 then Eve else Adam in
-         let gammabarre = get_other gamma in
-         GS.fold
-           (fun v acc -> GM.update v (update_option gamma) acc)
-           ind
-           (propagate_gammabare m ind gammabarre computed)
+      if GS.cardinal ind = 1
+      then
+        let elem = GS.min_elt ind in
+        let player = get_player (snd elem) in
+        let xs = gsphi m elem in
+        GM.add
+          elem
+          (if exists_in_succ computed player xs then player else get_other player)
+          computed
+      else (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans le même CFC *)
+        let gamma = if (get_coul ind) mod 2 = 0 then Eve else Adam in
+        let gammabarre = get_other gamma in
+        GS.fold
+          (fun v acc -> GM.update v (update_option gamma) acc)
+          ind
+          (propagate_gammabare m ind gammabarre computed)
     in List.fold_left aux GM.empty cfc
 
   (* Génère totalement un jeu fini *)
