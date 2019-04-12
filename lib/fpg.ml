@@ -210,7 +210,8 @@ module Make (K : Kripke.K) = struct
   let export_game_checked phi m start printer filename =
     let g = gen_all_game m phi start in
     let win = get_win m (CFC.to_cfc gsphi m (start, Left phi)) in
-    write_game_into_file filename printer g (Some win)
+    write_game_into_file filename printer g (Some win);
+    Eve = GM.find (start, Left phi) win
 
   (* La fonction de model-checking *)
   let check phi m start =

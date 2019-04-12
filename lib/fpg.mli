@@ -29,7 +29,7 @@ sig
      (string poor_formule,
       (int * string poor_formule) pbf)
        either) ->
-    string -> unit
+    string -> bool
 
   val check : K.SV.elt poor_formule -> K.kripke -> int -> bool
 end
