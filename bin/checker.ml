@@ -50,7 +50,7 @@ let main () =
     let check = check_formula_in fig start in
     let file = List.map parse_formule (strings_of_file f) in
     let random_formulas = generate_formulas 4 100 labels in
-    List.iter check (random_formulas @ file);
+    List.iter check (file @ random_formulas);
     print_newline ()
   ) tests
 
