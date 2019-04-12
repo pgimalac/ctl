@@ -12,7 +12,7 @@ module Make (K : Kripke.K) = struct
 
   (* Les états du jeu *)
   type game_state =
-    int * (K.SV.elt poor_formule, (int * K.SV.elt poor_formule) pbf) either
+    int * ((int * K.SV.elt poor_formule) pbf)
 
   module T =
     struct
@@ -33,11 +33,9 @@ module Make (K : Kripke.K) = struct
 
   (* Convertit un état du jeu en string *)
   let string_of_state i f =
-    let s = match f with
-      | Left f -> string_of_formule (fun x -> x) f
-      | Right f ->
-         string_of_pbf
-           (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
+    let s =
+      string_of_pbf
+        (fun (i,j) -> "(" ^ string_of_int i ^ ", " ^  string_of_formule (fun x -> x) j ^")") f
     in string_of_int i ^ ", " ^ s
 
   (* Renvoit le n-ième élément d'un Set *)
@@ -49,18 +47,17 @@ module Make (K : Kripke.K) = struct
     with
     | Found_elem i -> i
 
+  let automtau m s q = Autom.tau (K.deg s m) (q, K.etiquettes s m)
+
   (* La fonction de transition du jeu*)
-  let gsphi (m : K.kripke)  ((s,qt) : game_state) : game_state list =
+  let gsphi (m : K.kripke) ((s,qt) : game_state) : game_state list =
     match qt with
-    | Left q ->
-       [(s, Right (Autom.tau (K.deg s m) (q, K.etiquettes s m)))]
-    | Right t ->
-       match t with
-       | Et_pbf (a,b) | Ou_pbf (a,b) ->
-          [(s, Right a); (s, Right b)]
-       | P_pbf (c,q) ->
-          [(set_nth (c-1) (K.succ s m),Left q)]
-       | B_pbf _ -> []
+    | Et_pbf (a,b) | Ou_pbf (a,b) ->
+       [(s, a); (s, b)]
+    | P_pbf (c,q) ->
+       let newS = c-1 in
+       [(set_nth newS (K.succ s m), automtau m newS q)]
+    | B_pbf _ -> []
 
   (* Renvoit peut-être la couleur de l'état *)
   let get_coul s =
@@ -68,20 +65,17 @@ module Make (K : Kripke.K) = struct
       let _ =
         GS.iter
           (function
-           | (_,Left x) -> raise (Found_elem (poids x))
+           | (_,P_pbf (_,x)) -> raise (Found_elem (poids x))
            | _ -> ()) s in
       failwith "get_coul"
     with
     | Found_elem i -> i
 
   (* Renvoit le joueur correspondant à l'état *)
-  let get_player x =
-    match x with
-    | Left _ -> Eve
-    | Right q ->
-       match q with
-       | B_pbf false | Ou_pbf (_,_) -> Eve
-       | _ -> Adam
+  let get_player q =
+    match q with
+    | B_pbf false | Ou_pbf (_,_) -> Eve
+    | _ -> Adam
 
   (* Renvoit l'autre joueur *)
   let get_other x =
@@ -167,7 +161,7 @@ module Make (K : Kripke.K) = struct
         let xs = gsphi m gs in
         let res = GM.add gs (GS.of_list xs) res in
         List.fold_left insert res xs in
-    insert GM.empty (start,Left phi)
+    insert GM.empty (start, automtau m start phi)
 
   (* Permet d'écrire un jeu dans un fichier au format DOT *)
   let write_game_into_file file printer (game : game) (sol : (winner GM.t) option) =
@@ -209,10 +203,10 @@ module Make (K : Kripke.K) = struct
   (* Permet de créer un jeu de partié faible, le résout et l'écrit au format DOT dans un fichier *)
   let export_game_checked phi m start printer filename =
     let g = gen_all_game m phi start in
-    let win = get_win m (CFC.to_cfc gsphi m (start, Left phi)) in
+    let win = get_win m (CFC.to_cfc gsphi m (start, automtau m start phi)) in
     write_game_into_file filename printer g (Some win)
 
   (* La fonction de model-checking *)
   let check phi m start =
-    Eve = GM.find (start, Left phi) (get_win m (CFC.to_cfc gsphi m (start, Left phi)))
+    Eve = GM.find (start, automtau m start phi) (get_win m (CFC.to_cfc gsphi m (start, automtau m start phi)))
 end

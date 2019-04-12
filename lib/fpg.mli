@@ -8,27 +8,16 @@ sig
 
   type game_state =
     int *
-      (K.SV.elt poor_formule,
-       (int * K.SV.elt poor_formule) pbf)
-        either
-
-  val string_of_state :
-    int ->
-    (string poor_formule, (int * string poor_formule) pbf)
-      either -> string
+      (int * K.SV.elt poor_formule) pbf
 
   val gsphi : K.kripke -> game_state -> game_state list
 
   val export_game_checked :
-    K.SV.elt poor_formule ->
+    K.SV.elt Poor_formule.poor_formule ->
     K.kripke ->
     int ->
-    ((K.SV.elt poor_formule,
-      (int * K.SV.elt poor_formule) pbf)
-       either ->
-     (string poor_formule,
-      (int * string poor_formule) pbf)
-       either) ->
+    ((int * K.SV.elt Poor_formule.poor_formule) Automata.pbf ->
+     (int * ('a, string) Formule.formule) Automata.pbf) ->
     string -> unit
 
   val check : K.SV.elt poor_formule -> K.kripke -> int -> bool
