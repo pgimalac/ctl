@@ -38,7 +38,7 @@ let check_formula_in kripke start form =
     ("* Jeu      : " ^ string_of_bool fpg);
   assert (marq == fpg)
 
-let tests = [("graphs/g1.ctl", "graphs/f1.ctl", 0); ("graphs/g2.ctl", "graphs/f2.ctl", 1); ("graphs/g3.ctl", "graphs/f3.ctl", 0)]
+let tests = [("graphs/g2.ctl", "graphs/f2.ctl", 1)]
 
 let main () =
   List.iteri (fun i (g, f, start) ->
@@ -46,11 +46,9 @@ let main () =
     let s = "graph " ^ num ^ ":" in
     print_endline s;
     let fig = extract g in
-    let labels = KripkeS.get_labels fig in
     let check = check_formula_in fig start in
     let file = List.map parse_formule (strings_of_file f) in
-    let random_formulas = generate_formulas 4 100 labels in
-    List.iter check (file @ random_formulas);
+    List.iter check (file);
     print_newline ()
   ) tests
 

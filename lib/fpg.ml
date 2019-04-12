@@ -55,8 +55,8 @@ module Make (K : Kripke.K) = struct
     | Et_pbf (a,b) | Ou_pbf (a,b) ->
        [(s, a); (s, b)]
     | P_pbf (c,q) ->
-       let newS = c-1 in
-       [(set_nth newS (K.succ s m), automtau m newS q)]
+       let newS = set_nth (c-1) (K.succ s m) in
+       [(newS, automtau m newS q)]
     | B_pbf _ -> []
 
   (* Renvoit peut-être la couleur de l'état *)
@@ -134,7 +134,7 @@ module Make (K : Kripke.K) = struct
   let get_win (m : K.kripke) (cfc : (GS.t (* états *) * S.t (* succ *)) list) : winner GM.t =
     (* Fonction appelée sur chaque CFC avec un accumulateur représentant la réponse "partielle" *)
     let aux computed (ind,_) =
-      if GS.cardinal ind = 1
+      if GS.cardinal ind = 1 && (let x = GS.min_elt ind in [x] != gsphi m x )
       then
         let elem = GS.min_elt ind in
         let player = get_player (snd elem) in
