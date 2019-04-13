@@ -34,7 +34,7 @@ On définit aussi d'autres opérateurs utiles :
 	\item $\mbox{AG } \phi := \neg (\mbox{EF } (\neg \phi))$
 \end{itemize}
 
-\subsection{Sémantique}
+\subsection{Sémantique de CTL}
 Les modèles de CTL sont appelés des \emph{structure de Kripke}.
 
 \subsubsection{Structures de Kripke}
@@ -44,7 +44,22 @@ Une structure de Kripke sera ici identifié à la donnée de $(Q,T,q_0,l)$ où:
 \item $l : Q \to \Omega$ est une fonction d'étiquetage.
 \end{itemize}
 
-\subsubsection{Sémantique de CTL}
+\subsubsection{Exécution}
+Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke.
+On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$.
+
+% TODO toutes les exécutions sont inifines
+
+\subsubsection{Satisfaction}
+Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke, $\phi$ une formule de CTL et $\sigma$ une exécution de $\mathcal{A}$.\\
+Pour tout $i \in \mathbb{N}$, on dira que "$\phi$ est vraie au temps $i$ de l'exécution de $\sigma$", et on notera $A,\sigma,i \vDash \phi$ (on omettra souvent la donnée de $\mathcal{A}$ dans notre écriture) si et seulement si, par induction sur $\phi$:\\
+
+\begin{itemize}
+	% TODO bot and top
+\item $\phi = p$: $p \in l (\sigma(i))$
+\item $\phi = \neg \psi$: $\sigma,i \nvDash \psi$
+\item
+\end{itemize}
 
 
 \subsection{Négation}
