@@ -16,18 +16,42 @@ CTL (pour \textit{Computation Tree Logic}) est une logique temporelle ; CTL cont
 Elle permet par exemple d'exprimer des propriétés comme ``il existe une exécution telle que la variable \textit{a} soit toujours vraie''.
 
 \subsection{Grammaire}
-La grammaire de CTL est définie de la manière suivante:
+La grammaire de CTL est définie de la manière suivante :
 \begin{align*}
-\phi &::= \bot \mid \top \mid p \mid \neg p \mid \phi\land\phi \mid \phi\lor\phi \mid \\
+\phi &::= \bot \mid \top \mid p \mid \neg \phi \mid \phi\land\phi \mid \phi\lor\phi \mid \\
 &\quad \mbox{AX }\phi \mid \mbox{EX }\phi \mid
 \mbox{A }\phi \mbox{ W } \phi \mid \mbox{E }\phi \mbox{ W } \phi \mid
 \mbox{A }\phi \mbox{ U } \phi \mid \mbox{E }\phi \mbox{ U } \phi
 \end{align*}
 
-On peut définir la fonction $neg:CTL \to CTL$:
+Ici, $p$ représente une proposition atomique d'un ensemble $\Omega$.
+
+On définit aussi d'autres opérateurs utiles :
+\begin{itemize}
+	\item $\mbox{AF } \phi := \mbox{A } \top \mbox{ U } \phi$
+	\item $\mbox{EG } \phi := \neg (\mbox{AF } (\neg \phi))$
+	\item $\mbox{EF } \phi := \mbox{E } \top \mbox{ U } \phi$
+	\item $\mbox{AG } \phi := \neg (\mbox{EF } (\neg \phi))$
+\end{itemize}
+
+\subsection{Sémantique}
+Les modèles de CTL sont appelés des \emph{structure de Kripke}.
+
+\subsubsection{Structures de Kripke}
+Une structure de Kripke sera ici identifié à la donnée de $(Q,T,q_0,l)$ où:
+\begin{itemize}
+\item Le couple $(Q,T, q_0)$ est un automate : $Q$ est un ensemble d'états et $T \subseteq Q \times Q$ est l'ensemble des transitions. $q_0 \in Q$ représente l'état de départ.
+\item $l : Q \to \Omega$ est une fonction d'étiquetage.
+\end{itemize}
+
+\subsubsection{Sémantique de CTL}
+
+
+\subsection{Négation}
+On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une formule de CTL de la forme $\neg \phi$ en formule équivalente où toutes les négations sont sur les littéraux :
 \begin{align*}
 &neg(\top) = \bot \quad neg(\bot) = \top\\
-&neg(p) = \neg p \quad neg(\neg p) = p\\
+&neg(p) = \neg p \quad neg(\neg \phi) = \phi\\
 &neg(a \lor b) = neg(a) \land neg(b)\\
 &neg(a \land b) = neg(a) \lor neg(b)\\
 &neg(\mbox{AX } \phi) = \mbox{EX }neg(\phi)\\
@@ -37,14 +61,6 @@ On peut définir la fonction $neg:CTL \to CTL$:
 &neg(\mbox{E } \phi \mbox{ W } \psi) =\mbox{A } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))\\
 &neg(\mbox{A } \phi \mbox{ W } \psi) =\mbox{E } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))
 \end{align*}
-
-On peut alors définir d'autres opérations :
-\begin{itemize}
-	\item $\mbox{AF } \phi := \mbox{A } \top \mbox{ U } \phi$
-	\item $\mbox{EG } \phi := neg(\mbox{AF } (neg (\phi)))$
-	\item $\mbox{EF } \phi := \mbox{E } \top \mbox{ U } \phi$
-	\item $\mbox{AG } \phi := neg(\mbox{EF } (neg (\phi)))$
-\end{itemize}
 
 \section{Model-checking de CTL: parcours de graphe}
 
