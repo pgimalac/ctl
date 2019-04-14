@@ -25,14 +25,14 @@ let ou x y =
      | B_pbf b -> if b then y else x
      | _ -> Ou_pbf (x,y)
 
-let string_of_pbf stringer f =
+let string_of_pbf stringer =
   let rec aux f =
     match f with
     | P_pbf x -> stringer x
     | Et_pbf (x,y) -> "Et_pbf (" ^ aux x  ^ ") (" ^ aux y ^ ")"
     | Ou_pbf (x,y) -> "Ou_pbf (" ^ aux x  ^ ") (" ^ aux y ^ ")"
     | B_pbf x -> string_of_bool x
-  in aux f
+  in aux
 
 module Make (K : Kripke.K) = struct
 
@@ -77,7 +77,7 @@ module Make (K : Kripke.K) = struct
        let right' =
          match t with
          | EU | EW -> mult false d phi
-         | AU | AW ->  mult true d phi in
+         | AU | AW -> mult true d phi in
        ou left (et left' right')
 end
 

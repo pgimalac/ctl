@@ -141,15 +141,13 @@ module Make (K : Kripke.K) = struct
     let aux computed (ind,_) =
       if GS.cardinal ind = 1 && (verif_not_only_self_loop m ind)
       then
-        begin
-          let elem = GS.min_elt ind in
+        let elem = GS.min_elt ind in
         let player = get_player (snd elem) in
         let xs = gsphi m elem in
         GM.add
           elem
           (if exists_in_succ computed player xs then player else get_other player)
           computed
-        end
       else (* Le poids d'un état au hasard, valide car tous les états ont la même couleur dans le même CFC *)
         let gamma = if (get_coul ind) mod 2 = 0 then Eve else Adam in
         let gammabarre = get_other gamma in
