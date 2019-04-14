@@ -60,12 +60,22 @@ $\sigma,i \vDash p$ &ssi& $p \in l (\sigma(i))$\\
 $\sigma,i \vDash \neg \psi$ &ssi& $\sigma,i \nvDash \psi$\\
 $\sigma,i \vDash \psi_1 \land \psi_2$ &ssi& $\sigma,i \vDash \psi_1$ et $\sigma,i \vDash \psi_2$\\
 $\sigma,i \vDash \psi_1 \lor \psi_2$ &ssi& $\sigma,i \vDash \psi_1$ ou $\sigma,i \vDash \psi_2$\\
-$\sigma,i \vDash \mbox{EX } \psi$ &ssi& $\exists \sigma'$, $\forall j \in \mathbb{N}$, $j \leq i$, $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
-$\sigma,i \vDash \mbox{AX } \psi$ &ssi& $\forall \sigma'$, $\forall j \in \mathbb{N}$, $j \leq i$, $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& \\
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& \\
-$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& \\
-$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& \\
+$\sigma,i \vDash \mbox{EX } \psi$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
+$\sigma,i \vDash \mbox{AX } \psi$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
+
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
+& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
+& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
+& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+& & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
+
+$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
+& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+& & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
 
 \end{tabular}
 
@@ -88,4 +98,5 @@ On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une for
 \section{Model-checking de CTL: parcours de graphe}
 
 \section{Model-checking de CTL: jeux faibles de parité}
+
 \end{document}

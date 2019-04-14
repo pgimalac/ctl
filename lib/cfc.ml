@@ -25,15 +25,14 @@ module Make (K : Kripke.K) (T: Set.OrderedType) = struct
     { state = state; transitions = state_list; cfc = -1; index = None; onStack = false; lowlink = -1 }
 
   let partition_while predicate =
-    let rec aux partition l =
-      match l with
+    let rec aux partition = function
       | h :: q ->
          if predicate h
          then List.rev (h :: partition), q
          else aux (h :: partition) q
       | [] -> List.rev partition, []
     in aux []
-  
+
   (* the main part of the algorithm *)
   let rec strong_connect map v (cfc, index, stack) =
     (* set the nodes's values *)
@@ -115,5 +114,5 @@ module Make (K : Kripke.K) (T: Set.OrderedType) = struct
       ) cfc;
     Printf.fprintf st_out "}\n";
     close_out st_out
-  
+
 end
