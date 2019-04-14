@@ -48,8 +48,6 @@ Une structure de Kripke sera ici identifié à la donnée de $(Q,T,q_0,l)$ où:
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke.
 On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$.
 
-% TODO toutes les exécutions sont inifines
-
 \subsubsection{Satisfaction}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke, $\phi$ une formule de CTL et $\sigma$ une exécution de $\mathcal{A}$.\\
 Pour tout $i \in \mathbb{N}$, on dira que "$\phi$ est vraie au temps $i$ de l'exécution de $\sigma$", et on notera $A,\sigma,i \vDash \phi$ (on omettra souvent la donnée de $\mathcal{A}$ dans notre écriture) si et seulement si, par induction sur $\phi$:\\
@@ -58,7 +56,8 @@ Pour tout $i \in \mathbb{N}$, on dira que "$\phi$ est vraie au temps $i$ de l'ex
 	% TODO bot and top
 \item $\phi = p$: $p \in l (\sigma(i))$
 \item $\phi = \neg \psi$: $\sigma,i \nvDash \psi$
-\item
+\item $\phi = \psi_1 \lor \psi_2$: $\sigma,i \vDash \psi_1$ ou $\sigma,i \vDash \psi_2$
+\item $\phi = \psi_1 \land \psi_2$: $\sigma,i \vDash \psi_1$ et $\sigma,i \vDash \psi_2$
 \end{itemize}
 
 
