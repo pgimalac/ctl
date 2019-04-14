@@ -4,6 +4,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+
 \author{Pierre Gimalac \& Alexandre Moine\\\small{Encadré par François Laroussinie}}
 \title{Rapport de Projet\\Mathématiques-Informatique}
 \begin{document}
@@ -50,15 +51,23 @@ On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (
 
 \subsubsection{Satisfaction}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke, $\phi$ une formule de CTL et $\sigma$ une exécution de $\mathcal{A}$.\\
-Pour tout $i \in \mathbb{N}$, on dira que "$\phi$ est vraie au temps $i$ de l'exécution de $\sigma$", et on notera $A,\sigma,i \vDash \phi$ (on omettra souvent la donnée de $\mathcal{A}$ dans notre écriture) si et seulement si, par induction sur $\phi$:\\
-
-\begin{itemize}
+Pour tout $i \in \mathbb{N}$, on dira que "$\phi$ est vraie au temps $i$ de l'exécution de $\sigma$" si et seulement si $A,\sigma,i \vDash \phi$. On omettra souvent la donnée de $\mathcal{A}$ dans notre écriture.\\
+On définit $\sigma,i \vDash \phi$ par induction sur $\phi$:\\
+\\
+\begin{tabular}{lcl}
 	% TODO bot and top
-\item $\phi = p$: $p \in l (\sigma(i))$
-\item $\phi = \neg \psi$: $\sigma,i \nvDash \psi$
-\item $\phi = \psi_1 \lor \psi_2$: $\sigma,i \vDash \psi_1$ ou $\sigma,i \vDash \psi_2$
-\item $\phi = \psi_1 \land \psi_2$: $\sigma,i \vDash \psi_1$ et $\sigma,i \vDash \psi_2$
-\end{itemize}
+$\sigma,i \vDash p$ &ssi& $p \in l (\sigma(i))$\\
+$\sigma,i \vDash \neg \psi$ &ssi& $\sigma,i \nvDash \psi$\\
+$\sigma,i \vDash \psi_1 \land \psi_2$ &ssi& $\sigma,i \vDash \psi_1$ et $\sigma,i \vDash \psi_2$\\
+$\sigma,i \vDash \psi_1 \lor \psi_2$ &ssi& $\sigma,i \vDash \psi_1$ ou $\sigma,i \vDash \psi_2$\\
+$\sigma,i \vDash \mbox{EX } \psi$ &ssi& $\exists \sigma'$, $\forall j \in \mathbb{N}$, $j \leq i$, $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
+$\sigma,i \vDash \mbox{AX } \psi$ &ssi& $\forall \sigma'$, $\forall j \in \mathbb{N}$, $j \leq i$, $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& \\
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& \\
+$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& \\
+$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& \\
+
+\end{tabular}
 
 
 \subsection{Négation}
