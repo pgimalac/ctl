@@ -98,5 +98,14 @@ On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une for
 \section{Model-checking de CTL: parcours de graphe}
 
 \section{Model-checking de CTL: jeux faibles de parité}
+Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une structure de Kripke où deux joueurs (nommés Eve et Adam) s'affrontent, et Eve gagne si et seulement si la formule est vraie dans la structure donnée. O
+
+\subsection{Jeux faibles de parité}
+On appelle \emph{jeu faible de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
+\begin{itemize}
+\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Eve (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \cup V_a$.
+\item $R \subseteq V \times V$ est une relation de transition.
+\item $c : V \to (\mathbb{N} \cup \{\bot\})$ est une fonction qui associe une couleur ou $\bot$ à chaque état
+\end{itemize}
 
 \end{document}
