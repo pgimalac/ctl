@@ -14,7 +14,7 @@
 
 \section{CTL, une logique temporelle}
 \subsection{Définition}
-CTL (pour \textit{Computation Tree Logic}) est une logique temporelle ; CTL contient la logique propositionnelle usuelle et ajoute des opérateurs temporels
+CTL (pour \textit{Computation Tree Logic}) est une logique temporelle ; CTL contient la logique propositionnelle usuelle et ajoute des opérateurs temporels.
 
 Elle permet par exemple d'exprimer des propriétés comme ``il existe une exécution telle que la variable \textit{a} soit toujours vraie''.
 
@@ -80,6 +80,26 @@ $\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma'$ tel
 & & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
 \end{tabular}
 
+\subsection{Satisfaction morale}
+On peut donner un sens moral aux formules de CTL:\\
+
+\begin{tabular}{lcl}
+$\sigma,i \vDash \top$ && est toujours vrai\\
+$\sigma,i \vDash \bot$ && n'est jamais vrai\\
+$\sigma,i \vDash p$ &ssi& $p$ est une étiquette de $\sigma(i)$\\
+$\sigma,i \vDash \neg \psi$ &ssi& $\sigma(i)$ ne vérifie pas $\phi$\\
+$\sigma,i \vDash \psi_1 \land \psi_2$ &ssi& $\sigma(i)$ vérifie $\phi_1$ et $\sigma(i)$ vérifie $\phi_2$\\
+$\sigma,i \vDash \psi_1 \lor \psi_2$ &ssi& $\sigma(i)$ vérifie $\phi_1$ ou $\sigma(i)$ vérifie $\phi_2$\\
+$\sigma,i \vDash \mbox{EX } \psi$ &ssi& il existe un successeur de $\sigma(i)$ vérifiant $\psi$\\
+$\sigma,i \vDash \mbox{AX } \psi$ &ssi& tous les successeurs de $\sigma(i)$ vérifient $\psi$\\
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& il existe un chemin à partir de $\sigma(i)$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
+
+$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& pour tout chemin partant de $\sigma(i)$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
+
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& il existe un chemin à partir de $\sigma(i)$ tel que $\psi_1$\\&& est vrai jusqu'à ce que, peut-être, $\psi_2$ le soit\\
+
+$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin partant de $\sigma(i)$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\\
+\end{tabular}
 
 \subsection{Négation}
 On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une formule de CTL de la forme $\neg \phi$ en formule équivalente où toutes les négations sont sur les littéraux :
