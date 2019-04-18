@@ -5,8 +5,6 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
-\newtheorem{prop}{Proposition}
-
 \author{Pierre Gimalac \& Alexandre Moine\\\small{Encadré par François Laroussinie}}
 \title{Rapport de Projet\\Mathématiques-Informatique}
 \begin{document}
@@ -78,7 +76,6 @@ $\sigma,i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma'$, $\
 $\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
 & & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
 & & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
-
 \end{tabular}
 
 
@@ -121,8 +118,18 @@ On appelle un jeu de parité $G = (V_E,V_A,R,c)$ un \emph{jeu faible de parité}
 $\forall i, 1 \leq i \leq k$, $ \forall x \in V_i$, $\forall (x,y) \in R$ on a $ y \in V_j, j \geq i$.
 \end{itemize}
 
-\begin{prop}
-Soit $G$ un jeu faible de parité. Alors il existe un algorithme déterministe de complexité en temps en $O(|V|)$ pour décider s'il existe une stratégie gagnante pour l'un des joueurs.
-\end{prop}
+\subsection{Formule booléennes positives}
+On définit l'ensemble des formules booléennes sur un ensemble $\Omega$ (noté $PBF(\Omega) $) de la manière suivante :
+$\phi := \bot \mid \top \mid p \mid \psi_1 \lor \psi_2 \mid  \psi_1 \land \psi_2$
+
+\subsection{Algorithme de construction du jeu}
+Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et que Eve gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
+
+Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke.
+On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
+\begin{itemize}
+	\item $V = PBF(Q \times CTL) $ %todo vérif
+
+\end{itemize}
 
 \end{document}
