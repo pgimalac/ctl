@@ -128,15 +128,25 @@ Nous allons maintenant définir un algorithme qui permet de construire un jeu de
 Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke.
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
-	\item $V = PBF(Q \times CTL) $ %todo vérif
+	\item $V = Q \times PBF(Q \times CTL) $ %todo vérif
 	\item $V_E = \{i \mid (i, \bot )\} \cup \{i, \psi_1, \psi_2 \mid (i, \psi_1 \lor \psi_2) \}$
 	\item $V_A = V \backslash V_E$
 	\item $\forall s \in Q, \forall v \in V$
 	\begin{itemize}
-		\item Si $v \in Q \times CTL$, $c(s,q) = poids(q)$
-		\item Sinon, $c(s,q) = \bot$  %todo poids
+		\item Si $v \in Q \times CTL$, $c(s,v) = poids(v)$
+		\item Sinon, $c(s,v) = \bot$  %todo poids
 	\end{itemize}
 \end{itemize}
 
-On peut maintenant définir $R$, la relation de transition. On le fait par induction sur les formules booléennes positives:
+On peut maintenant définir $R$, la relation de transition, en définissant la fonction $succ : V \to [V]$ qui à un état associe la liste de ses successeurs.\\
+
+On commence par définir une fonction $\tau_d : CTL \times \Omega \to V$ qui va s'occuper du cas des littéraux de $V$: TODO\\
+
+Cela permet donc de définir $succ$:
+\begin{itemize}
+\item$ succ(s, \bot) = succ(s, \top) = []$
+\item $succ(s,\phi \land \psi) = succ(s, \phi \lor \psi) = [(s,\phi), (s,\psi)]$
+\item $succ(s,(c,q)) = [(s', \tau_{deg (s')}(q, l(s')))]$ où $s'$ est la $c$-ème transition partant de $q$ dans $T$.
+\end{itemize}
+
 \end{document}
