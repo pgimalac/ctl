@@ -129,7 +129,14 @@ Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke.
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
 	\item $V = PBF(Q \times CTL) $ %todo vérif
-
+	\item $V_E = \{i \mid (i, \bot )\} \cup \{i, \psi_1, \psi_2 \mid (i, \psi_1 \lor \psi_2) \}$
+	\item $V_A = V \backslash V_E$
+	\item $\forall s \in Q, \forall v \in V$
+	\begin{itemize}
+		\item Si $v \in Q \times CTL$, $c(s,q) = poids(q)$
+		\item Sinon, $c(s,q) = \bot$  %todo poids
+	\end{itemize}
 \end{itemize}
 
+On peut maintenant définir $R$, la relation de transition. On le fait par induction sur les formules booléennes positives:
 \end{document}
