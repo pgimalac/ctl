@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
+\usepackage{enumerate}
 
 \author{Pierre Gimalac \& Alexandre Moine\\\small{Encadré par François Laroussinie}}
 \title{Rapport de Projet\\Mathématiques-Informatique}
@@ -95,12 +96,11 @@ On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une for
 &neg(\mbox{A } \phi \mbox{ W } \psi) =\mbox{E } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))
 \end{align*}
 
-\section{Model-checking de CTL: parcours de graphe}
-
 \section{Model-checking de CTL: jeux faibles de parité}
 Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une structure de Kripke où deux joueurs (nommés Eve et Adam) s'affrontent, et Eve gagne si et seulement si la formule est vraie dans la structure donnée.
 
 \subsection{Jeux de parité}
+\label{fpg}
 On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \begin{itemize}
 \item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Eve (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \sqcup V_a$.
@@ -111,12 +111,13 @@ On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 Une partie est une séquence d'états $\gamma_i$ telle que $\forall i \in I \subseteq \mathbb{N}, (\gamma_i,\gamma_{i+1}) \in R$. Si $I$ est fini, on demande alors que $\gamma_{max(I)}$ n'ait pas de successeurs par $R$.
 
 \subsection{Jeux faibles de parité}
+
 On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement si il existe $V_1$, ..., $V_k$ une partition de $V = V_E \sqcup V_A$ telle que:
-\begin{itemize}
-\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $c(x) = c(y)$
+\begin{enumerate}[a)]
+\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$
 \item La partition représente une convergence du jeu :\\
 $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
-\end{itemize}
+\end{enumerate}
 
 \subsection{Formule booléennes positives}
 On définit l'ensemble des formules booléennes positives sur un ensemble $\Omega$ (noté $PBF(\Omega) $) de la manière suivante :
@@ -133,7 +134,7 @@ On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 	\item $V_A = V \backslash V_E$
 	\item $\forall (s,v) \in V$
 	\begin{itemize}
-		\item Si $v \in Q \times CTL$, $c(s,v) = poids(v)$
+		\item Si $v \in Q \times CTL$, $c(s,v) = poids(v) \mod 2$
 		\item Sinon, $c(s,v) = \bot$  %todo poids
 	\end{itemize}
 \end{itemize}
@@ -148,5 +149,27 @@ Cela permet donc de définir $succ$:
 \item $succ(s,\phi \land \psi) = succ(s, \phi \lor \psi) = [(s,\phi), (s,\psi)]$
 \item $succ(s,(c,q)) = [(s', \tau_{deg (s')}(q, l(s')))]$ où $s'$ est la $c$-ème transition partant de $q$ dans $T$.
 \end{itemize}
+
+\subsubsection{Jeu faible}
+Montrons que le jeu définit par $succ$ et avec comme état initial $(q_0, \phi)$ %todo Ce n'est pas l'état initial
+ est un jeu \emph{faible}, donc qu'il existe une partition finie de $V$ telle que a) et b) (définies en Section \ref{fpg}) soient vraies.
+
+On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ composée des composantes fortement connexes ordonnées dans un ordre topologique (les CFC forment un arbre) du jeu satisfait les conditions.
+
+\paragraph{a)}
+$\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $c(x) \neq \bot$ et $c(y) \neq \bot$. TODO
+
+\paragraph{b)} est trivialement vraie: les $V_i$ sont ordonnées par ordre topologique.
+
+\subsubsection{Jeu correct}
+Montrons maintenant que Eve a une stratégie gagnante dans $G$ si, et seulement si, $\exists \sigma$: $\sigma,q_0 \vDash \phi$.
+
+\paragraph{$\implies$}
+
+\paragraph{$\Longleftarrow$}
+Soit $\sigma$ tel que $\sigma,q_0 \vDash \phi$. On doit en déduire une stratégie gagnante pour Eve.\\
+
+\subsection{Résolution des jeux faibles de parité}
+
 
 \end{document}
