@@ -4,6 +4,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{stmaryrd}
 
 \author{Pierre Gimalac \& Alexandre Moine\\\small{Encadré par François Laroussinie}}
 \title{Rapport de Projet\\Mathématiques-Informatique}
@@ -36,12 +37,12 @@ On définit aussi d'autres opérateurs utiles :
 \end{itemize}
 
 \subsection{Sémantique de CTL}
-Les modèles de CTL sont appelés des \emph{structure de Kripke}.
+Les modèles de CTL sont appelés des \emph{structures de Kripke}.
 
 \subsubsection{Structures de Kripke}
-Une structure de Kripke sera ici identifié à la donnée de $(Q,T,q_0,l)$ où:
+Une structure de Kripke sera ici identifiée à la donnée de $(Q,T,q_0,l)$ où:
 \begin{itemize}
-\item Le couple $(Q,T, q_0)$ est un automate : $Q$ est un ensemble d'états et $T \subseteq Q \times Q$ est l'ensemble des transitions. $q_0 \in Q$ représente l'état de départ.
+\item Le couple $(Q,T, q_0)$ est un automate : $Q$ est un ensemble d'états, $T \subseteq Q \times Q$ est l'ensemble des transitions et $q_0 \in Q$ représente l'état de départ.
 \item $l : Q \to \Omega$ est une fonction d'étiquetage.
 \end{itemize}
 
@@ -64,17 +65,17 @@ $\sigma,i \vDash \mbox{EX } \psi$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $
 $\sigma,i \vDash \mbox{AX } \psi$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
 
 $\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
-& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \llbracket i; k \llbracket$, $\sigma',n \vDash \psi_1$\\
 
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
-& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
+& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \llbracket i; k \llbracket$: $\sigma',n \vDash \psi_1$\\
 
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
-& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma'$ tel que $\forall j \leq i$: $\sigma(j) = \sigma'(j)$,\\
+& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \llbracket i; k \llbracket$: $\sigma',n \vDash \psi_1$\\
 & & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
 
-$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
-& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \mathbb{N}$, $i \leq n \leq k$: $\sigma',n \vDash \psi_1$\\
+$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma'$ tel que $\forall j \leq i$: $\sigma(j) = \sigma'(j)$, \\
+& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \llbracket i; k \llbracket$: $\sigma',n \vDash \psi_1$\\
 & & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
 \end{tabular}
 
@@ -102,24 +103,23 @@ Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une str
 \subsection{Jeux de parité}
 On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \begin{itemize}
-\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Eve (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \cup V_a$.
+\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Eve (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \sqcup V_a$.
 \item $R \subseteq V \times V$ est une relation de transition.
 \item $c : V \to (\mathbb{N} \cup \{\bot\})$ est une fonction qui associe une couleur ou $\bot$ à chaque état.
 \end{itemize}
 
-Une partie est une séquence d'états $\gamma_i$ telle que $\forall i \in I \subseteq \mathbb{N}, (\gamma_i,\gamma_{i+1}) \in R$. Si $I$ est fini, on demande alors $\gamma_{max(I)}$ n'ai pas de successeurs par $R$.
+Une partie est une séquence d'états $\gamma_i$ telle que $\forall i \in I \subseteq \mathbb{N}, (\gamma_i,\gamma_{i+1}) \in R$. Si $I$ est fini, on demande alors que $\gamma_{max(I)}$ n'ait pas de successeurs par $R$.
 
 \subsection{Jeux faibles de parité}
-
-On appelle un jeu de parité $G = (V_E,V_A,R,c)$ un \emph{jeu faible de parité}  si et seulement si il existe $V_1$, ..., $V_k$ une partition de $V = V_E \cup V_A$ telle que:
+On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement si il existe $V_1$, ..., $V_k$ une partition de $V = V_E \sqcup V_A$ telle que:
 \begin{itemize}
-\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i, 1 \leq i \leq k$, $\forall x, y \in V_i$, $c(x) = c(y)$
-\item La partition représente une convergence du jeu :
-$\forall i, 1 \leq i \leq k$, $ \forall x \in V_i$, $\forall (x,y) \in R$ on a $ y \in V_j, j \geq i$.
+\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $c(x) = c(y)$
+\item La partition représente une convergence du jeu :\\
+$\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 \end{itemize}
 
 \subsection{Formule booléennes positives}
-On définit l'ensemble des formules booléennes sur un ensemble $\Omega$ (noté $PBF(\Omega) $) de la manière suivante :
+On définit l'ensemble des formules booléennes positives sur un ensemble $\Omega$ (noté $PBF(\Omega) $) de la manière suivante :
 $\phi := \bot \mid \top \mid p \mid \psi_1 \lor \psi_2 \mid  \psi_1 \land \psi_2$
 
 \subsection{Algorithme de construction du jeu}
