@@ -156,39 +156,35 @@ On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seuleme
 $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 \end{enumerate}
 
-\subsection{Formule booléennes positives}
-On définit l'ensemble des formules booléennes positives sur un ensemble $\Omega$ (noté $PBF(\Omega) $) de la manière suivante :
-$\phi := \bot \mid \top \mid p \mid \psi_1 \lor \psi_2 \mid  \psi_1 \land \psi_2$
-
 \subsection{Algorithme de construction du jeu}
 Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et que Eve gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
 
 Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke.
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
-	\item $V = Q \times PBF(Q \times CTL) $ %todo vérif
-	\item $V_E = \{(i, \bot ) \in V\} \cup \{(i, \psi_1 \lor \psi_2) \in V \}$
-	\item $V_A = V \backslash V_E$
-	\item $\forall (s,v) \in V$
-	\begin{itemize}
-		\item Si $v \in Q \times CTL$, $c(s,v) = poids(v) \mod 2$
-		\item Sinon, $c(s,v) = \bot$  %todo poids
-	\end{itemize}
+	\item $V = Q \times SF(\phi)$
+	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1  \}$
+	\item $V_E = V \backslash V_A$
+	\item $\forall (s,v) \in V, c(s,v) = poids(v) \mod 2$
 \end{itemize}
 
-On peut maintenant définir $R$, la relation de transition, en définissant la fonction $succ : V \to [V]$ qui à un état associe la liste de ses successeurs.\\
+On peut maintenant définir $R$, la relation de transition, en définissant la fonction $succ : V \to P(V)$ qui à un état associe la liste de ses successeurs.\\
 
 On commence par définir une fonction $\tau_d : CTL \times \Omega \to V$ qui va s'occuper du cas des littéraux de $V$: TODO\\
 
 Cela permet donc de définir $succ$:
 \begin{itemize}
-\item$ succ(s, \bot) = succ(s, \top) = []$
-\item $succ(s,\phi \land \psi) = succ(s, \phi \lor \psi) = [(s,\phi), (s,\psi)]$
-\item $succ(s,(c,q)) = [(s', \tau_{deg (s')}(q, l(s')))]$ où $s'$ est la $c$-ème transition partant de $q$ dans $T$.
+\item$ succ(s, \bot) = succ(s, \top) = \emptyset$
+\item $succ(s,\phi \land \psi) = succ(s, \phi \lor \psi) = \{(s,\phi), (s,\psi) \}$
+\item $succ(s,EX \phi) = succ(s, AX \phi) = \{ (s', \phi) \mid (s,s') \in T \} $
+\item $succ(\mbox{E } \phi \mbox{ U } \psi) = \{ (s,\psi), (\phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ U } \psi)) \}$
+\item $succ(\mbox{A } \phi \mbox{ U } \psi) = \{ (s,\psi), (\phi \land \mbox{AX }  (\mbox{A } \phi \mbox{ U } \psi)) \}$
+\item $succ(\mbox{E } \phi \mbox{ W } \psi) = \{ (s,\psi), (\phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ W } \psi)) \}$
+\item $succ(\mbox{A } \phi \mbox{ W } \psi) = \{ (s,\psi), (\phi \land \mbox{AX } (\mbox{A } \phi \mbox{ W } \psi)) \}$
 \end{itemize}
 
 \subsubsection{Jeu faible}
-Montrons que le jeu définit par $succ$ et avec comme état initial $s = \tau_{deg (q_0)}(\phi, l(q_0))$.
+Montrons que le jeu définit par $succ$ et avec comme état initial $start = (q_0, \phi)$.
  est un jeu \emph{faible}, donc qu'il existe une partition finie de $V$ telle que a) et b) (définies en Section \ref{fpg}) soient vraies.
 
 On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ composée des composantes fortement connexes ordonnées dans un ordre topologique (les CFC forment un arbre) du jeu satisfait les conditions.
