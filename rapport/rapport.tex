@@ -175,6 +175,8 @@ On commence par définir une fonction $\tau_d : CTL \times \Omega \to V$ qui va 
 Cela permet donc de définir $succ$:
 \begin{itemize}
 \item$ succ(s, \bot) = succ(s, \top) = \emptyset$
+\item $succ(s, p) = \{(s,\top)\}$ si $p \in l(s)$, $\{(s,\bot)\}$ sinon
+\item $succ(s, \neg p) = \{(s,\bot)\}$ si $p \in l(s)$, $\{(s,\top)\}$ sinon
 \item $succ(s,\phi \land \psi) = succ(s, \phi \lor \psi) = \{(s,\phi), (s,\psi) \}$
 \item $succ(s,EX \phi) = succ(s, AX \phi) = \{ (s', \phi) \mid (s,s') \in T \} $
 \item $succ(\mbox{E } \phi \mbox{ U } \psi) = \{ (s,\psi), (\phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ U } \psi)) \}$
@@ -201,7 +203,11 @@ Montrons maintenant que Eve a une stratégie gagnante dans $G$ si, et seulement 
 
 \paragraph{$\Longleftarrow$}
 Soit $\sigma$ tel que $\sigma,q_0 \vDash \phi$. On doit en déduire une stratégie gagnante pour Eve.\\
-
+On procède par induction sur $\phi$ :
+\begin{itemize}
+\item $\phi = p$, comme $\sigma,q_0 \vDash \phi$, cela veut dire que $p \in l(q_0)$, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc Adam est bloqué, donc Eve gagne.
+\item $\phi = \neg p$, comme $\sigma,q_0 \vDash \phi$, cela veut dire que $p \notin l(q_0)$, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc Adam est bloqué, donc Eve gagne.
+\end{itemize}
 \subsection{Résolution des jeux faibles de parité}
 
 
