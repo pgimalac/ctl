@@ -163,7 +163,7 @@ Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke.
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
 	\item $V = Q \times SF(\phi)$
-	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1  \}$
+	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1\mid \mbox{A } \phi_1 \mbox{ U } \phi_2 \mid \mbox{A } \phi_1 \mbox{ W } \phi_2\}$
 	\item $V_E = V \backslash V_A$
 	\item $\forall (s,v) \in V, c(s,v) = poids(v) \mod 2$
 \end{itemize}
@@ -200,13 +200,18 @@ $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $c(x)
 Montrons maintenant que Eve a une stratégie gagnante dans $G$ si, et seulement si, $\exists \sigma$: $\sigma,q_0 \vDash \phi$.
 
 \paragraph{$\implies$}
+On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$.
 
 \paragraph{$\Longleftarrow$}
 Soit $\sigma$ tel que $\sigma,q_0 \vDash \phi$. On doit en déduire une stratégie gagnante pour Eve.\\
-On procède par induction sur $\phi$ :
+On procède par récurrence sur $\phi$ :
 \begin{itemize}
 \item $\phi = p$, comme $\sigma,q_0 \vDash \phi$, cela veut dire que $p \in l(q_0)$, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc Adam est bloqué, donc Eve gagne.
 \item $\phi = \neg p$, comme $\sigma,q_0 \vDash \phi$, cela veut dire que $p \notin l(q_0)$, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc Adam est bloqué, donc Eve gagne.
+
+\item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ ou $\sigma,q_0 \vDash \psi_2$. Si, par exemple, $\sigma,q_0 \vDash \psi_1$, par hypothèse de récurrence, on a qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$. Ève peut donc choisir d'aller dans cet état, et elle gagne. On procède de la même façon si $(q_0, \psi_2)$.
+
+\item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ et $\sigma,q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence, qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
 \end{itemize}
 \subsection{Résolution des jeux faibles de parité}
 
