@@ -200,7 +200,16 @@ $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $c(x)
 Montrons maintenant que Eve a une stratégie gagnante dans $G$ si, et seulement si, $\exists \sigma$: $\sigma,q_0 \vDash \phi$.
 
 \paragraph{$\implies$}
-On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$.
+On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va montrer que $\exists \sigma$: $\sigma,q_0 \vDash \phi$.
+
+\begin{itemize}
+\item $\phi = p$.
+\item $\phi = \neg p$.
+\item $\phi = \psi_2 \lor \psi_2$.
+\item $\phi = \psi_2 \lor \psi_2$.
+\item $\phi = \mbox{EX } \psi$.
+\item $\phi = \mbox{AX } \psi$.
+\end{itemize}
 
 \paragraph{$\Longleftarrow$}
 Soit $\sigma$ tel que $\sigma,q_0 \vDash \phi$. On doit en déduire une stratégie gagnante pour Eve.\\
