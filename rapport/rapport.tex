@@ -212,6 +212,10 @@ On procède par récurrence sur $\phi$ :
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ ou $\sigma,q_0 \vDash \psi_2$. Si, par exemple, $\sigma,q_0 \vDash \psi_1$, par hypothèse de récurrence, on a qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$. Ève peut donc choisir d'aller dans cet état, et elle gagne. On procède de la même façon si $(q_0, \psi_2)$.
 
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ et $\sigma,q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence, qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
+
+\item $\phi = \mbox{EX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Ève de jouer. Comme $\sigma,q_0 \vDash \phi$, il existe un successeur $q$ de $q_0$ tel que $\sigma\circ (+ 1),q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève à partir de $(q, \psi)$. Comme c'est à Ève de jouer, il suffit qu'elle joue vers cet état.
+
+\item $\phi = \mbox{AX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $\sigma\circ (+ 1),q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
 \end{itemize}
 \subsection{Résolution des jeux faibles de parité}
 
