@@ -231,13 +231,21 @@ On procède par récurrence sur $\phi$ :
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $\sigma\circ (+ 1),q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$.. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Ève de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possiblités :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Ève de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possiblités :
 \begin{itemize}
 	\item soit $\sigma,q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
 	\item soit $ \sigma, q_0 \vDash \psi_1 \land \mbox{EX }  \phi$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_1 \land \mbox{EX }  \phi)$. Il lui suffit donc de choisir cette transition.
 \end{itemize}
 Donc Ève a une stratégie gagnante dans tous les cas.
+
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$.. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Adam de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possibilités :
+\begin{itemize}
+	\item soit $\sigma,q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
+	\item soit $ \sigma, q_0 \vDash \psi_1 \land \mbox{EX }  \phi$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_1 \land \mbox{EX }  \phi)$
 \end{itemize}
+Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
+\end{itemize}
+
 \subsection{Résolution des jeux faibles de parité}
 
 
