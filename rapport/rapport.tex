@@ -204,10 +204,15 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 
 \begin{itemize}
 \item $\phi = p$. C'est à Ève de jouer et $succ(q_0,\phi) = \{(q_0, \top)\}$ ou $succ(q_0,\phi) = \{(q_0, \bot)\}$. Il y a donc une seule exécution possible, $\sigma$. Comme Ève a une stratégie gagnante, c'est qu'elle n'est pas bloquée dans le prochain état. Donc Adam l'est, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc $p \in l(q_0)$ donc, $\sigma,q_0 \vDash \phi$.
+
 \item $\phi = \neg p$. C'est à Ève de jouer et $succ(q_0,\phi) = \{(q_0, \top)\}$ ou $succ(q_0,\phi) = \{(q_0, \bot)\}$. Il y a donc une seule exécution possible, $\sigma$. Comme Ève a une stratégie gagnante, c'est qu'elle n'est pas bloquée dans le prochain état. Donc Adam l'est, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc $p \notin l(q_0)$ donc, $\sigma,q_0 \vDash \phi$.
+
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme Ève a une stratégie gagnante, elle choisit dans quel état aller, mettons $(q_o, \psi_1)$. Elle a donc une stratégie gagnante à partir de $(q_0, \psi_1)$, donc par hypothèse de récurrence, $\exists \sigma$: $\sigma,q_0 \vDash \psi_1$. Donc $\sigma,q_0 \vDash \phi$. Il en va de même si Ève choisit d'aller en $(q_o, \psi_2)$.
+
 \item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, quelque soit l'état que choisit Adam, elle a une stratégie gagnante à partir de ce nouvel état, donc par hypothèse de récurrence, $\exists \sigma$: $\sigma,q_0 \vDash \psi_1$ et $\sigma,q_0 \vDash \psi_2$ . Donc $\sigma,q_0 \vDash \phi$.
-\item $\phi = \mbox{EX } \psi$.
+
+\item $\phi = \mbox{EX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Ève de jouer. 
+
 \item $\phi = \mbox{AX } \psi$.
 \end{itemize}
 
@@ -224,7 +229,14 @@ On procède par récurrence sur $\phi$ :
 
 \item $\phi = \mbox{EX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Ève de jouer. Comme $\sigma,q_0 \vDash \phi$, il existe un successeur $q$ de $q_0$ tel que $\sigma\circ (+ 1),q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève à partir de $(q, \psi)$. Comme c'est à Ève de jouer, il suffit qu'elle joue vers cet état.
 
-\item $\phi = \mbox{AX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $\sigma\circ (+ 1),q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
+\item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $\sigma\circ (+ 1),q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
+
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$.. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Ève de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possiblités :
+\begin{itemize}
+	\item soit $\sigma,q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
+	\item soit $ \sigma, q_0 \vDash \psi_1 \land \mbox{EX }  \phi$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_1 \land \mbox{EX }  \phi)$. Il lui suffit donc de choisir cette transition.
+\end{itemize}
+Donc Ève a une stratégie gagnante dans tous les cas.
 \end{itemize}
 \subsection{Résolution des jeux faibles de parité}
 
