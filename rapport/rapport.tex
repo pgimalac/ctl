@@ -136,12 +136,12 @@ De plus, une stratégie $\omega$ est dite gagnante pour:
 	\item Eve, si et seulement si:
 	\begin{itemize}
 		\item Soit Adam est bloqué: $\exists v \in V'$ tel que $\omega(v) \mod 2 = 1$ et $\nexists z \in V, (\omega(v), z) \in R$.
-		\item Soit Eve visite infiniment souvent uniquement des états pairs: TODO
+		\item Soit Ève visite infiniment souvent uniquement des états pairs: $\omega$ n'est pas injective (la stratégie boucle) et $\forall x \in \{\omega^n(q_0)\ |\ n\in \mathbb{N}, \exists m \in \mathbb{N}, n \neq  m \land \omega^n(q_0) = \omega^m(q_0)\}$, $x \mod 2 = 0$.
 	\end{itemize}
 	\item Adam, si et seulement si:
 	\begin{itemize}
-		\item Soit Eve est bloquée: $\exists v \in V'$ tel que $\omega(v) \mod 2 = 2$ et $\nexists z \in V, (\omega(v), z) \in R$.
-		\item Soit Adam visite infiniment souvent des états impairs: TODO
+		\item Soit Ève est bloquée: $\exists v \in V'$ tel que $\omega(v) \mod 2 = 2$ et $\nexists z \in V, (\omega(v), z) \in R$.
+		\item Soit Adam visite infiniment souvent des états impairs: $\omega$ n'est pas injective (la stratégie boucle) et $\forall x \in \{\omega^n(q_0)\ |\ n\in \mathbb{N}, \exists m \in \mathbb{N}, n \neq  m \land \omega^n(q_0) = \omega^m(q_0)\}$, $x \mod 2 = 1$.
 \end{itemize}
 \end{itemize}
 
