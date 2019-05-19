@@ -170,7 +170,7 @@ On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 Avec:
 \begin{align*}
 &poids : CTL \to \mathbb{N} \\
-&poids v =
+&poids\ v =
   \begin{cases}
     2 &\mbox{si } v = \mbox{EW ou AW} \\
     1 &\mbox{si } v = \mbox{EU ou AU} \\
@@ -202,7 +202,9 @@ Montrons que le jeu définit par $succ$ et avec comme état initial $start = (q_
 On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ composée des composantes fortement connexes ordonnées dans un ordre topologique (les CFC forment un arbre) du jeu satisfait les conditions.
 
 \paragraph{a)}
-$\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $c(x) \neq \bot$ et $c(y) \neq \bot$. TODO
+$\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$.\\
+Supposons que $c(x) \neq c(y)$. Cela implique que, en supposant que (quitte à renommer $x$ en $y$), $c(x) = 0$, et puisque $x \neq y$, on en déduit que: $x = (\_,\_W)$ et $y = (\_,\_U)$.\\
+C'est absurde, car TODO
 
 \paragraph{b)} est trivialement vraie: les $V_i$ sont ordonnées par ordre topologique.
 
