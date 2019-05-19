@@ -118,13 +118,13 @@ On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une for
 \end{align*}
 
 \section{Model-checking de CTL: jeux faibles de parité}
-Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une structure de Kripke où deux joueurs (nommés Eve et Adam) s'affrontent, et Eve gagne si et seulement si la formule est vraie dans la structure donnée.
+Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une structure de Kripke où deux joueurs (nommés Ève et Adam) s'affrontent, et Ève gagne si et seulement si la formule est vraie dans la structure donnée.
 
 \subsection{Jeux de parité}
 \label{fpg}
 On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \begin{itemize}
-\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Eve (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \sqcup V_a$.
+\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Ève (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \sqcup V_a$.
 \item $R \subseteq V \times V$ est une relation de transition.
 \item $c : V \to (\mathbb{N} \cup \{\bot\})$ est une fonction qui associe une couleur ou $\bot$ à chaque état.
 \end{itemize}
@@ -133,7 +133,7 @@ On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 On appelle $\omega : V' \to V$ ($V' \subseteq V$) une stratégie d'un joueur si et seulement si $\forall v \in V, (v,\omega(v)) \in R$.\\
 De plus, une stratégie $\omega$ est dite gagnante pour:
 \begin{itemize}
-	\item Eve, si et seulement si:
+	\item Ève, si et seulement si:
 	\begin{itemize}
 		\item Soit Adam est bloqué: $\exists v \in V'$ tel que $\omega(v) \mod 2 = 1$ et $\nexists z \in V, (\omega(v), z) \in R$.
 		\item Soit Ève visite infiniment souvent uniquement des états pairs: $\omega$ n'est pas injective (la stratégie boucle) et $\forall x \in \{\omega^n(q_0)\ |\ n\in \mathbb{N}, \exists m \in \mathbb{N}, n \neq  m \land \omega^n(q_0) = \omega^m(q_0)\}$, $x \mod 2 = 0$.
@@ -157,7 +157,7 @@ $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 \end{enumerate}
 
 \subsection{Algorithme de construction du jeu}
-Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et que Eve gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
+Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et que Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
 
 Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke.
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
@@ -197,7 +197,7 @@ $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $c(x)
 \paragraph{b)} est trivialement vraie: les $V_i$ sont ordonnées par ordre topologique.
 
 \subsubsection{Jeu correct}
-Montrons maintenant que Eve a une stratégie gagnante dans $G$ si, et seulement si, $\exists \sigma$: $\sigma,q_0 \vDash \phi$.
+Montrons maintenant qu'Ève a une stratégie gagnante dans $G$ si, et seulement si, $\exists \sigma$: $\sigma,q_0 \vDash \phi$.
 
 \paragraph{$\implies$}
 On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va montrer que $\exists \sigma$: $\sigma,q_0 \vDash \phi$. On procède par récurrence sur $\phi$.
@@ -217,11 +217,11 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 \end{itemize}
 
 \paragraph{$\Longleftarrow$}
-Soit $\sigma$ tel que $\sigma,q_0 \vDash \phi$. On doit en déduire une stratégie gagnante pour Eve.\\
+Soit $\sigma$ tel que $\sigma,q_0 \vDash \phi$. On doit en déduire une stratégie gagnante pour Ève.\\
 On procède par récurrence sur $\phi$ :
 \begin{itemize}
 \item $\phi = p$, c'est à Ève de jouer et comme $\sigma,q_0 \vDash \phi$, cela veut dire que $p \in l(q_0)$, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc Adam est bloqué, donc Ève gagne.
-\item $\phi = \neg p$, c'est à Ève de jouer et comme $\sigma,q_0 \vDash \phi$, cela veut dire que $p \notin l(q_0)$, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc Adam est bloqué, donc Eve gagne.
+\item $\phi = \neg p$, c'est à Ève de jouer et comme $\sigma,q_0 \vDash \phi$, cela veut dire que $p \notin l(q_0)$, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc Adam est bloqué, donc Ève gagne.
 
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ ou $\sigma,q_0 \vDash \psi_2$. Si, par exemple, $\sigma,q_0 \vDash \psi_1$, par hypothèse de récurrence, on a qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$. Ève peut donc choisir d'aller dans cet état, et elle gagne. On procède de la même façon si $(q_0, \psi_2)$.
 
