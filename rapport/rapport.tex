@@ -167,6 +167,16 @@ On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 	\item $V_E = V \backslash V_A$
 	\item $\forall (s,v) \in V, c(s,v) = poids(v) \mod 2$
 \end{itemize}
+Avec:
+\begin{align*}
+&poids : CTL \to \mathbb{N} \\
+&poids v =
+  \begin{cases}
+    2 &\mbox{si } v = \mbox{EW ou AW} \\
+    1 &\mbox{si } v = \mbox{EU ou AU} \\
+    0 &\mbox{si } \mbox{sinon}
+  \end{cases}
+\end{align*}
 
 On peut maintenant définir $R$, la relation de transition, en définissant la fonction $succ : V \to P(V)$ qui à un état associe la liste de ses successeurs.\\
 
