@@ -225,6 +225,12 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 \item $\phi = \mbox{EX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Ève de jouer. Comme elle a une stratégie gagnante, il existe un successeur $q$ de $q_0$ tel qu'elle ai une stratégie gagnante à partir de $q$ et donc par récurrence que $\sigma \circ (+ 1), q \vDash \psi$. Donc $\sigma, q_0 \vDash \phi$.
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, pour tous les successeurs $q$ de $q_0$, elle une stratégie gagnante à partir de $q$ et donc par récurrence que $\sigma \circ (+ 1), q \vDash \psi$. Donc $\sigma, q_0 \vDash \phi$.
+
+\item $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (\psi_1 \land \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
+\begin{itemize}
+	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $\sigma, q_0 \vDash \psi_2$ et donc $\sigma, q_0 \vDash \phi$.
+	\item Soit Ève choisit TODO
+\end{itemize}
 \end{itemize}
 
 \paragraph{$\Longleftarrow$}
@@ -249,7 +255,7 @@ On procède par récurrence sur $\phi$ :
 \end{itemize}
 Donc Ève a une stratégie gagnante dans tous les cas.
 
-\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$.. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Adam de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possibilités :
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Adam de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possibilités :
 \begin{itemize}
 	\item soit $\sigma,q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
 	\item soit $ \sigma, q_0 \vDash \psi_1 \land \mbox{EX }  \phi$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_1 \land \mbox{EX }  \phi)$
