@@ -122,7 +122,6 @@ On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une for
 Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une structure de Kripke où deux joueurs (nommés Ève et Adam) s'affrontent, et Ève gagne si et seulement si la formule est vraie dans la structure donnée.
 
 \subsection{Jeux de parité}
-\label{fpg}
 On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \begin{itemize}
 \item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Ève (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \sqcup V_a$.
@@ -149,6 +148,7 @@ De plus, une stratégie $\omega$ est dite gagnante pour:
 Une partie est une séquence d'états $\gamma_i$ telle que $\forall i \in I \subseteq \mathbb{N}, (\gamma_i,\gamma_{i+1}) \in R$. Si $I$ est fini, on demande alors que $\gamma_{max(I)}$ n'ait pas de successeurs par $R$.
 
 \subsection{Jeux faibles de parité}
+\label{fpg}
 
 On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement si il existe $V_1$, ..., $V_k$ une partition de $V = V_E \sqcup V_A$ telle que:
 \begin{enumerate}[a)]
@@ -198,13 +198,14 @@ On définit $succ$:
 Montrons que le jeu défini par $succ$ avec comme état initial $start = (q_0, \phi)$.
  est un jeu \emph{faible}, donc qu'il existe une partition finie de $V$ telle que a) et b) (définies en Section \ref{fpg}) soient vraies.
 
-On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ des composantes fortement connexes dans un ordre topologique (les CFC forment un graphe acyclique) du jeu satisfait les conditions.
+On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ des composantes fortement connexes dans un ordre topologique satisfait les conditions. On note que les CFC forment un graphe acyclique.
 
-\paragraph{a)}
-$\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$.\\
+\begin{enumerate}[a)]
+\item $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$.\\
 Supposons que $c(x) \neq c(y)$. Cela implique que, en supposant que (quitte à renommer $x$ en $y$), $c(x) = 0$, et puisque $x \neq y$, on en déduit que: $x = (\_,\_W)$ et $y = (\_,\_U)$. C'est absurde.
 
-\paragraph{b)} est trivialement vraie: les $V_i$ sont ordonnées par ordre topologique.
+\item est trivialement vraie: les $V_i$ sont ordonnées par ordre topologique.
+\end{enumerate}
 
 \subsubsection{Jeu correct}
 Montrons maintenant qu'Ève a une stratégie gagnante dans $G$ si, et seulement si, $\exists \sigma$: $\sigma,q_0 \vDash \phi$.
@@ -219,9 +220,9 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme Ève a une stratégie gagnante, elle choisit dans quel état aller, mettons $(q_o, \psi_1)$. Elle a donc une stratégie gagnante à partir de $(q_0, \psi_1)$, donc par hypothèse de récurrence, $\exists \sigma$: $\sigma,q_0 \vDash \psi_1$. Donc $\sigma,q_0 \vDash \phi$. Il en va de même si Ève choisit d'aller en $(q_o, \psi_2)$.
 
-\item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, quelque soit l'état que choisit Adam, elle a une stratégie gagnante à partir de ce nouvel état, donc par hypothèse de récurrence, $\exists \sigma$: $\sigma,q_0 \vDash \psi_1$ et $\sigma,q_0 \vDash \psi_2$ . Donc $\sigma,q_0 \vDash \phi$.
+\item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, quel que soit l'état que choisit Adam, elle a une stratégie gagnante à partir de ce nouvel état, donc par hypothèse de récurrence, $\exists \sigma$: $\sigma,q_0 \vDash \psi_1$ et $\sigma,q_0 \vDash \psi_2$ . Donc $\sigma,q_0 \vDash \phi$.
 
-\item $\phi = \mbox{EX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Ève de jouer. Comme elle a une stratégie gagnante, il existe un successeur $q$ de $q_0$ tel qu'elle ai une stratégie gagnante à partir de $q$ et donc par récurrence que $\sigma \circ (+ 1), q \vDash \psi$. Donc $\sigma, q_0 \vDash \phi$.
+\item $\phi = \mbox{EX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Ève de jouer. Comme elle a une stratégie gagnante, il existe un successeur $q$ de $q_0$ tel qu'elle ait une stratégie gagnante à partir de $q$ et donc par récurrence que $\sigma \circ (+ 1), q \vDash \psi$. Donc $\sigma, q_0 \vDash \phi$.
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, pour tous les successeurs $q$ de $q_0$, elle une stratégie gagnante à partir de $q$ et donc par récurrence que $\sigma \circ (+ 1), q \vDash \psi$. Donc $\sigma, q_0 \vDash \phi$.
 
