@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{stmaryrd}
 \usepackage{enumerate}
+\usepackage{algorithmic}
 
 \author{Pierre Gimalac \& Alexandre Moine\\\small{Encadré par François Laroussinie}}
 \title{Rapport de Projet\\Mathématiques-Informatique}
@@ -180,26 +181,24 @@ Avec:
 
 On peut maintenant définir $R$, la relation de transition, en définissant la fonction $succ : V \to P(V)$ qui à un état associe la liste de ses successeurs.\\
 
-On commence par définir une fonction $\tau_d : CTL \times \Omega \to V$ qui va s'occuper du cas des littéraux de $V$: TODO\\
-
-Cela permet donc de définir $succ$:
+On définit $succ$:
 \begin{itemize}
 \item$ succ(s, \bot) = succ(s, \top) = \emptyset$
 \item $succ(s, p) = \{(s,\top)\}$ si $p \in l(s)$, $\{(s,\bot)\}$ sinon
 \item $succ(s, \neg p) = \{(s,\bot)\}$ si $p \in l(s)$, $\{(s,\top)\}$ sinon
 \item $succ(s,\phi \land \psi) = succ(s, \phi \lor \psi) = \{(s,\phi), (s,\psi) \}$
 \item $succ(s,EX \phi) = succ(s, AX \phi) = \{ (s', \phi) \mid (s,s') \in T \} $
-\item $succ(\mbox{E } \phi \mbox{ U } \psi) = \{ (s,\psi), (\phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ U } \psi)) \}$
-\item $succ(\mbox{A } \phi \mbox{ U } \psi) = \{ (s,\psi), (\phi \land \mbox{AX }  (\mbox{A } \phi \mbox{ U } \psi)) \}$
-\item $succ(\mbox{E } \phi \mbox{ W } \psi) = \{ (s,\psi), (\phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ W } \psi)) \}$
-\item $succ(\mbox{A } \phi \mbox{ W } \psi) = \{ (s,\psi), (\phi \land \mbox{AX } (\mbox{A } \phi \mbox{ W } \psi)) \}$
+\item $succ(s, \mbox{E } \phi \mbox{ U } \psi) = \{ (s,\psi), (s, \phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ U } \psi)) \}$
+\item $succ(s, \mbox{A } \phi \mbox{ U } \psi) = \{ (s,\psi), (s, \phi \land \mbox{AX }  (\mbox{A } \phi \mbox{ U } \psi)) \}$
+\item $succ(s, \mbox{E } \phi \mbox{ W } \psi) = \{ (s,\psi), (s, \phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ W } \psi)) \}$
+\item $succ(s, \mbox{A } \phi \mbox{ W } \psi) = \{ (s,\psi), (s, \phi \land \mbox{AX } (\mbox{A } \phi \mbox{ W } \psi)) \}$
 \end{itemize}
 
 \subsubsection{Jeu faible}
-Montrons que le jeu définit par $succ$ et avec comme état initial $start = (q_0, \phi)$.
+Montrons que le jeu défini par $succ$ avec comme état initial $start = (q_0, \phi)$.
  est un jeu \emph{faible}, donc qu'il existe une partition finie de $V$ telle que a) et b) (définies en Section \ref{fpg}) soient vraies.
 
-On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ composée des composantes fortement connexes ordonnées dans un ordre topologique (les CFC forment un arbre) du jeu satisfait les conditions.
+On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ des composantes fortement connexes dans un ordre topologique (les CFC forment un graphe acyclique) du jeu satisfait les conditions.
 
 \paragraph{a)}
 $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$.\\
@@ -226,7 +225,7 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, pour tous les successeurs $q$ de $q_0$, elle une stratégie gagnante à partir de $q$ et donc par récurrence que $\sigma \circ (+ 1), q \vDash \psi$. Donc $\sigma, q_0 \vDash \phi$.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (\psi_1 \land \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
+\item $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
 \begin{itemize}
 	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $\sigma, q_0 \vDash \psi_2$ et donc $\sigma, q_0 \vDash \phi$.
 	\item Soit Ève choisit TODO
@@ -242,7 +241,7 @@ On procède par récurrence sur $\phi$ :
 
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ ou $\sigma,q_0 \vDash \psi_2$. Si, par exemple, $\sigma,q_0 \vDash \psi_1$, par hypothèse de récurrence, on a qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$. Ève peut donc choisir d'aller dans cet état, et elle gagne. On procède de la même façon si $(q_0, \psi_2)$.
 
-\item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ et $\sigma,q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence, qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
+\item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $\sigma,q_0 \vDash \phi$, $\sigma,q_0 \vDash \psi_1$ et $\sigma,q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence, qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
 
 \item $\phi = \mbox{EX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Ève de jouer. Comme $\sigma,q_0 \vDash \phi$, il existe un successeur $q$ de $q_0$ tel que $\sigma\circ (+ 1),q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève à partir de $(q, \psi)$. Comme c'est à Ève de jouer, il suffit qu'elle joue vers cet état.
 
@@ -251,19 +250,48 @@ On procède par récurrence sur $\phi$ :
 \item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Ève de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possiblités :
 \begin{itemize}
 	\item soit $\sigma,q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
-	\item soit $ \sigma, q_0 \vDash \psi_1 \land \mbox{EX }  \phi$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_1 \land \mbox{EX }  \phi)$. Il lui suffit donc de choisir cette transition.
+	\item TODO
 \end{itemize}
 Donc Ève a une stratégie gagnante dans tous les cas.
 
 \item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Adam de jouer. $\sigma,q_0 \vDash \phi$, il y a donc deux possibilités :
 \begin{itemize}
 	\item soit $\sigma,q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
-	\item soit $ \sigma, q_0 \vDash \psi_1 \land \mbox{EX }  \phi$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_1 \land \mbox{EX }  \phi)$
+	\item TODO
 \end{itemize}
 Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
 \end{itemize}
 
 \subsection{Résolution des jeux faibles de parité}
+\begin{algorithmic}[1]
+	\REQUIRE $(V, E)$ \COMMENT{le graphe du jeu}
+	\STATE $CFC \leftarrow compute\_cfc(V, E)$
+	\STATE $CFC \leftarrow topological\_sort(CFC)$
+	\STATE $CFC \leftarrow reverse(CFC)$
+	\STATE $winners \leftarrow new\_array(size(V), \bot)$
+	\FOR { $v_k \in CFC$ }
+		\STATE $\gamma \leftarrow get\_winner(v_k)$
+%		\STATE $reachable\_cfc \leftarrow get\_reachable(CFC, v_k)$
+		\FOR { $x \in v_k$ }
+			\IF { $get\_player(x) \neq \gamma$ }
+				\FOR { $(x, y) \in E$ }
+					\IF { $y \notin v_k \land winners[y] \neq \gamma$ }
+						\STATE $winners[x] \leftarrow get\_player(x)$
+					\ENDIF
+				\ENDFOR
+				\IF { $winners[x] = \bot$ }
+					\STATE $winners[x] = \gamma$
+				\ENDIF
+			\ELSE
+				\STATE $winners[x] = \gamma$
+			\ENDIF
+		\ENDFOR
+	\ENDFOR
+
+
+
+
+\end{algorithmic}
 
 
 \end{document}
