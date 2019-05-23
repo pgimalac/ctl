@@ -263,35 +263,54 @@ Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
 \end{itemize}
 
 \subsection{Résolution des jeux faibles de parité}
+Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma}$ l'autre joueur.
+
+\subsubsection{Procédure principale}
 \begin{algorithmic}[1]
-	\REQUIRE $(V, E)$ \COMMENT{le graphe du jeu}
+	\REQUIRE $(q_0, V, E)$ \COMMENT{l'état de départ et le graphe du jeu}
 	\STATE $CFC \leftarrow compute\_cfc(V, E)$
 	\STATE $CFC \leftarrow topological\_sort(CFC)$
 	\STATE $CFC \leftarrow reverse(CFC)$
 	\STATE $winners \leftarrow new\_array(size(V), \bot)$
 	\FOR { $v_k \in CFC$ }
 		\STATE $\gamma \leftarrow get\_winner(v_k)$
-%		\STATE $reachable\_cfc \leftarrow get\_reachable(CFC, v_k)$
+		\STATE $propagate\_opposite(\gamma, v_k, E, winners)$
 		\FOR { $x \in v_k$ }
-			\IF { $get\_player(x) \neq \gamma$ }
-				\FOR { $(x, y) \in E$ }
-					\IF { $y \notin v_k \land winners[y] \neq \gamma$ }
-						\STATE $winners[x] \leftarrow get\_player(x)$
-					\ENDIF
-				\ENDFOR
-				\IF { $winners[x] = \bot$ }
-					\STATE $winners[x] = \gamma$
-				\ENDIF
-			\ELSE
+			\IF { $winners[x] = \bot$ }
 				\STATE $winners[x] = \gamma$
 			\ENDIF
 		\ENDFOR
 	\ENDFOR
-
-
-
-
+	\RETURN $winners[q_0]$
 \end{algorithmic}
 
+\subsubsection{Procédure $propagate\_opposite$}
+\begin{algorithmic}[1]
+	\REQUIRE $(\gamma, v, E, winners)$
+	\STATE $CHANGED \leftarrow FALSE$
+	\FOR{$x \in v$}
+		\IF{$winners[x] = \bot$}
+			\STATE $EXI \leftarrow FALSE$
+			\STATE $ALL \leftarrow TRUE$
+			\FOR {$(x,y) \in E$}
+				\IF{$winners[y] = \overline{\gamma}$}
+					\STATE $B \leftarrow TRUE$
+				\ELSE
+					\STATE $B \leftarrow FALSE$
+				\ENDIF
+				\STATE $EXI \leftarrow EX \lor B$
+				\STATE $ALL \leftarrow ALL \land B$
+			\ENDFOR
+			\IF{$(get\_player(y) = \overline{\gamma} \land EX) \lor ALL $}
+				\STATE $CHANGED \leftarrow TRUE$
+				\STATE $winners[y] = \overline{\gamma}$
+			\ENDIF
+		\ENDIF
+	\ENDFOR
+	\IF{$CHANGED$}
+		\STATE $propagate\_opposite(\gamma, v, E, winners)$
+	\ENDIF
+	\RETURN
+\end{algorithmic}
 
 \end{document}
