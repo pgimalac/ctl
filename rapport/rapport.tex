@@ -44,8 +44,8 @@ Les modèles de CTL sont appelés des \emph{structures de Kripke}.
 \subsubsection{Structures de Kripke}
 Une structure de Kripke sera ici identifiée à la donnée de $(Q,T,q_0,l)$ où:
 \begin{itemize}
-\item Le couple $(Q,T, q_0)$ est un automate : $Q$ est un ensemble d'états, $T \subseteq Q \times Q$ est l'ensemble des transitions et $q_0 \in Q$ représente l'état de départ.
-\item $l : Q \to \Omega$ est une fonction d'étiquetage.
+\item Le couple $(Q,T, q_0)$ est un graphe orienté étiqueté : $Q$ est un ensemble d'états, $T \subseteq Q \times Q$ est la relation de transition et $q_0 \in Q$ représente l'état de départ.
+\item $l : \mathcal{P}(Q) \to \Omega$ est une fonction d'étiquetage.
 \end{itemize}
 
 \subsubsection{Exécution}
@@ -106,7 +106,7 @@ $\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin part
 On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une formule de CTL de la forme $\neg \phi$ en formule équivalente où toutes les négations sont sur les littéraux :
 \begin{align*}
 &neg(\top) = \bot \quad neg(\bot) = \top\\
-&neg(p) = \neg p \quad neg(\neg \phi) = \phi\\
+&neg(p) = \neg p \quad neg(\neg \phi) = neg(neg(\phi))\\
 &neg(a \lor b) = neg(a) \land neg(b)\\
 &neg(a \land b) = neg(a) \lor neg(b)\\
 &neg(\mbox{AX } \phi) = \mbox{EX }neg(\phi)\\
