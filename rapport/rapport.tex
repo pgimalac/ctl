@@ -53,53 +53,51 @@ Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke.
 On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$.
 
 \subsubsection{Satisfaction}
-Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke, $\phi$ une formule de CTL et $\sigma$ une exécution de $\mathcal{A}$.\\
-Pour tout $i \in \mathbb{N}$, on dira que "$\phi$ est vraie au temps $i$ de l'exécution de $\sigma$" si et seulement si $A,\sigma,i \vDash \phi$. On omettra souvent la donnée de $\mathcal{A}$ dans notre écriture.\\
-On définit $\sigma,i \vDash \phi$ par induction sur $\phi$:\\
+Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke et $\phi$ une formule de CTL.\\
+Soit $i\in \mathbb{N}$, On dira qu'il existe une exécution de $\mathcal{A}$ vérifiant $\phi$ depuis l'état $q_i$ si et seulement si $A, q_i \vDash \phi$. On omettra souvent la donnée de $\mathcal{A}$ dans notre écriture.\\
+On définit $q_i \vDash \phi$ par induction sur $\phi$:\\
 \\
 \begin{tabular}{lcl}
-$\sigma,i \nvDash \bot$ &&\\
-$\sigma,i \vDash \top$ &&\\
-$\sigma,i \vDash p$ &ssi& $p \in l (\sigma(i))$\\
-$\sigma,i \vDash \neg \psi$ &ssi& $\sigma,i \nvDash \psi$\\
-$\sigma,i \vDash \psi_1 \land \psi_2$ &ssi& $\sigma,i \vDash \psi_1$ et $\sigma,i \vDash \psi_2$\\
-$\sigma,i \vDash \psi_1 \lor \psi_2$ &ssi& $\sigma,i \vDash \psi_1$ ou $\sigma,i \vDash \psi_2$\\
-$\sigma,i \vDash \mbox{EX } \psi$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
-$\sigma,i \vDash \mbox{AX } \psi$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et $\sigma',i+1 \vDash \psi$\\
+$q_i \nvDash \bot$ &&\\
+$q_i \vDash \top$ &&\\
+$q_i \vDash p$ &ssi& $p \in l (q_i)$\\
+$q_i \vDash \neg \psi$ &ssi& $q_i \nvDash \psi$\\
+$q_i \vDash \psi_1 \land \psi_2$ &ssi& $q_i \vDash \psi_1$ et $q_i \vDash \psi_2$\\
+$q_i \vDash \psi_1 \lor \psi_2$ &ssi& $q_i \vDash \psi_1$ ou $q_i \vDash \psi_2$\\
+$q_i \vDash \mbox{EX } \psi$ &ssi& $\exists (q_i, q_j) \in T$, $q_j \vDash \psi$\\
+$q_i \vDash \mbox{AX } \psi$ &ssi& $\forall (q_i, q_j) \in T$, $q_j \vDash \psi$\\
 
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\exists \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
-& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \llbracket i; k \llbracket$, $\sigma',n \vDash \psi_1$\\
+$q_{i} \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\exists \sigma: \sigma(0) = q_i$, $\exists k \in \mathbb{N}$, $\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
 
-$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& $\forall \sigma'$, $\forall j \leq i$: $\sigma(j) = \sigma'(j)$ et\\
-& & $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \llbracket i; k \llbracket$: $\sigma',n \vDash \psi_1$\\
+$q_i \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& $\forall \sigma: \sigma(0) = q_i$, $\exists k \in \mathbb{N}$, $\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
 
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma'$ tel que $\forall j \leq i$: $\sigma(j) = \sigma'(j)$,\\
-& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \llbracket i; k \llbracket$: $\sigma',n \vDash \psi_1$\\
-& & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
+$q_i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma : \sigma(0) = q_i$, soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2$ et $\forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
+& & soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
 
-$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma'$ tel que $\forall j \leq i$: $\sigma(j) = \sigma'(j)$, \\
-& & soit $\exists k \geq i$: $\sigma',k\vDash \psi_2$ et $\forall n \in \llbracket i; k \llbracket$: $\sigma',n \vDash \psi_1$\\
-& & soit $\forall n \geq i$: $\sigma',n \vDash \psi_1$\\
+$q_i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma : \sigma(0) = q_i$, soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2$ et $\forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
+& & soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
 \end{tabular}
 
-La sémantique de CTL se comprend aussi bien en français:\\
+\bigskip
+
+La sémantique de CTL se comprend aussi bien en français:
 
 \begin{tabular}{lcl}
-$\sigma,i \vDash \top$ && est toujours vrai\\
-$\sigma,i \vDash \bot$ && n'est jamais vrai\\
-$\sigma,i \vDash p$ &ssi& $p$ est une étiquette de $\sigma(i)$\\
-$\sigma,i \vDash \neg \psi$ &ssi& $\sigma(i)$ ne vérifie pas $\phi$\\
-$\sigma,i \vDash \psi_1 \land \psi_2$ &ssi& $\sigma(i)$ vérifie $\phi_1$ et $\sigma(i)$ vérifie $\phi_2$\\
-$\sigma,i \vDash \psi_1 \lor \psi_2$ &ssi& $\sigma(i)$ vérifie $\phi_1$ ou $\sigma(i)$ vérifie $\phi_2$\\
-$\sigma,i \vDash \mbox{EX } \psi$ &ssi& il existe un successeur de $\sigma(i)$ vérifiant $\psi$\\
-$\sigma,i \vDash \mbox{AX } \psi$ &ssi& tous les successeurs de $\sigma(i)$ vérifient $\psi$\\
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& il existe un chemin à partir de $\sigma(i)$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
+$q_i \vDash \top$ && est toujours vrai\\
+$q_i \vDash \bot$ && n'est jamais vrai\\
+$q_i \vDash p$ &ssi& $p$ est une étiquette de $\sigma(i)$\\
+$q_i \vDash \neg \psi$ &ssi& $q_i$ ne vérifie pas $\phi$\\
+$q_i \vDash \psi_1 \land \psi_2$ &ssi& $q_i$ vérifie $\phi_1$ et $q_i$ vérifie $\phi_2$\\
+$q_i \vDash \psi_1 \lor \psi_2$ &ssi& $q_i$ vérifie $\phi_1$ ou $q_i$ vérifie $\phi_2$\\
+$q_i \vDash \mbox{EX } \psi$ &ssi& il existe un successeur de $q_i$ vérifiant $\psi$\\
+$q_i \vDash \mbox{AX } \psi$ &ssi& tous les successeurs de $q_i$ vérifient $\psi$\\
+$q_i \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& il existe un chemin à partir de $\sigma(i)$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
 
-$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& pour tout chemin partant de $\sigma(i)$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
+$q_i \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& pour tout chemin partant de $q_i$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
 
-$\sigma,i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& il existe un chemin à partir de $\sigma(i)$ tel que $\psi_1$\\&& est vrai jusqu'à ce que, peut-être, $\psi_2$ le soit\\
+$q_i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& il existe un chemin à partir de $q_i$ tel que $\psi_1$\\&& est vrai jusqu'à ce que, peut-être, $\psi_2$ le soit\\
 
-$\sigma,i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin partant de $\sigma(i)$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\\
+$q_i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin partant de $q_i$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\\
 \end{tabular}
 
 \subsection{Négation}
@@ -165,18 +163,16 @@ On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 	\item $V = Q \times SF(\phi)$
 	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1\mid \mbox{A } \phi_1 \mbox{ U } \phi_2 \mid \mbox{A } \phi_1 \mbox{ W } \phi_2\}$
 	\item $V_E = V \backslash V_A$
-	\item $\forall (s,v) \in V, c(s,v) = poids(v) \mod 2$
+	\item $\forall (s,v) \in V, c(s,v) = \left \{
+	\begin{array}{rcl}
+		2 & si & \text{v = EW ou AW}\\
+		1 & si & \text{v = EU ou AU}\\
+		\bot && sinon
+	\end{array}
+	\right .$
 \end{itemize}
-Avec:
-\begin{align*}
-&poids : CTL \to \mathbb{N} \\
-&poids\ v =
-  \begin{cases}
-    2 &\mbox{si } v = \mbox{EW ou AW} \\
-    1 &\mbox{si } v = \mbox{EU ou AU} \\
-    0 &\mbox{si } \mbox{sinon}
-  \end{cases}
-\end{align*}
+
+\bigskip
 
 On peut maintenant définir $R$, la relation de transition, en définissant la fonction $succ : V \to P(V)$ qui à un état associe la liste de ses successeurs.\\
 
