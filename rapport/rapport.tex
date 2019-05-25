@@ -296,10 +296,10 @@ Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma
 	\STATE $CFC \leftarrow topological\_sort(CFC)$
 	\STATE $CFC \leftarrow reverse(CFC)$
 	\STATE $winners \leftarrow new\_array(size(V), \bot)$
-	\FOR { $v_k \in CFC$ }
-		\STATE $\gamma \leftarrow get\_winner(v_k)$
-		\STATE $propagate\_opposite(\gamma, v_k, E, winners)$
-		\FOR { $x \in v_k$ }
+	\FOR { $V_k \in CFC$ }
+		\STATE $\gamma \leftarrow get\_winner(V_k)$
+		\STATE $propagate\_opposite(\gamma, V_k, E, winners)$
+		\FOR { $x \in V_k$ }
 			\IF { $winners[x] = \bot$ }
 				\STATE $winners[x] = \gamma$
 			\ENDIF
@@ -310,29 +310,27 @@ Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma
 
 \subsubsection{Procédure $propagate\_opposite$}
 \begin{algorithmic}[1]
-	\REQUIRE $(\gamma, v, E, winners)$
+	\REQUIRE $(\gamma, V, E, winners)$
 	\STATE $CHANGED \leftarrow FALSE$
-	\FOR{$x \in v$}
+	\FOR{$x \in V$}
 		\IF{$winners[x] = \bot$}
 			\STATE $EXI \leftarrow FALSE$
 			\STATE $ALL \leftarrow TRUE$
 			\FOR {$(x,y) \in E$}
 				\IF{$winners[y] = \overline{\gamma}$}
-					\STATE $B \leftarrow TRUE$
+					\STATE $EXI \leftarrow TRUE$
 				\ELSE
-					\STATE $B \leftarrow FALSE$
+					\STATE $ALL \leftarrow FALSE$
 				\ENDIF
-				\STATE $EXI \leftarrow EX \lor B$
-				\STATE $ALL \leftarrow ALL \land B$
 			\ENDFOR
-			\IF{$(get\_player(y) = \overline{\gamma} \land EX) \lor ALL $}
+			\IF{$(get\_player(y) = \overline{\gamma} \land EXI) \lor ALL $}
 				\STATE $CHANGED \leftarrow TRUE$
 				\STATE $winners[y] = \overline{\gamma}$
 			\ENDIF
 		\ENDIF
 	\ENDFOR
 	\IF{$CHANGED$}
-		\STATE $propagate\_opposite(\gamma, v, E, winners)$
+		\STATE $propagate\_opposite(\gamma, V, E, winners)$
 	\ENDIF
 	\RETURN
 \end{algorithmic}
