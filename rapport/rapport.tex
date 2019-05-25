@@ -50,7 +50,9 @@ Une structure de Kripke sera ici identifiée à la donnée de $(Q,T,q_0,l)$ où:
 
 \subsubsection{Exécution}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke.
-On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$.
+On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$. 
+\\
+On note $Exec(\mathcal{A})$ l'ensemble des exécutions sur $\mathcal{A}$.
 
 \subsubsection{Satisfaction}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke et $\phi$ une formule de CTL.\\
@@ -101,14 +103,29 @@ $q_i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin partant d
 \end{tabular}
 
 \subsection{Négation}
-On peut définir la fonction $neg:CTL \to CTL$ qui permet de transformer une formule de CTL de la forme $\neg \phi$ en formule équivalente où toutes les négations sont sur les littéraux :
+On peut définir la fonction $desc\_neg:CTL \to CTL$ qui permet de transformer une formule de CTL en formule équivalente où toutes les négations sont sur les littéraux :
+\begin{align*}
+&desc\_neg(\top) = \top \quad desc\_neg(\bot) = \bot\\
+&desc\_neg(p) = p \\
+&desc\_neg(\neg \phi) = neg(\phi)\\
+&desc\_neg(a \lor b) = desc\_neg(a) \lor desc\_neg(b)\\
+&desc\_neg(a \land b) = desc\_neg(a) \land desc\_neg(b)\\
+&desc\_neg(\mbox{EX } \phi) = \mbox{EX }desc\_neg(\phi)\\
+&desc\_neg(\mbox{AX } \phi) = \mbox{AX }desc\_neg(\phi)\\
+&desc\_neg(\mbox{E } \phi \mbox{ U } \psi) =\mbox{E } desc\_neg(\phi) \mbox{ U } desc\_neg(\psi)\\
+&desc\_neg(\mbox{A } \phi \mbox{ U } \psi) =\mbox{A } 
+desc\_neg(\phi) \mbox{ U } desc\_neg(\psi)\\
+&desc\_neg(\mbox{E } \phi \mbox{ W } \psi) =\mbox{E } desc\_neg(\phi) \mbox{ W } desc\_neg(\psi)\\
+&desc\_neg(\mbox{A } \phi \mbox{ W } \psi) =\mbox{A } desc\_neg(\phi) \mbox{ W } desc\_neg(\psi)
+\end{align*}
+
 \begin{align*}
 &neg(\top) = \bot \quad neg(\bot) = \top\\
-&neg(p) = \neg p \quad neg(\neg \phi) = neg(neg(\phi))\\
+&neg(p) = \neg p \quad neg(\neg \phi) = desc\_neg(\phi)\\
 &neg(a \lor b) = neg(a) \land neg(b)\\
 &neg(a \land b) = neg(a) \lor neg(b)\\
-&neg(\mbox{AX } \phi) = \mbox{EX }neg(\phi)\\
 &neg(\mbox{EX } \phi) = \mbox{AX }neg(\phi)\\
+&neg(\mbox{AX } \phi) = \mbox{EX }neg(\phi)\\
 &neg(\mbox{E } \phi \mbox{ U } \psi) =\mbox{A } (neg(\psi)) \mbox{ W } (neg(\phi) \land neg(\psi))\\
 &neg(\mbox{A } \phi \mbox{ U } \psi) =\mbox{E } (neg(\psi)) \mbox{ W } (neg(\phi) \land neg(\psi))\\
 &neg(\mbox{E } \phi \mbox{ W } \psi) =\mbox{A } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))\\

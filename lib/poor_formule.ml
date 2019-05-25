@@ -51,8 +51,8 @@ let rec neg (f : 'a poor_formule) =
      let b = neg b in
      let t =
        match t with
-       | AU -> EW (* TODO vérifier celui-ci *)
-       | EW -> AU (* TODO vérifier celui-ci *)
+       | AU -> EW
+       | EW -> AU
        | EU -> AW
        | AW -> EU
      in TempBinop (t,b,et a b)
