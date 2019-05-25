@@ -44,9 +44,11 @@ Les modèles de CTL sont appelés des \emph{structures de Kripke}.
 \subsubsection{Structures de Kripke}
 Une structure de Kripke sera ici identifiée à la donnée de $(Q,T,q_0,l)$ où:
 \begin{itemize}
-\item Le couple $(Q,T, q_0)$ est un graphe orienté étiqueté : $Q$ est un ensemble d'états, $T \subseteq Q \times Q$ est la relation de transition et $q_0 \in Q$ représente l'état de départ.
-\item $l : \mathcal{P}(Q) \to \Omega$ est une fonction d'étiquetage.
+\item Le couple $(Q,T, q_0)$ est un graphe orienté : $Q$ est un ensemble d'états, $T \subseteq Q \times Q$ est la relation de transition et $q_0 \in Q$ représente l'état de départ.
+\item $l : Q \to \mathcal{P}(\Omega)$ est une fonction d'étiquetage.
 \end{itemize}
+\bigskip
+On ne considère ici que des cas où $Q$ est fini et $T$ est totale.
 
 \subsubsection{Exécution}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke.
@@ -54,28 +56,28 @@ On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (
 
 \subsubsection{Satisfaction}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke et $\phi$ une formule de CTL.\\
-Soit $i\in \mathbb{N}$, On dira qu'il existe une exécution de $\mathcal{A}$ vérifiant $\phi$ depuis l'état $q_i$ si et seulement si $A, q_i \vDash \phi$. On omettra souvent la donnée de $\mathcal{A}$ dans notre écriture.\\
-On définit $q_i \vDash \phi$ par induction sur $\phi$:\\
+Soit $i\in \mathbb{N}$, On dira que $q$ vérifie $\phi$ dans $\mathcal{A}$ si et seulement si $A, q \vDash \phi$. On omettra souvent la donnée de $\mathcal{A}$ dans notre écriture.\\
+On définit $q \vDash \phi$ par induction sur $\phi$:\\
 \\
 \begin{tabular}{lcl}
-$q_i \nvDash \bot$ &&\\
-$q_i \vDash \top$ &&\\
-$q_i \vDash p$ &ssi& $p \in l (q_i)$\\
-$q_i \vDash \neg \psi$ &ssi& $q_i \nvDash \psi$\\
-$q_i \vDash \psi_1 \land \psi_2$ &ssi& $q_i \vDash \psi_1$ et $q_i \vDash \psi_2$\\
-$q_i \vDash \psi_1 \lor \psi_2$ &ssi& $q_i \vDash \psi_1$ ou $q_i \vDash \psi_2$\\
-$q_i \vDash \mbox{EX } \psi$ &ssi& $\exists (q_i, q_j) \in T$, $q_j \vDash \psi$\\
-$q_i \vDash \mbox{AX } \psi$ &ssi& $\forall (q_i, q_j) \in T$, $q_j \vDash \psi$\\
+$q \nvDash \bot$ &&\\
+$q \vDash \top$ &&\\
+$q \vDash p$ &ssi& $p \in l (q)$\\
+$q \vDash \neg \psi$ &ssi& $q \nvDash \psi$\\
+$q \vDash \psi_1 \land \psi_2$ &ssi& $q \vDash \psi_1$ et $q \vDash \psi_2$\\
+$q \vDash \psi_1 \lor \psi_2$ &ssi& $q \vDash \psi_1$ ou $q \vDash \psi_2$\\
+$q \vDash \mbox{EX } \psi$ &ssi& $\exists \sigma \in Exec_\mathcal{A}(q)$, $\sigma(1) \vDash \psi$\\
+$q \vDash \mbox{AX } \psi$ &ssi& $\forall \sigma \in Exec_\mathcal{A}(q)$, $\sigma(1) \vDash \psi$\\
 
-$q_{i} \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\exists \sigma: \sigma(0) = q_i$, $\exists k \in \mathbb{N}$, $\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
+$q_{i} \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& $\exists \sigma \in Exec_\mathcal{A}(q)$, $\exists k \in \mathbb{N}$, $\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
 
-$q_i \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& $\forall \sigma: \sigma(0) = q_i$, $\exists k \in \mathbb{N}$, $\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
+$q \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& $\forall \sigma \in Exec_\mathcal{A}(q)$, $\exists k \in \mathbb{N}$, $\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
 
-$q_i \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma : \sigma(0) = q_i$, soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2$ et $\forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
-& & soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
+$q \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& $\exists \sigma \in Exec_\mathcal{A}(q)$, soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
+& & soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2 \land \forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
 
-$q_i \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma : \sigma(0) = q_i$, soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2$ et $\forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
-& & soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
+$q \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& $\forall \sigma \in Exec_\mathcal{A}(q)$, soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
+& & soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2 \land \forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
 \end{tabular}
 
 \bigskip
