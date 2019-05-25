@@ -225,8 +225,7 @@ Montrons que le jeu défini par $succ$ avec comme état initial $start = (q_0, \
 On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ des composantes fortement connexes dans un ordre topologique satisfait les conditions. On note que les CFC forment un graphe acyclique.
 
 \begin{enumerate}[a)]
-\item $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$.\\
-Supposons que $c(x) \neq c(y)$. Cela implique que, en supposant que (quitte à renommer $x$ en $y$), $c(x) = 0$, et puisque $x \neq y$, on en déduit que: $x = (\_,\_W)$ et $y = (\_,\_U)$. C'est absurde.
+\item $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$. Si $V_i$ ne contient qu'un seul état, le résultat vrai. Sinon, $V_i$ est une CFC non triviale et, à la vue de la définition de $succ$ elle est de la forme suivante : $\{ \phi; \mbox{EX }\phi \}$ avec $\mbox{X } \psi_1 \mbox{ Y } \psi_2$ et $ X=A$ ou $X =E$ et $Y = U$ ou $Y=W$. Donc le résultat est vrai.
 
 \item est trivialement vraie: les $V_i$ sont ordonnées par ordre topologique.
 \end{enumerate}
