@@ -143,23 +143,35 @@ On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \item $c : V \to (\mathbb{N} \cup \{\bot\})$ est une fonction qui associe une couleur ou $\bot$ à chaque état.
 \end{itemize}
 
-\subsubsection{Stratégie}
-On appelle $\omega : V' \to V$ ($V' \subseteq V$) une stratégie d'un joueur si et seulement si $\forall v \in V, (v,\omega(v)) \in R$.\\
-De plus, une stratégie $\omega$ est dite gagnante pour:
+\subsubsection{Victoire}
+Une partie d'un jeu est une fonction $\omega : V' \to V, V' \subseteq V$ telle que $\forall v \in V', (v,\omega(v)) \in R$.
+Une partie à partir d'un état $q_0 \in V$ est gagnée par:
 \begin{itemize}
-	\item Ève, si et seulement si:
+\item Ève si est seulement si:
 	\begin{itemize}
-		\item Soit Adam est bloqué: $\exists v \in V'$ tel que $\omega(v) \mod 2 = 1$ et $\nexists z \in V, (\omega(v), z) \in R$.
-		\item Soit Ève visite infiniment souvent uniquement des états pairs: $\omega$ n'est pas injective (la stratégie boucle) et $\forall x \in \{\omega^n(q_0)\ |\ n\in \mathbb{N}, \exists m \in \mathbb{N}, n \neq  m \land \omega^n(q_0) = \omega^m(q_0)\}$, $x \mod 2 = 0$.
+	\item Soit Adam est bloqué : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_A \land \omega^{n+1} (q_0) \notin V'$.
+	\item Soit Ève visite infiniment souvent des états uniquement pairs: $\exists n \in \mathbb{N}, \forall m \geq n, (\omega^m(q_0) \in V_E \land c(\omega^m(q_0)) \neq \bot )\implies c(\omega^m(q_0)) = 0 \mod 2$.
 	\end{itemize}
-	\item Adam, si et seulement si:
-	\begin{itemize}
-		\item Soit Ève est bloquée: $\exists v \in V'$ tel que $\omega(v) \mod 2 = 2$ et $\nexists z \in V, (\omega(v), z) \in R$.
-		\item Soit Adam visite infiniment souvent des états impairs: $\omega$ n'est pas injective (la stratégie boucle) et $\forall x \in \{\omega^n(q_0)\ |\ n\in \mathbb{N}, \exists m \in \mathbb{N}, n \neq  m \land \omega^n(q_0) = \omega^m(q_0)\}$, $x \mod 2 = 1$.
+\item Adam si est seulement si:
+\begin{itemize}
+	\item Soit Ève est bloquée : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_E \land \omega^{n+1} (q_0) \notin V'$.
+	\item Soit Adam visite infiniment souvent des états uniquement impairs: $\exists n \in \mathbb{N}, \forall m \geq n, (\omega^m(q_0) \in V_E \land c(\omega^m(q_0)) \neq \bot )\implies c(\omega^m(q_0)) = 1 \mod 2$.
 \end{itemize}
 \end{itemize}
 
-Une partie est une séquence d'états $\gamma_i$ telle que $\forall i \in I \subseteq \mathbb{N}, (\gamma_i,\gamma_{i+1}) \in R$. Si $I$ est fini, on demande alors que $\gamma_{max(I)}$ n'ait pas de successeurs par $R$.
+\subsubsection{Stratégie}
+On note $V^*$ l'ensemble $\{v \in V | \exists v' \in V, (v,v') \in R\}$.
+On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E^* \to V$ (respectivement $\rho : V_A^* \to V$).
+
+On appelle stratégie \emph{induite} par $\rho : V_E^* \to V$ et $\rho' : V_A^* \to V$, la fonction $\omega : (V_E^* \cup V_A^* \to V)$ définie par:
+\\
+$$\omega(v) \left \{
+\begin{array}{rcl}
+\rho(v) & si & v \in V_E^*\\
+\rho'(v) & si & v \in V_A^*\\
+\end{array}
+\right .$$
+Une stratégie $\rho$ est dite gagnante pour Ève (respectivement Adam) si et seulement si pour toute stratégie $\rho'$ pour Adam (respectivement Ève), la partie induite par $\rho$ et $\rho'$ est gagnante pour Ève (respectivement Adam).
 
 \subsection{Jeux faibles de parité}
 \label{fpg}
@@ -325,5 +337,7 @@ Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma
 	\ENDIF
 	\RETURN
 \end{algorithmic}
+
+\subsection{Correction}
 
 \end{document}
