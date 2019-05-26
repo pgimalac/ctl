@@ -353,7 +353,10 @@ Montrons que $solve\_weak\_game$ termine. Cela revient à montrer que $propagate
 Montrons que $solve\_weak\_game$ est correct, c'est-à-dire que $solve\_weak\_game(q_0,V,E) = \gamma$ si et seulement s'il existe une stratégie gagnante pour $\gamma$.
 
 \paragraph{$\implies$}
-Supposons que $solve\_weak\_game(q_0,V,E) = \gamma$.
+Supposons que $solve\_weak\_game(q_0,V,E) = \gamma$. Montrons en fait par récurrence sur $k$ qu'à la fin du traitement d'une CFC $V_k$, on a correctement attribué le gagnant de chaque état.\\
+Si $k = 1$
+\\
+On suppose le résultat vrai pour toutes les CFC $V_i$, $i < k$
 
 \paragraph{$\Longleftarrow$}
 Par contraposée, montrons que si $solve\_weak\_game(q_0,V,E) \neq \gamma$ alors il n'y a pas de stratégie gagnante pour $\gamma$.\\
