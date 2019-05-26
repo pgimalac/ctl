@@ -346,6 +346,9 @@ Voici maintenant un algorithme $solve\_weak\_game$ permettant de connaitre le ga
 \end{algorithmic}
 \end{algorithm}
 
+\subsubsection{Terminaison}
+Montrons que $solve\_weak\_game$ termine. Cela revient à montrer que $propagate\_opposite$ termine. Or la fonction ne termine pas immédiatement seulement si un appel récursif a lieu, ce qui est le cas uniquement si la variable $CHANGED$ est mise à $TRUE$. Cependant cela n'arrive que si l'on assigne un gagnant à un état $y$ \emph{qui n'en avait pas avant}. L'ensemble des états étant finis, les appels récursifs se terminent forcément.
+
 \subsection{Correction}
 Montrons que $solve\_weak\_game$ est correct, c'est-à-dire que $solve\_weak\_game(q_0,V,E) = \gamma$ si et seulement s'il existe une stratégie gagnante pour $\gamma$.
 
