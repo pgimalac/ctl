@@ -353,31 +353,38 @@ Montrons que $solve\_weak\_game$ termine. Cela revient à montrer que $propagate
 Montrons que $solve\_weak\_game$ est correcte, c'est-à-dire que $solve\_weak\_game(q_0,V,E) = \gamma$ si et seulement s'il existe une stratégie gagnante pour $\gamma$.
 
 \paragraph{$\implies$}
-Montrons en fait par récurrence sur $k$ qu'à la fin du traitement d'une CFC $V_k$, on a correctement attribué le gagnant de chaque état. \\
+Montrons en fait par récurrence sur $k$ qu'à la fin du traitement d'une CFC $V_k$, on a correctement attribué le gagnant de chaque état. Il suffit pour ça de montrer $propagate\_opposite$ va effectivement attribuer les états remportés par $\overline{\gamma}$, et uniquement ceux-ci. \\
 Si $k = 1$, on traite la première CFC. Remarquons que, comme les $V_k$ ont été ordonnées par ordre topologique inversé, les successeurs de tous les états de $V_1$  sont dans $V_1$.\\
 Si $V_1$ est réduite à un seul élément, c'est à $\gamma$ de jouer, mais il est bloqué, donc $\overline{\gamma}$ gagne cet état et $propagate\_opposite$ détecte bien ce cas (car pour l'unique état $x$ sans successeurs, $ALL$ vaudra $TRUE$).\\
-Sinon,$\gamma$ est le joueur qui gagne en restant dans la CFC, et quel que soit le joueur ayant le trait, il est obligé de rester dans la CFC, donc $\gamma$ gagne. $propagate\_opposite$ détecte bien ce cas, aucun état n'est gagnant pour $\overline{\gamma}$ et tous les états ont un successeur, donc pour tous les états $x \in V_1$, $ALL = FALSE$ et $EXI = FALSE$, donc $winners[x]$ ne sera pas initialisé. Donc après l'appel à $propagate\_opposite$, tous les états de $V_1$ seront marqués gagnants pour $\gamma$
+Sinon, $\gamma$ est le joueur qui gagne en restant dans la CFC, et quel que soit le joueur ayant le trait, il est obligé de rester dans la CFC, donc $\gamma$ gagne. $propagate\_opposite$ détecte bien ce cas, aucun état n'est gagnant pour $\overline{\gamma}$ et tous les états ont un successeur, donc pour tous les états $x \in V_1$, $ALL = FALSE$ et $EXI = FALSE$, donc $winners[x]$ ne sera pas initialisé.
 \\
 \\
-On suppose le résultat vrai pour toutes les CFC $V_i$, $i < k$
-Il suffit de montrer de $propagate\_opposite$ va effectivement attribuer les états remportés par $\overline{\gamma}$.\\
-Si $x \in V_k$ est un état gagnant pour $\overline{\gamma}$ c'est que:
+On suppose le résultat vrai pour toutes les CFC $V_i$, $i < k$.
+\\
+Si $x \in V_k$ est un état gagnant pour $\overline{\gamma}$ c'est que :
 \begin{enumerate}
 	\item Soit c'est à $\gamma$ de jouer et il est bloqué ce qui est le cas si $x$ n'a pas de successeur, ou tous ses successeurs sont gagnants pour $\overline{\gamma}$.
-	\item Soit C'est à $\overline{\gamma}$ de jouer et il existe un successeur de $x$ qui est gagnant pour $\overline{\gamma}$
+	\item Soit C'est à $\overline{\gamma}$ de jouer et il existe un successeur de $x$ qui est gagnant pour $\overline{\gamma}$.
 \end{enumerate}
 Montrons que $winners[x] = \overline{\gamma}$.
 
 Si $x$ n'a pas de successeur ou que la CFC est close, on peut reprendre la démonstration donnée pour $V_1$.
 
-Sinon, si on est dans le cas 1, TODO
-
-Sinon, si on est dans le cas 2, c'est qu'il existe un état $y \in V_i$, $ i < k$ accessible depuis $x$ tel que tous les états sur le chemin entre $y$ soient gagnants pour $\overline{\gamma}$ (car $\overline{\gamma}$ perd s'il boucle dans $V_k$). Or par hypothèse de récurrence, $winners[y] = \overline{\gamma}$, et donc, par récurrence sur la distance séparant $x$ de $y$:
+Sinon, c'est qu'il existe un état $y \in V_i$, $ i < k$ accessible depuis $x$ tel que tous les états sur le chemin $\pi$ entre $x$ et $y$ soient gagnants pour $\overline{\gamma}$ (car $\overline{\gamma}$ perd s'il boucle dans $V_k$). On a par hypothèse de récurrence, $winners[y] = \overline{\gamma}$. Choisissons un $y$ qui a ces propriétés et tel que $\pi$ soit le plus grand possible et sans boucle:
 \begin{itemize}
-	\item Si on est dans le cas 1
-	\item Si elle vaut 1, il est clair que $EXI$ vaudra $TRUE$ (car $(x,y) \in E$), et donc que $winners[x] = \overline{\gamma}$
-	\item Sinon, il existe un état $x'$ plus proche de $y$, et donc par récurrence $winners[x'] = \overline{\gamma}$ et donc $EXI$ vaudra $TRUE$ et $winners[x] = \overline{\gamma}$.
+	\item Si $\pi$ est un chemin de taille 1:
+	\begin{itemize}
+		\item Si on est dans le cas 1, il est clair que $EXI$ vaudra $TRUE$ (car $(x,y) \in E$), et donc que $winners[x] = \overline{\gamma}$
+		\item Si on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$ et ils se trouvent tous des CFC d'indices plus petites (sinon cela contredirait l'hypothèse de maximalité sur la taille de $\pi$). Donc pour chaque successeur $y$ de $x$, $winners[y] = \overline{\gamma}$ et donc $ALL$ vaudra $TRUE$, et donc $winners[x] = \overline{\gamma}$.
+	\end{itemize}
+	\item Si $\pi$ est un chemin de taille $n$
+		\begin{itemize}
+		\item Si on est dans le cas 1, $x$ a un successeur $y$ dans $\pi$ et donc par hypothèse de récurrence, $winners[y] = \overline{\gamma}$ et donc $EXI$ vaudra $TRUE$ et $winners[x] = \overline{\gamma}$.
+		\item Si on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$. Mais ils se trouvent soit dans une CFC d'indice plus petites, soit le long d'un chemin gagnant pour $\overline{\gamma}$ de taille plus petite que $\pi$, et donc par récurrence, $ALL$ vaudra $TRUE$ et donc $winners[x] = \overline{\gamma}$.
+	\end{itemize}
 \end{itemize}
+
+Réciproquement, si $winners[x] = \overline{\gamma}$, montrons que $x$ est gagnant pour $\overline{\gamma}$.
 
 \paragraph{$\Longleftarrow$}
 Par contraposée, montrons que si $solve\_weak\_game(q_0,V,E) \neq \gamma$ alors il n'y a pas de stratégie gagnante pour $\gamma$.\\
