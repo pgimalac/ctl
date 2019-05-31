@@ -163,8 +163,7 @@ Une partie à partir d'un état $q_0 \in V$ est gagnée par:
 \end{itemize}
 
 \subsubsection{Stratégie}
-On note $V^*$ l'ensemble $\{v \in V | \exists v' \in V, (v,v') \in R\}$.
-On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E^* \to V$ (respectivement $\rho : V_A^* \to V$).
+On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E \to V$ (respectivement $\rho : V_A \to V$) telle que pour chaque $v$ dans $V_E$ (respectivement $V_A$), $(v, \rho(v)) \in R$.
 
 On appelle stratégie \emph{induite} par $\rho : V_E^* \to V$ et $\rho' : V_A^* \to V$, la fonction $\omega : (V_E^* \cup V_A^* \to V)$ définie par:
 \\
@@ -187,27 +186,27 @@ La résolution des jeux de parité est un problème dans $NP \cap coNP$, et on n
 
 On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement si il existe $V_1$, ..., $V_k$ une partition de $V = V_E \sqcup V_A$ telle que:
 \begin{enumerate}[a)]
-\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$
+\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$.
 \item La partition représente une convergence du jeu :\\
 $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 \end{enumerate}
 
 \subsection{Résolution}
-Les jeux faibles de parité se résolvent en temps polynomial comme nous le verrons en section \ref{algofpg}.
+Les jeux faibles de parité se résolvent en temps polynomial comme nous le verrons en Section \ref{algofpg}.
 
 \subsection{Algorithme de construction du jeu}
-Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et que Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
+Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et qu'Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
 
-Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke.
+Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke et $SF(\phi)$ l'ensemble de ses sous-formules.
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
 	\item $V = Q \times SF(\phi)$
 	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1\mid \mbox{A } \phi_1 \mbox{ U } \phi_2 \mid \mbox{A } \phi_1 \mbox{ W } \phi_2\}$
 	\item $V_E = V \backslash V_A$
-	\item $\forall (s,v) \in V, c(s,v) = \left \{
+	\item $c(s,v) = \left \{
 	\begin{array}{rcl}
-		2 & si & \text{v = EW ou AW}\\
-		1 & si & \text{v = EU ou AU}\\
+		2 & si & v = \mbox{E } \phi_1 \mbox{ W } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ W } \phi_2\\
+		1 & si & v = \mbox{E } \phi_1 \mbox{ U } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ U } \phi_2\\
 		\bot && sinon
 	\end{array}
 	\right .$
@@ -237,7 +236,7 @@ Montrons que le jeu défini par $succ$ avec comme état initial $start = (q_0, \
 On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, V_k$ des composantes fortement connexes dans un ordre topologique satisfait les conditions. On note que les CFC forment un graphe acyclique.
 
 \begin{enumerate}[a)]
-\item $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$. Si $V_i$ ne contient qu'un seul état, le résultat vrai. Sinon, $V_i$ est une CFC non triviale et, à la vue de la définition de $succ$ elle est de la forme suivante : $\{ \phi; \mbox{EX }\phi \}$ avec $\mbox{X } \psi_1 \mbox{ Y } \psi_2$ et $ X=A$ ou $X =E$ et $Y = U$ ou $Y=W$. Donc le résultat est vrai.
+\item $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x,y \in V_i$ tel que $x \neq y$ et $c(x) \neq \bot$ et $c(y) \neq \bot$. Si $V_i$ ne contient qu'un seul état, le résultat est vrai. Sinon, $V_i$ est une CFC non triviale et, à la vue de la définition de $succ$ elle est de la forme suivante : $\{ \phi; \mbox{EX }\phi \}$ avec $\mbox{X } \psi_1 \mbox{ Y } \psi_2$ et $ X=A$ ou $X =E$ et $Y = U$ ou $Y=W$. Donc le résultat est vrai.
 
 \item est trivialement vraie: les $V_i$ sont ordonnées par ordre topologique.
 \end{enumerate}
@@ -305,8 +304,8 @@ Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma
 \subsubsection{Prémisses}
 Nous allons utiliser quelques méthodes que nous n'allons pas définir:
 \begin{itemize}
-	\item $compute_cfc$ renvoie la liste des Composantes Fortement Connexes d'un graphe orienté.
-	\item $topological_sort$ effectue un tri topologique des CFC, de sorte qu'une CFC $V_i$ se trouve avant une CFC $V_j$ si et seulement s'il n'y a pas de chemin entre un sommet de $V_j$ et un de $V_i$. 
+	\item $compute\_cfc$ renvoie la liste des Composantes Fortement Connexes d'un graphe orienté.
+	\item $topological\_sort$ effectue un tri topologique des CFC, de sorte qu'une CFC $V_i$ se trouve avant une CFC $V_j$ si et seulement s'il n'y a pas de chemin entre un sommet de $V_j$ et un de $V_i$. 
 	\item $reverse(l)$ renvoie une liste avec les éléments de $l$ dans l'ordre inverse.
 	\item $get\_winner(V_i)$ renvoie:
 	\begin{itemize}
@@ -314,7 +313,7 @@ Nous allons utiliser quelques méthodes que nous n'allons pas définir:
 		\item Sinon, le joueur qui gagne si on boucle dans la CFC.
 	\end{itemize}
 \end{itemize}
-Notons que toutes ces méthodes s'implémentent en un temps au plus linéaire en la nombre de sommets et d'arêtes.
+Notons que toutes ces méthodes s'implémentent en un temps au plus linéaire en le nombre de sommets et d'arêtes.
 
 \subsubsection{Algorithme de résolution du jeu}
 Voici maintenant un algorithme $solve\_weak\_game$ permettant de connaitre le gagnant d'un jeu faible de parité.
