@@ -8,6 +8,7 @@
 \usepackage{enumerate}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{hyperref}
 
 \author{Pierre Gimalac \& Alexandre Moine\\\small{Encadré par François Laroussinie}}
 \title{Rapport de Projet\\Mathématiques-Informatique}
@@ -422,4 +423,14 @@ Donc par récurrence, $x$ est gagnant  pour $\overline{\gamma}$.
 \paragraph{$\Longleftarrow$}
 Par contraposée, montrons que si $solve\_weak\_game(q_0,V,E) \neq \gamma$ alors il n'y a pas de stratégie gagnante pour $\gamma$.\\
 En effet, les jeux faibles de parité sont déterminés, donc si $solve\_weak\_game(q_0,V,E) \neq \gamma$, cela implique que $solve\_weak\_game(q_0,V,E) = \overline{\gamma}$, et d'après l'implication précédente, qu'il existe une stratégie gagnante pour $\overline{\gamma}$, donc il n'en existe pas pour $\gamma$.
+
+\section{Implémentation}
+\subsection{Introduction}
+Nous avons implémenté l'algorithme décrit Section \ref{algofpg} en OCaml, le code est disponible à l'adresse suivante: \url{https://github.com/nobrakal/ctl/}.
+
+\subsection{Modèle checking de CTL: marquage}
+Nous avons aussi, pour comparaison, implémenté une autre méthode de modèle checking de CTL, basée sur le parcours et le marquage de la structure de Kripke. Notre implémentation est une traduction fonctionnelle de l'algorithme décrit par Philippe Schnoebelen et al. \cite{verif}.
+
+\bibliographystyle{plain}
+\bibliography{biblio}
 \end{document}
