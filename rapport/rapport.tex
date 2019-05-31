@@ -176,6 +176,12 @@ $$\omega(v) \left \{
 \right .$$
 Une stratégie $\rho$ est dite gagnante pour Ève (respectivement Adam) si et seulement si pour toute stratégie $\rho'$ pour Adam (respectivement Ève), la partie induite par $\rho$ et $\rho'$ est gagnante pour Ève (respectivement Adam).
 
+\subsubsection{Déterminisme}
+Les jeux de parité sont \emph{déterminés}, c'est-à-dire que chaque état est gagnant soit pour un joueur, soit pour l'autre.
+
+\subsubsection{Résolution}
+La résolution des jeux de parité est un problème dans $NP \cap coNP$, et on ne sait pas s'il existe un algorithme déterministe polynomial qui le résout.
+
 \subsection{Jeux faibles de parité}
 \label{fpg}
 
@@ -185,6 +191,9 @@ On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seuleme
 \item La partition représente une convergence du jeu :\\
 $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 \end{enumerate}
+
+\subsection{Résolution}
+Les jeux faibles de parité se résolvent en temps polynomial comme nous le verrons en section \ref{algofpg}.
 
 \subsection{Algorithme de construction du jeu}
 Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et que Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
@@ -290,6 +299,7 @@ Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
 \end{itemize}
 
 \subsection{Résolution des jeux faibles de parité}
+\label{algofpg}
 Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma}$ l'autre joueur.
 
 \subsubsection{Prémisses}
