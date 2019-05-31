@@ -166,12 +166,12 @@ Une partie à partir d'un état $q_0 \in V$ est gagnée par:
 \subsubsection{Stratégie}
 On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E \to V$ (respectivement $\rho : V_A \to V$) telle que pour chaque $v$ dans $V_E$ (respectivement $V_A$), $(v, \rho(v)) \in R$.
 
-On appelle stratégie \emph{induite} par $\rho : V_E^* \to V$ et $\rho' : V_A^* \to V$, la fonction $\omega : (V_E^* \cup V_A^* \to V)$ définie par:
+On appelle stratégie \emph{induite} par $\rho : V_E \to V$ et $\rho' : V_A \to V$, la fonction $\omega : (V_E \cup V_A \to V)$ définie par:
 \\
-$$\omega(v) \left \{
+$$\omega(v) = \left \{
 \begin{array}{rcl}
-\rho(v) & si & v \in V_E^*\\
-\rho'(v) & si & v \in V_A^*\\
+\rho(v) & si & v \in V_E\\
+\rho'(v) & si & v \in V_A\\
 \end{array}
 \right .$$
 Une stratégie $\rho$ est dite gagnante pour Ève (respectivement Adam) si et seulement si pour toute stratégie $\rho'$ pour Adam (respectivement Ève), la partie induite par $\rho$ et $\rho'$ est gagnante pour Ève (respectivement Adam).
@@ -314,7 +314,7 @@ Nous allons utiliser quelques méthodes que nous n'allons pas définir:
 		\item Sinon, le joueur qui gagne si on boucle dans la CFC.
 	\end{itemize}
 \end{itemize}
-Notons que toutes ces méthodes s'implémentent en un temps au plus linéaire en le nombre de sommets et d'arêtes.
+Notons que toutes ces méthodes peuvent être implémentées en un temps au plus linéaire en le nombre de sommets et d'arêtes.
 
 \subsubsection{Algorithme de résolution du jeu}
 Voici maintenant un algorithme $solve\_weak\_game$ permettant de connaitre le gagnant d'un jeu faible de parité.
@@ -388,7 +388,7 @@ Sinon, $\gamma$ est le joueur qui gagne en restant dans la CFC, et quel que soit
 Si $x \in V_k$ est un état gagnant pour $\overline{\gamma}$ c'est que :
 \begin{enumerate}
 	\item Soit c'est à $\gamma$ de jouer et il est bloqué ce qui est le cas si $x$ n'a pas de successeur, ou tous ses successeurs sont gagnants pour $\overline{\gamma}$.
-	\item Soit C'est à $\overline{\gamma}$ de jouer et il existe un successeur de $x$ qui est gagnant pour $\overline{\gamma}$.
+	\item Soit c'est à $\overline{\gamma}$ de jouer et il existe un successeur de $x$ qui est gagnant pour $\overline{\gamma}$.
 \end{enumerate}
 Montrons que $winners[x] = \overline{\gamma}$.\\
 Si $x$ n'a pas de successeur ou que la CFC est close, on peut reprendre la démonstration donnée pour $V_1$.\\
