@@ -286,17 +286,23 @@ On procède par récurrence sur $\phi$ :
 \item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possiblités :
 \begin{itemize}
 	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
-	\item Soit $q_0 \vDash \mbox{EX } \phi$. Il y a deux cas:
+	\item Soit $q_0 \vDash \psi_1 \land \mbox{EX } \phi$.
+	par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\psi_1)$.
+	Montrons qu'elle en a aussi une à partir de $(q_0,\mbox{EX } \phi)$.
+	Il y a deux cas:
 	\begin{itemize}
-		\item Soit il existe un état TODO
+		\item Soit il existe un chemin à partir de $q_0$ tel que $\psi_1$ est vrai jusqu'à ce que $\psi_2$ le soit. Par récurrence sur la taille de ce chemin, montrons qu'Ève a une stratégie gagnante.\\
+		S'il est de taille 1, cela veut dire qu'il existe un successeur $q$ de $q_0$ tel que $\psi_2$ soit vrai, donc par récurrence, Ève a une stratégie gagnante à partir de $q$, il suffit donc à Ève de prendre le chemin $(q_0,q)$.\\
+		Sinon, Ève doit prendre le successeur $q$ de $q_0$ le long du chemin tel que $\psi_1$ soit vraie, donc $q \vdash \psi_1 \land \mbox{EX } \phi$, et donc, par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\mbox{EX } \phi)$.
+		\item Soit $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$ et il y a un chemin à partir de $q_0$ se finissant par un cycle tel que $\psi_1$ soit vrai sur tous les états de ce chemin. La stratégie d'Ève est donc simplement de suivre ce cycle à l'infini.
 	\end{itemize}
 \end{itemize}
 Donc Ève a une stratégie gagnante dans tous les cas.
 
-\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Adam de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Adam de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
 \begin{itemize}
-	\item soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
-	\item Soit $q_0 \vDash \mbox{EX } \phi$. TODO
+	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
+	\item Soit $q_0 \vDash \psi_1 \land \vDash \mbox{EX } \phi$. TODO
 \end{itemize}
 Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
 \end{itemize}
