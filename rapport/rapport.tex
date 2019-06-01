@@ -211,7 +211,7 @@ Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke et 
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
 	\item $V = Q \times SF(\phi)$
-	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1\mid \mbox{A } \phi_1 \mbox{ U } \phi_2 \mid \mbox{A } \phi_1 \mbox{ W } \phi_2\}$
+	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1 \}$
 	\item $V_E = V \backslash V_A$
 	\item $c(s,v) = \left \{
 	\begin{array}{rcl}
@@ -270,7 +270,7 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, pour tous les successeurs $q$ de $q_0$, elle une stratégie gagnante à partir de $q$ et donc par récurrence que $q \vDash \psi$. Donc $q_0 \vDash \phi$.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. C'est à Ève de jouer et elle a une stratégie gagnante, deux cas sont possibles :
 \begin{itemize}
 	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $q_0 \vDash \psi_2$ et donc $q_0 \vDash \phi$.
 	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{EX } \phi)$
@@ -281,7 +281,16 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 	\end{itemize}
 \end{itemize}
 
-\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{AX } \phi) \}$. TODO
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{AX } \phi) \}$. C'est à Ève de jouer et elle a une stratégie gagnante, deux cas sont possibles :
+\begin{itemize}
+	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $q_0 \vDash \psi_2$ et donc $q_0 \vDash \phi$.
+	\item Soit Ève choisit $(s, \psi_1 \land \mbox{AX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{AX } \phi)$.
+	Ève va répéter ce choix sur tous les successeurs de $s$ et il y a deux choix:
+	\begin{itemize}
+		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vu que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
+		\item Soit un tel état n'existe pas et donc Adam force Ève à "boucler" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vue que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
+	\end{itemize}
+\end{itemize}
 \end{itemize}
 
 \paragraph{$\Longleftarrow$}
