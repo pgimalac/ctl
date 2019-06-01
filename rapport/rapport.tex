@@ -205,7 +205,7 @@ $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 Les jeux faibles de parité se résolvent en temps polynomial comme nous le verrons en Section \ref{algofpg}.
 
 \subsection{Algorithme de construction du jeu}
-Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et qu'Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
+Nous allons maintenant définir un algorithme qui permet de construire un jeu faible de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et qu'Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
 
 Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke et $SF(\phi)$ l'ensemble de ses sous-formules.
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
@@ -270,11 +270,18 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, pour tous les successeurs $q$ de $q_0$, elle une stratégie gagnante à partir de $q$ et donc par récurrence que $q \vDash \psi$. Donc $q_0 \vDash \phi$.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
 \begin{itemize}
 	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $q_0 \vDash \psi_2$ et donc $q_0 \vDash \phi$.
-	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $q_0 \vDash \psi_1$. D plus TODO
+	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{EX } \phi)$
+	Ève va répéter ce choix sur les successeurs de $s$ et il y a deux choix:
+	\begin{itemize}
+		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vue que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
+		\item Soit un tel état n'existe pas et donc Ève "boucle" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vue que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
+	\end{itemize}
 \end{itemize}
+
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{AX } \phi) \}$. TODO
 \end{itemize}
 
 \paragraph{$\Longleftarrow$}
