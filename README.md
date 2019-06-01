@@ -27,6 +27,8 @@ Il existe deux modes d'utilisations, tous deux accessibles via la commande `dune
 
 Le model-checking d'une formule est efféctué avec deux méthodes différentes: par marquage et par résolution d'un jeu faible de parité.
 
+Le fichier DOT correspondant au dernier jeu testé sera sauvegardé dans un fichier `results.dot`.
+
 ### GraphViz
 
 Il est possible de représenter graphiquement le jeu associé à une formule avec la fonction `export_game_checked` du module `Fpgs` puis avec la commande `dot -Tpdf file > file.pdf`.

@@ -31,7 +31,7 @@ let check_formula_in kripke start form =
   let marq = MarqueurS.check poorf kripke start in
   print_endline
     ("* Marquage : " ^ string_of_bool marq);
-  let fpg = FpgS.export_game_checked poorf kripke start (fun x -> x) "test" in
+  let fpg = FpgS.export_game_checked poorf kripke start (fun x -> x) "results.dot" in
   print_endline
     ("* Jeu      : " ^ string_of_bool fpg);
   assert (marq == fpg)
