@@ -91,19 +91,19 @@ La sémantique de CTL se comprend aussi bien en français:
 \begin{tabular}{lcl}
 $q \vDash \top$ && est toujours vrai\\
 $q \vDash \bot$ && n'est jamais vrai\\
-$q \vDash p$ &ssi& $p$ est une étiquette de $\sigma(i)$\\
-$q \vDash \neg \psi$ &ssi& $q_i$ ne vérifie pas $\phi$\\
-$q \vDash \psi_1 \land \psi_2$ &ssi& $q_i$ vérifie $\phi_1$ et $q_i$ vérifie $\phi_2$\\
-$q \vDash \psi_1 \lor \psi_2$ &ssi& $q_i$ vérifie $\phi_1$ ou $q_i$ vérifie $\phi_2$\\
-$q \vDash \mbox{EX } \psi$ &ssi& il existe un successeur de $q_i$ vérifiant $\psi$\\
-$q \vDash \mbox{AX } \psi$ &ssi& tous les successeurs de $q_i$ vérifient $\psi$\\
-$q \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& il existe un chemin à partir de $\sigma(i)$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
+$q \vDash p$ &ssi& $p$ est une étiquette de $q$\\
+$q \vDash \neg \psi$ &ssi& $q$ ne vérifie pas $\phi$\\
+$q \vDash \psi_1 \land \psi_2$ &ssi& $q$ vérifie $\phi_1$ et $q$ vérifie $\phi_2$\\
+$q \vDash \psi_1 \lor \psi_2$ &ssi& $q$ vérifie $\phi_1$ ou $q$ vérifie $\phi_2$\\
+$q \vDash \mbox{EX } \psi$ &ssi& il existe un successeur de $q$ vérifiant $\psi$\\
+$q \vDash \mbox{AX } \psi$ &ssi& tous les successeurs de $q$ vérifient $\psi$\\
+$q \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi& il existe un chemin à partir de $q$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
 
-$q \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& pour tout chemin partant de $q_i$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
+$q \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi& pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\\
 
-$q \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& il existe un chemin à partir de $q_i$ tel que $\psi_1$\\&& est vrai jusqu'à ce que, peut-être, $\psi_2$ le soit\\
+$q \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& il existe un chemin à partir de $q$ tel que $\psi_1$\\&& est vrai jusqu'à ce que, peut-être, $\psi_2$ le soit\\
 
-$q \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin partant de $q_i$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\\
+$q \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\\
 \end{tabular}
 
 \subsection{Négation}
@@ -261,10 +261,10 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, pour tous les successeurs $q$ de $q_0$, elle une stratégie gagnante à partir de $q$ et donc par récurrence que $q \vDash \psi$. Donc $q_0 \vDash \phi$.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
 \begin{itemize}
 	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $q_0 \vDash \psi_2$ et donc $q_0 \vDash \phi$.
-	\item Soit Ève choisit TODO
+	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $q_0 \vDash \psi_1$. D plus TODO
 \end{itemize}
 \end{itemize}
 
@@ -283,17 +283,20 @@ On procède par récurrence sur $\phi$ :
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possiblités :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possiblités :
 \begin{itemize}
-	\item soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
-	\item TODO
+	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
+	\item Soit $q_0 \vDash \mbox{EX } \phi$. Il y a deux cas:
+	\begin{itemize}
+		\item Soit il existe un état TODO
+	\end{itemize}
 \end{itemize}
 Donc Ève a une stratégie gagnante dans tous les cas.
 
 \item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX }  \phi) \}$ et c'est à Adam de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
 \begin{itemize}
 	\item soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
-	\item TODO
+	\item Soit $q_0 \vDash \mbox{EX } \phi$. TODO
 \end{itemize}
 Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
 \end{itemize}
