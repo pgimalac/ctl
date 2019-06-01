@@ -16,7 +16,16 @@ Il est organisé de la manière suivante :
 
 ### Compilation
 
-La commande `dune build bin/checker.exe` compile l'ensemble des fichiers du projet dans un dossier `_build`. La commande `dune exec bin/checker.exe` permet d'éxecuter le projet ainsi compilé.
+La commande `dune build bin/checker.exe` compile l'ensemble des fichiers du projet dans un dossier `_build`.
+
+### utilisation
+
+Il existe deux modes d'utilisations, tous deux accessibles via la commande `dune exec bin/checker.exe ARGS`
+
+* `run graph [number [prof]]` avec  `graph` contenant un fichier représentant une structure de Kripke va tirer au hasard `number` formules de profondeur maxiamle `prof` et va faire leur model-checking.
+* `check graph start file` va faire le model-checking des formules contenues dans `file` sur la structure de Kripke contenue dans `graph` en partant de l'état `start`.
+
+Le model-checking d'une formule est efféctué avec deux méthodes différentes: par marquage et par résolution d'un jeu faible de parité.
 
 ### GraphViz
 

@@ -16,7 +16,6 @@ let strings_of_file filename =
     close_in chan;
     List.rev !lines
 
-(* page 29 *)
 let extract x =
   let lexbuf = Lexing.from_string (String.concat "\n" (strings_of_file x)) in
   Lib.Parser.graph_main Lib.Lexer.token lexbuf
@@ -37,21 +36,51 @@ let check_formula_in kripke start form =
     ("* Jeu      : " ^ string_of_bool fpg);
   assert (marq == fpg)
 
-let tests = [("graphs/g1.ctl", "graphs/f1.ctl", 0); ("graphs/g2.ctl", "graphs/f2.ctl", 1); ("graphs/g3.ctl", "graphs/f3.ctl", 0)]
+let tests = [("graphs/g1.ctl", "graphs/f1.fctl", 0); ("graphs/g2.ctl", "graphs/f2.fctl", 1); ("graphs/g3.ctl", "graphs/f3.fctl", 0)]
+
+let print_help () =
+  print_endline
+    "USAGE:\n\
+     run   graph [number [prof]]\n\
+     check graph start file\
+     "
+
+exception Found of int
 
 let main () =
-  List.iteri (fun i (g, f, start) ->
-    let num = string_of_int (i + 1) in
-    let s = "graph " ^ num ^ ":" in
-    print_endline s;
-    let fig = extract g in
-    let labels = KripkeS.get_labels fig in
-    let check = check_formula_in fig start in
-    let file = List.map parse_formule (strings_of_file f) in
-    let random_formulas = generate_formulas 4 100 labels in
-    List.iter check (file @ random_formulas);
-
-    print_newline ()
-  ) tests
+  let len = Array.length Sys.argv in
+  if len < 2 || Sys.argv.(1) = "help"
+  then print_help ()
+  else
+    Random.self_init ();
+    match Sys.argv.(1) with
+    | "run"   ->
+       if len < 3
+       then print_help ()
+       else
+         let fig = extract Sys.argv.(2) in
+         let labels = KripkeS.get_labels fig in
+         let start_ind = Random.int (M.cardinal fig) in
+         let start =
+           let u = ref 0 in
+           try
+             M.iter (fun e _ -> if !u = start_ind then raise (Found e) else u := !u + 1) fig;
+             0
+           with
+           | Found e -> e in
+         let check = check_formula_in fig start in
+         let number = if len > 3 then int_of_string (Sys.argv.(3)) else 100 in
+         let prof = if len > 4 then int_of_string (Sys.argv.(4)) else 4 in
+         let random_formulas = generate_formulas prof number labels in
+         List.iter check (random_formulas)
+    | "check" ->
+       if len < 5
+       then print_help ()
+       else
+         let fig = extract Sys.argv.(2) in
+         let file = List.map parse_formule (strings_of_file Sys.argv.(4)) in
+         let check = check_formula_in fig (int_of_string Sys.argv.(3)) in
+         List.iter check file
+    | _ -> print_help ()
 
 let _ = main ()
