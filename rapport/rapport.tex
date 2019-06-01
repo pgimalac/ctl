@@ -276,8 +276,8 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{EX } \phi)$
 	Ève va répéter ce choix sur les successeurs de $s$ et il y a deux choix:
 	\begin{itemize}
-		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vue que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
-		\item Soit un tel état n'existe pas et donc Ève "boucle" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vue que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
+		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vu que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
+		\item Soit un tel état n'existe pas et donc Ève "boucle" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vu que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
 	\end{itemize}
 \end{itemize}
 
@@ -288,7 +288,7 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 	Ève va répéter ce choix sur tous les successeurs de $s$ et il y a deux choix:
 	\begin{itemize}
 		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vu que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
-		\item Soit un tel état n'existe pas et donc Adam force Ève à "boucler" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vue que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
+		\item Soit un tel état n'existe pas et donc Adam force Ève à "boucler" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vu que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
 	\end{itemize}
 \end{itemize}
 \end{itemize}
@@ -312,24 +312,28 @@ On procède par récurrence sur $\phi$ :
 \begin{itemize}
 	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
 	\item Soit $q_0 \vDash \psi_1 \land \mbox{EX } \phi$.
-	par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\psi_1)$.
+	Par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\psi_1)$.
 	Montrons qu'elle en a aussi une à partir de $(q_0,\mbox{EX } \phi)$.
 	Il y a deux cas:
 	\begin{itemize}
 		\item Soit il existe un chemin à partir de $q_0$ tel que $\psi_1$ est vrai jusqu'à ce que $\psi_2$ le soit. Par récurrence sur la taille de ce chemin, montrons qu'Ève a une stratégie gagnante.\\
 		S'il est de taille 1, cela veut dire qu'il existe un successeur $q$ de $q_0$ tel que $\psi_2$ soit vrai, donc par récurrence, Ève a une stratégie gagnante à partir de $q$, il suffit donc à Ève de prendre le chemin $(q_0,q)$.\\
-		Sinon, Ève doit prendre le successeur $q$ de $q_0$ le long du chemin tel que $\psi_1$ soit vraie, donc $q \vdash \psi_1 \land \mbox{EX } \phi$, et donc, par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\mbox{EX } \phi)$.
-		\item Soit $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$ et il y a un chemin à partir de $q_0$ se finissant par un cycle tel que $\psi_1$ soit vrai sur tous les états de ce chemin. La stratégie d'Ève est donc simplement de suivre ce cycle à l'infini.
+		Sinon, Ève doit prendre le successeur $q$ de $q_0$ le long du chemin tel que $\psi_1$ soit vraie, donc $q \vDash \psi_1 \land \mbox{EX } \phi$, et donc, par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\mbox{EX } \phi)$.
+		\item Soit $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$ et il y a un chemin à partir de $q_0$ se finissant par un cycle tel que $\psi_1$ soit vrai sur tous les états de ce chemin. La stratégie d'Ève est donc simplement de suivre ce cycle à l'infini, car, pour tout $q$, $c(q,\mbox{E } \psi_1 \mbox{ W } \psi_2) = 0 \mod 2$.
 	\end{itemize}
 \end{itemize}
 Donc Ève a une stratégie gagnante dans tous les cas.
 
-\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Adam de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{AX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
 \begin{itemize}
 	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
-	\item Soit $q_0 \vDash \psi_1 \land \vDash \mbox{EX } \phi$. TODO
+	\item Soit $q_0 \vDash \psi_1 \land \vDash \mbox{AX } \phi$. Donc, $q_0 \vDash \psi_1$ et par hypothèse de récurrence, Ève a une stratégie gagnante à partir de $(q_0,\psi_1)$. De plus, $q_0 \vDash \mbox{AX } \phi$, donc pour tous les successeurs $q$ de $q_0$, $q \vDash \phi$.
+	\begin{itemize}
+	\item Si $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$, c'est donc que quel que soit le chemin que l'on prend depuis un $q$ comme ci-dessus, on atteint un $q'$ tel que $q' \vDash \psi_2$. Par récurrence, Ève a une stratégie gagnante depuis $(q', \psi_2)$, donc elle en a une depuis $(q_0,\phi)$.
+	\item Si $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$, c'est donc que quel que soit le chemin que l'on prend depuis un $q$ comme ci-dessus, soit on atteint un $q'$ tel que $q' \vDash \psi_2$, soit on visite infiniment souvent des états $q_i$ tels que $q_i \vDash \psi_1$. Si on est dans le premier cas, il suffit de reprendre la démonstration donnée ci-dessus. Sinon la stratégie d'Ève est simplement de suivre ce cycle à l'infini, car, pour tout $q$, $c(q,\mbox{E } \psi_1 \mbox{ W } \psi_2) = 0 \mod 2$.
+	\end{itemize}
 \end{itemize}
-Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
+Donc Ève a une stratégie gagnante dans tous les cas.
 \end{itemize}
 
 \subsection{Résolution des jeux faibles de parité}
