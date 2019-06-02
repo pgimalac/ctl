@@ -39,3 +39,8 @@ parser.mli
 *.log
 *.synctex.gz
 *.pdf
+*.nav
+*.snm
+*.toc
+*.bbl
+*.blg

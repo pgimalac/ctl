@@ -54,7 +54,7 @@ On ne considère ici que des cas où $Q$ est fini et $T$ est totale.
 
 \subsubsection{Exécution}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke.
-On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$. 
+On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$.
 \\
 On note $Exec(\mathcal{A})$ l'ensemble des exécutions sur $\mathcal{A}$.
 
@@ -126,7 +126,7 @@ On peut définir la fonction $desc\_neg:CTL \to CTL$ qui permet de transformer u
 &desc\_neg(\mbox{EX } \phi) = \mbox{EX }desc\_neg(\phi)\\
 &desc\_neg(\mbox{AX } \phi) = \mbox{AX }desc\_neg(\phi)\\
 &desc\_neg(\mbox{E } \phi \mbox{ U } \psi) =\mbox{E } desc\_neg(\phi) \mbox{ U } desc\_neg(\psi)\\
-&desc\_neg(\mbox{A } \phi \mbox{ U } \psi) =\mbox{A } 
+&desc\_neg(\mbox{A } \phi \mbox{ U } \psi) =\mbox{A }
 desc\_neg(\phi) \mbox{ U } desc\_neg(\psi)\\
 &desc\_neg(\mbox{E } \phi \mbox{ W } \psi) =\mbox{E } desc\_neg(\phi) \mbox{ W } desc\_neg(\psi)\\
 &desc\_neg(\mbox{A } \phi \mbox{ W } \psi) =\mbox{A } desc\_neg(\phi) \mbox{ W } desc\_neg(\psi)
@@ -331,7 +331,7 @@ Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma
 Nous allons utiliser quelques méthodes que nous n'allons pas définir:
 \begin{itemize}
 	\item $compute\_cfc$ renvoie la liste des Composantes Fortement Connexes d'un graphe orienté.
-	\item $topological\_sort$ effectue un tri topologique des CFC, de sorte qu'une CFC $V_i$ se trouve avant une CFC $V_j$ si et seulement s'il n'y a pas de chemin entre un sommet de $V_j$ et un de $V_i$. 
+	\item $topological\_sort$ effectue un tri topologique des CFC, de sorte qu'une CFC $V_i$ se trouve avant une CFC $V_j$ si et seulement s'il n'y a pas de chemin entre un sommet de $V_j$ et un de $V_i$.
 	\item $reverse(l)$ renvoie une liste avec les éléments de $l$ dans l'ordre inverse.
 	\item $get\_winner(V_i)$ renvoie:
 	\begin{itemize}
@@ -397,18 +397,18 @@ Voici maintenant un algorithme $solve\_weak\_game$ permettant de connaitre le ga
 \end{algorithm}
 
 \subsubsection{Terminaison}
-Montrons que $solve\_weak\_game$ termine. Cela revient à montrer que $propagate\_opposite$ termine. Or la fonction ne termine pas immédiatement seulement si un appel récursif a lieu, ce qui est le cas uniquement si la variable $CHANGED$ est mise à $TRUE$. Cependant cela n'arrive que si l'on assigne un gagnant à un état $y$ \emph{qui n'en avait pas avant}. L'ensemble des états étant finis, les appels récursifs se terminent forcément.
+Montrons que $solve\_weak\_game$ termine. Cela revient à montrer que $propagate\_opposite$ termine. Or la fonction ne termine pas immédiatement seulement si un appel récursif a lieu, ce qui est le cas uniquement si la variable $CHANGED$ est mise à $TRUE$. Cependant cela n'arrive que si l'on assigne un gagnant à un état $y$ \emph{qui n'en avait pas avant}. L'ensemble des états étant fini, il y a un nombre fini d'appels récursifs et donc l'algorithme termine forcément.
 
 \subsection{Correction}
-Montrons que $solve\_weak\_game$ est correcte, c'est-à-dire que $solve\_weak\_game(q_0,V,E) = \gamma$ si et seulement s'il existe une stratégie gagnante pour $\gamma$.
+Montrons que $solve\_weak\_game$ est correcte, c'est-à-dire que\\ $solve\_weak\_game(q_0,V,E) = \gamma$ si et seulement s'il existe une stratégie gagnante pour $\gamma$.
 
 \paragraph{$\implies$}
-Montrons en fait par récurrence sur $k$ qu'à la fin du traitement d'une CFC $V_k$, on a correctement attribué le gagnant de chaque état. Il suffit pour ça de montrer $propagate\_opposite$ va effectivement attribuer les états remportés par $\overline{\gamma}$, et uniquement ceux-ci.
+Montrons par récurrence sur $k$ qu'à la fin du traitement d'une CFC $V_k$, on a correctement trouvé le gagnant de chaque état. Il suffit pour cela de montrer que $propagate\_opposite$ va effectivement attribuer les états remportés par $\overline{\gamma}$, et uniquement ceux-ci.
 \subparagraph{Si $k = 1$:} on traite la première CFC. Remarquons que, comme les $V_k$ ont été ordonnées par ordre topologique inversé, les successeurs de tous les états de $V_1$  sont dans $V_1$.\\
 Si $V_1$ est réduite à un seul élément, c'est à $\gamma$ de jouer, mais il est bloqué, donc $\overline{\gamma}$ gagne cet état et $propagate\_opposite$ détecte bien ce cas (car pour l'unique état $x$ sans successeurs, $ALL$ vaudra $TRUE$).\\
 Sinon, $\gamma$ est le joueur qui gagne en restant dans la CFC, et quel que soit le joueur ayant le trait, il est obligé de rester dans la CFC, donc $\gamma$ gagne. $propagate\_opposite$ détecte bien ce cas, aucun état n'est gagnant pour $\overline{\gamma}$ et tous les états ont un successeur, donc pour tous les états $x \in V_1$, $ALL = FALSE$ et $EXI = FALSE$, donc $winners[x]$ ne sera pas initialisé.
 
-\subparagraph{Sinon:} on suppose le résultat vrai pour toutes les CFC $V_i$, $i < k$.
+\subparagraph{Sinon:} on suppose que le résultat vrai pour toutes les CFC $V_i$, $i < k$.
 \\
 Si $x \in V_k$ est un état gagnant pour $\overline{\gamma}$ c'est que :
 \begin{enumerate}
@@ -422,25 +422,26 @@ Choisissons un $y$ qui a ces propriétés et tel que $\pi$ soit le plus grand po
 \begin{itemize}
 	\item Si $\pi$ est un chemin de taille 1:
 	\begin{itemize}
-		\item Si on est dans le cas 1, il est clair que $EXI$ vaudra $TRUE$ (car $(x,y) \in E$), et donc que $winners[x] = \overline{\gamma}$.
-		\item Si on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$ et ils se trouvent tous des CFC d'indices plus petites (sinon cela contredirait l'hypothèse de maximalité sur la taille de $\pi$). Donc pour chaque successeur $y$ de $x$, $winners[y] = \overline{\gamma}$ et donc $ALL$ vaudra $TRUE$, et donc $winners[x] = \overline{\gamma}$.
+		\item Si l'on est dans le cas 1, il est clair que $EXI$ vaudra $TRUE$ (car $(x,y) \in E$), et donc que $winners[x] = \overline{\gamma}$.
+		\item Si l'on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$ et ils se trouvent tous des CFC d'indices plus petites (sinon cela contredirait l'hypothèse de maximalité sur la taille de $\pi$). Donc pour chaque successeur $y$ de $x$, $winners[y] = \overline{\gamma}$ et donc $ALL$ vaudra $TRUE$, et donc $winners[x] = \overline{\gamma}$.
 	\end{itemize}
-	\item Si $\pi$ est un chemin de taille $n$
+	\item Si $\pi$ est un chemin de taille $n$:
 		\begin{itemize}
-		\item Si on est dans le cas 1, $x$ a un successeur $y$ dans $\pi$ et donc par hypothèse de récurrence, $winners[y] = \overline{\gamma}$ et donc $EXI$ vaudra $TRUE$ et $winners[x] = \overline{\gamma}$.
-		\item Si on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$. Mais ils se trouvent soit dans une CFC d'indice plus petites, soit le long d'un chemin gagnant pour $\overline{\gamma}$ de taille plus petite que $\pi$, et donc par récurrence, $ALL$ vaudra $TRUE$ et donc $winners[x] = \overline{\gamma}$.
+		\item Si l'on est dans le cas 1, $x$ a un successeur $y$ dans $\pi$ et donc par hypothèse de récurrence, $winners[y] = \overline{\gamma}$ et donc $EXI$ vaudra $TRUE$ et $winners[x] = \overline{\gamma}$.
+		\item Si l'on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$. Mais ils se trouvent soit dans une CFC d'indice plus petit, soit le long d'un chemin gagnant pour $\overline{\gamma}$ de taille plus petite que $\pi$, et donc par récurrence, $ALL$ vaudra $TRUE$ et donc $winners[x] = \overline{\gamma}$.
 	\end{itemize}
 \end{itemize}
+\bigskip
 Réciproquement, si $winners[x] = \overline{\gamma}$ à la fin du traitement par $propagate\_opposite$, montrons que $x$ est gagnant pour $\overline{\gamma}$. Montrons ce résultat par récurrence sur l'indice de l'appel récursif $propagate\_opposite$ où $winners[x]$ a été mis à $\overline{\gamma}$. Notons tout d'abord que si $winners[x]$ a été mis à $\overline{\gamma}$ c'est que lors du traitement de $x$, la condition $(get\_player(x) = \overline{\gamma} \land EXI) \lor ALL $ était vraie.\\
 Si on est dans le premier appel à $propagate\_opposite$
 \begin{itemize}
-	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Mais comme on est dans le premier appel à $propagate\_opposite$ c'est que $y$ appartenait à une CFC d'indice plus basse. Donc, par hypothèse de récurrence, $y$ est gagnant pour $\overline{\gamma}$. Donc $x$ est gagnant pour $\overline{\gamma}$
+	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Mais comme on est dans le premier appel à $propagate\_opposite$ c'est que $y$ appartenait à une CFC d'indice plus petit. Donc, par hypothèse de récurrence, $y$ est gagnant pour $\overline{\gamma}$. Donc $x$ est gagnant pour $\overline{\gamma}$
 	\item Si $ALL$ était vrai, c'est que pour tous les successeurs $y$ de $x$, $winners[y] = \overline{\gamma}$, or on est dans le premier appel récursif à $propagate\_opposite$, donc tous les $y$ appartiennent à des CFC de plus petit indice, et donc par un argument similaire au premier point $x$ est gagnant pour $\overline{\gamma}$.
 \end{itemize}
 Si on est dans le $n$-ième appel récursif à $propagate\_opposite$,
 \begin{itemize}
-	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Donc soit $y$ a était mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, ou car $y$ est dans une CFC d'indice plus petite. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
-	\item Si $ALL$ était vrai, c'est que pour tous les successeurs $y$ de $x$, $winners[y] = \overline{\gamma}$, donc tous les $y$  ont été mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, ou car $y$ est dans une CFC d'indice plus petite. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
+	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Donc soit $y$ a été mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, soit $y$ est dans une CFC d'indice plus petit. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
+	\item Si $ALL$ était vrai, c'est que pour tous les successeurs $y$ de $x$, $winners[y] = \overline{\gamma}$, donc tous les $y$ ont été mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, ou alors $y$ est dans une CFC d'indice plus petit. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
 \end{itemize}
 
 Donc par récurrence, $x$ est gagnant  pour $\overline{\gamma}$.
