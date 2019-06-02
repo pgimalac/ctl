@@ -17,7 +17,10 @@
 
 \section{CTL, une logique temporelle}
 \subsection{Définition}
-CTL (pour \textit{Computation Tree Logic}) est une logique temporelle. Elle permet d'exprimer des contraintes logiques (CTL contient la logique propositionnelle usuelle) et temporels.
+CTL (pour \textit{Computation Tree Logic}) est une logique temporelle, c'est à dire qu'elle permet d'exprimer des contraintes logiques (CTL contient la logique propositionnelle usuelle) mais aussi temporelles.\\
+
+CTL est qualifiée de logique de temps arborescent car elle utilise pour modèle du temps une structure ressemblant à un arbre, dans laquelle il existe différents chemins représentant des futurs possibles.\\
+
 Elle permet par exemple d'exprimer des propriétés comme ``il existe une exécution telle que la variable \textit{a} soit toujours vraie''.
 
 \subsection{Grammaire}
@@ -34,11 +37,13 @@ Ici, $p$ représente une proposition atomique d'un ensemble $\Omega$.
 
 On définit aussi d'autres opérateurs utiles :
 \begin{itemize}
+	\item $\mbox{EF } \phi := \mbox{E } \top \mbox{ U } \phi$
 	\item $\mbox{AF } \phi := \mbox{A } \top \mbox{ U } \phi$
 	\item $\mbox{EG } \phi := \neg (\mbox{AF } (\neg \phi))$
-	\item $\mbox{EF } \phi := \mbox{E } \top \mbox{ U } \phi$
 	\item $\mbox{AG } \phi := \neg (\mbox{EF } (\neg \phi))$
 \end{itemize}
+\bigskip
+La signification morale des différents opérateurs est expliquée section \ref{satisf}.
 
 \subsection{Sémantique de CTL}
 Les modèles de CTL sont appelés des \emph{structures de Kripke}.
@@ -50,22 +55,25 @@ Une structure de Kripke sera ici identifiée à la donnée de $(Q,T,q_0,l)$ où:
 \item $l : Q \to \mathcal{P}(\Omega)$ est une fonction d'étiquetage.
 \end{itemize}
 \bigskip
-On ne considère ici que des cas où $Q$ est fini et $T$ est totale.
+On ne considère ici que des cas où $Q$ est fini et $T$ vérifie que tout élément est en relation avec au moins un élément.
 
 \subsubsection{Exécution}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke.
 On dira que $\sigma : \mathbb{N} \to Q$ est une \emph{exécution} de $\cal{A}$ (ne partant pas forcément de l'état initial) si et seulement si $\forall i \in \mathbb{N}, (\sigma (i), \sigma (i+1)) \in T$.
 \\
-On note $Exec(\mathcal{A})$ l'ensemble des exécutions sur $\mathcal{A}$.
+On note $Exec_\mathcal{A}(q)$ l'ensemble des exécutions sur $\mathcal{A}$ dont le premier état est $q$.\\
+
+On remarque que comme tout état est en relation avec au moins un état, les exécutions sont bien définies sur $\mathbb{N}$, et en particulier $Exec_\mathcal{A}(q)$ n'est pas vide.
 
 \subsubsection{Satisfaction}
+\label{satisf}
 Soit $\mathcal{A} = (Q,T,q_0,l)$ une structure de Kripke et $\phi$ une formule de CTL.\\
 On dira que $q$ vérifie $\phi$ dans $\mathcal{A}$ si et seulement si $A, q \vDash \phi$. On omettra souvent la donnée de $\mathcal{A}$ dans notre écriture.\\
 On définit $q \vDash \phi$ par induction sur $\phi$:\\
 \\
 \begin{tabular}{lcl}
-$q \nvDash \bot$ &&\\
 $q \vDash \top$ &&\\
+$q \nvDash \bot$ &&\\
 $q \vDash p$ &ssi& $p \in l (q)$\\
 $q \vDash \neg \psi$ &ssi& $q \nvDash \psi$\\
 $q \vDash \psi_1 \land \psi_2$ &ssi& $q \vDash \psi_1$ et $q \vDash \psi_2$\\
@@ -106,12 +114,13 @@ $q \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi& il existe un chemin à parti
 $q \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi& pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\\
 \end{tabular}
 
+\bigskip
 Cette sémantique permet aussi de mieux comprendre les opérateurs définis en Section \ref{op}:
 
 \begin{tabular}{lcl}
+$q \vDash \mbox{EF } \phi$ & ssi & il existe un chemin depuis $q$ permettent d'atteindre un état vérifiant $\phi$. \\
 $q \vDash \mbox{AF } \phi$ & ssi & tous les chemins depuis $q$ permettent d'atteindre un état vérifiant $\phi$. \\
 $q \vDash \mbox{EG } \phi$ & ssi & il existe un chemin depuis $q$ tel que tous les états de ce chemin satisfassent $\phi$.\\
-$q \vDash \mbox{EF } \phi$ & ssi & il existe un chemin depuis $q$ permettent d'atteindre un état vérifiant $\phi$. \\
 $q \vDash \mbox{AG } \phi$ & ssi & tous les états atteignables depuis $q$ vérifient $\phi$.\\
 \end{tabular}
 
@@ -146,7 +155,7 @@ desc\_neg(\phi) \mbox{ U } desc\_neg(\psi)\\
 \end{align*}
 
 \section{Model-checking de CTL: jeux faibles de parité}
-Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une structure de Kripke où deux joueurs (nommés Ève et Adam) s'affrontent, et Ève gagne si et seulement si la formule est vraie dans la structure donnée.
+Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une structure de Kripke où deux joueurs (nommés Ève et Adam) s'affrontent, et Ève gagne si et seulement si la formule est satisfaite dans la structure donnée depuis l'état initial $q_0$.
 
 \subsection{Jeux de parité}
 On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
@@ -157,20 +166,23 @@ On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \end{itemize}
 
 \subsubsection{Victoire}
-Une partie d'un jeu est une fonction $\omega : V' \to V, V' \subseteq V$ telle que $\forall v \in V', (v,\omega(v)) \in R$.
+Une partie d'un jeu est une fonction $\omega : V' \to V, V' \subseteq V$ telle que $\forall v \in V', (v,\omega(v)) \in R$. Pour un état $q$, on note $\omega^n(q)$ l'application successive sur $q$ de la fonction $\omega$ $n$ fois, et l'on suppose que les états successifs sont dans $V'$.\\
+
 Une partie à partir d'un état $q_0 \in V$ est gagnée par:
 \begin{itemize}
 \item Ève si est seulement si:
 	\begin{itemize}
-	\item Soit Adam est bloqué : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_A \land \omega^{n+1} (q_0) \notin V'$.
-	\item Soit Ève visite infiniment souvent des états uniquement pairs: $\exists n \in \mathbb{N}, \forall m \geq n, (\omega^m(q_0) \in V_E \land c(\omega^m(q_0)) \neq \bot )\implies c(\omega^m(q_0)) = 0 \mod 2$.
+	\item Soit Adam est bloqué : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_A\backslash V'$.
+	\item Soit le minimum des couleurs (des états par lesquels on passe) que l'on voit une infinité de fois est pair.
 	\end{itemize}
 \item Adam si est seulement si:
-\begin{itemize}
-	\item Soit Ève est bloquée : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_E \land \omega^{n+1} (q_0) \notin V'$.
-	\item Soit Adam visite infiniment souvent des états uniquement impairs: $\exists n \in \mathbb{N}, \forall m \geq n, (\omega^m(q_0) \in V_E \land c(\omega^m(q_0)) \neq \bot )\implies c(\omega^m(q_0)) = 1 \mod 2$.
+	\begin{itemize}
+		\item Soit Ève est bloquée : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_E\backslash V'$.
+		\item Soit le minimum des couleurs (des états par lesquels on passe) que l'on voit une infinité de fois est impair.
+	\end{itemize}
 \end{itemize}
-\end{itemize}
+
+On choisit des couleurs de manière à ce que toute exécution infinie passe une infinité de fois par une couleur différente de $\bot$. On remarque alors que les deux cas sont bien exclusifs car soit l'exécution est finie, soit elle est infinie et l'on passe par au moins une couleur une infinité de fois.
 
 \subsubsection{Stratégie}
 On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E' \to V$ (respectivement $\rho : V_A' \to V$), $V_E' \subseteq V_E$ et $V_A' \subseteq V_A$, telle que pour chaque $v$ dans $V_E'$ (respectivement $V_A'$), $(v, \rho(v)) \in R$.
@@ -205,7 +217,7 @@ $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 Les jeux faibles de parité se résolvent en temps polynomial comme nous le verrons en Section \ref{algofpg}.
 
 \subsection{Algorithme de construction du jeu}
-Nous allons maintenant définir un algorithme qui permet de construire un jeu faible de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et qu'Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
+Nous allons maintenant définir un algorithme qui permet de construire un jeu de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et qu'Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
 
 Soit $\phi$ une formule de CTL, $SF(\phi)$ l'ensemble de ses sous-formules et $K = (Q,T,q_0,l)$  une structure de Kripke .
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
@@ -239,6 +251,9 @@ On définit $succ$:
 \item $succ(s, \mbox{A } \phi \mbox{ W } \psi) = \{ (s,\psi), (s, \phi \land \mbox{AX } (\mbox{A } \phi \mbox{ W } \psi)) \}$
 \end{itemize}
 
+\bigskip
+On remarque que la seule manière de boucler est de lire une formule en $\_U$ ou $\_W$ qui ont bien des couleurs différentes de $\bot$ (car ce sont les seuls cas où l'on ne va pas sur une sous formule stricte).
+
 \subsubsection{Jeu faible}
 Montrons que le jeu défini par $succ$ avec comme état initial $start = (q_0, \phi)$.
  est un jeu \emph{faible}, donc qu'il existe une partition finie de $V$ telle que a) et b) (définies en Section \ref{fpg}) soient vraies.
@@ -252,7 +267,7 @@ On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, 
 \end{enumerate}
 
 \subsubsection{Jeu correct}
-Montrons maintenant qu'Ève a une stratégie gagnante dans $G$ si, et seulement si, $q_0 \vDash \phi$.
+Montrons maintenant qu'Ève a une stratégie gagnante dans $G$ si et seulement si $q_0 \vDash \phi$.
 
 \paragraph{$\implies$}
 On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va montrer par récurrence sur $\phi$ que $q_0 \vDash \phi$.
@@ -308,7 +323,7 @@ On procède par récurrence sur $\phi$ :
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possiblités :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
 \begin{itemize}
 	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
 	\item Soit $q_0 \vDash \psi_1 \land \mbox{EX } \phi$.
@@ -355,7 +370,7 @@ Nous allons utiliser quelques méthodes que nous n'allons pas définir:
 Notons que toutes ces méthodes peuvent être implémentées en un temps au plus linéaire en le nombre de sommets et d'arêtes.
 
 \subsubsection{Algorithme de résolution du jeu}
-Voici maintenant un algorithme $solve\_weak\_game$ permettant de connaitre le gagnant d'un jeu faible de parité.
+Voici maintenant un algorithme $solve\_weak\_game$ permettant de connaître le gagnant d'un jeu faible de parité.
 
 \begin{algorithm}
 	\caption{$solve\_weak\_game$}
@@ -467,7 +482,7 @@ En effet, les jeux faibles de parité sont déterminés, donc si $solve\_weak\_g
 \subsection{Introduction}
 Nous avons implémenté l'algorithme décrit Section \ref{algofpg} en OCaml, le code est disponible à l'adresse suivante: \url{https://github.com/nobrakal/ctl/}.
 
-\subsection{Modèle checking de CTL: marquage}
+\subsection{Model-checking de CTL: marquage}
 Nous avons aussi, pour comparaison, implémenté une autre méthode de modèle checking de CTL, basée sur le parcours et le marquage de la structure de Kripke. Notre implémentation est une traduction fonctionnelle de l'algorithme décrit par Philippe Schnoebelen et al. \cite{verif}.
 
 \bibliographystyle{plain}
