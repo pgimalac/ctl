@@ -151,7 +151,7 @@ Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une str
 \subsection{Jeux de parité}
 On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \begin{itemize}
-\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Ève (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \sqcup V_a$.
+\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Ève (respectivement Adam). On demande de plus que $V_E \cap V_A = \emptyset$. On note $V = V_E \sqcup V_A$.
 \item $R \subseteq V \times V$ est une relation de transition.
 \item $c : V \to (\mathbb{N} \cup \{\bot\})$ est une fonction qui associe une couleur ou $\bot$ à chaque état.
 \end{itemize}
@@ -173,14 +173,14 @@ Une partie à partir d'un état $q_0 \in V$ est gagnée par:
 \end{itemize}
 
 \subsubsection{Stratégie}
-On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E \to V$ (respectivement $\rho : V_A \to V$) telle que pour chaque $v$ dans $V_E$ (respectivement $V_A$), $(v, \rho(v)) \in R$.
+On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E' \to V$ (respectivement $\rho : V_A' \to V$), $V_E' \subseteq V_E$ et $V_A' \subseteq V_A$, telle que pour chaque $v$ dans $V_E'$ (respectivement $V_A'$), $(v, \rho(v)) \in R$.
 
-On appelle stratégie \emph{induite} par $\rho : V_E \to V$ et $\rho' : V_A \to V$, la fonction $\omega : (V_E \cup V_A \to V)$ définie par:
+On appelle stratégie \emph{induite} par $\rho : V_E' \to V$ et $\rho' : V_A' \to V$, la fonction $\omega : (V_E' \sqcup V_A' \to V)$ définie par:
 \\
 $$\omega(v) = \left \{
 \begin{array}{rcl}
-\rho(v) & si & v \in V_E\\
-\rho'(v) & si & v \in V_A\\
+\rho(v) & si & v \in V_E'\\
+\rho'(v) & si & v \in V_A'\\
 \end{array}
 \right .$$
 Une stratégie $\rho$ est dite gagnante pour Ève (respectivement Adam) si et seulement si pour toute stratégie $\rho'$ pour Adam (respectivement Ève), la partie induite par $\rho$ et $\rho'$ est gagnante pour Ève (respectivement Adam).
@@ -207,7 +207,7 @@ Les jeux faibles de parité se résolvent en temps polynomial comme nous le verr
 \subsection{Algorithme de construction du jeu}
 Nous allons maintenant définir un algorithme qui permet de construire un jeu faible de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et qu'Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
 
-Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke et $SF(\phi)$ l'ensemble de ses sous-formules.
+Soit $\phi$ une formule de CTL, $SF(\phi)$ l'ensemble de ses sous-formules et $K = (Q,T,q_0,l)$  une structure de Kripke .
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
 	\item $V = Q \times SF(\phi)$
@@ -217,7 +217,7 @@ On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 	\begin{array}{rcl}
 		2 & si & v = \mbox{E } \phi_1 \mbox{ W } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ W } \phi_2\\
 		1 & si & v = \mbox{E } \phi_1 \mbox{ U } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ U } \phi_2\\
-		\bot && sinon
+		\bot && \text{sinon}
 	\end{array}
 	\right .$
 \end{itemize}
@@ -343,7 +343,7 @@ Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma
 \subsubsection{Prémisses}
 Nous allons utiliser quelques méthodes que nous n'allons pas définir:
 \begin{itemize}
-	\item $compute\_cfc$ renvoie la liste des Composantes Fortement Connexes d'un graphe orienté.
+	\item $compute\_cfc$ renvoie la liste des composantes fortement connexes (ou CFC) d'un graphe orienté.
 	\item $topological\_sort$ effectue un tri topologique des CFC, de sorte qu'une CFC $V_i$ se trouve avant une CFC $V_j$ si et seulement s'il n'y a pas de chemin entre un sommet de $V_j$ et un de $V_i$. 
 	\item $reverse(l)$ renvoie une liste avec les éléments de $l$ dans l'ordre inverse.
 	\item $get\_winner(V_i)$ renvoie:
