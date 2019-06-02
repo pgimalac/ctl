@@ -255,7 +255,7 @@ On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, 
 Montrons maintenant qu'Ève a une stratégie gagnante dans $G$ si, et seulement si, $q_0 \vDash \phi$.
 
 \paragraph{$\implies$}
-On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va montrer que $q_0 \vDash \phi$. On procède par récurrence sur $\phi$.
+On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va montrer par récurrence sur $\phi$ que $q_0 \vDash \phi$.
 
 \begin{itemize}
 \item $\phi = p$. C'est à Ève de jouer et $succ(q_0,\phi) = \{(q_0, \top)\}$ ou $succ(q_0,\phi) = \{(q_0, \bot)\}$. Comme Ève a une stratégie gagnante, c'est qu'elle n'est pas bloquée dans le prochain état. Donc Adam l'est, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc $p \in l(q_0)$ donc, $q_0 \vDash \phi$.
@@ -273,8 +273,8 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 \item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. C'est à Ève de jouer et elle a une stratégie gagnante, deux cas sont possibles :
 \begin{itemize}
 	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $q_0 \vDash \psi_2$ et donc $q_0 \vDash \phi$.
-	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{EX } \phi)$
-	Ève va répéter ce choix sur les successeurs de $s$ et il y a deux choix:
+	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{EX } \phi)$ et
+	elle va répéter ce choix sur les successeurs de $s$ et il y a deux choix:
 	\begin{itemize}
 		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vu que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
 		\item Soit un tel état n'existe pas et donc Ève "boucle" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vu que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
@@ -302,9 +302,9 @@ On procède par récurrence sur $\phi$ :
 
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme $q_0 \vDash \phi$, $q_0 \vDash \psi_1$ ou $q_0 \vDash \psi_2$. Si, par exemple, $q_0 \vDash \psi_1$, par hypothèse de récurrence, on a qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$. Ève peut donc choisir d'aller dans cet état, et elle gagne. On procède de la même façon si $(q_0, \psi_2)$.
 
-\item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, $q_0 \vDash \psi_1$ et $q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence, qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
+\item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, $q_0 \vDash \psi_1$ et $q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
 
-\item $\phi = \mbox{EX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Ève de jouer. Comme $q_0 \vDash \phi$, il existe un successeur $q$ de $q_0$ tel que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève à partir de $(q, \psi)$. Comme c'est à Ève de jouer, il suffit qu'elle joue vers cet état.
+\item $\phi = \mbox{EX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Ève de jouer. Comme $q_0 \vDash \phi$, il existe un successeur $q$ de $q_0$ tel que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève à partir de $(q, \psi)$. Comme c'est à Ève de jouer, il suffit qu'elle joue vers cet état.
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
 
