@@ -32,7 +32,7 @@ La grammaire de CTL est définie de la manière suivante :
 
 Ici, $p$ représente une proposition atomique d'un ensemble $\Omega$.
 
-On définit aussi d'autres opérateurs utiles :
+On définit aussi d'autres opérateurs utiles :
 \begin{itemize}
 	\item $\mbox{AF } \phi := \mbox{A } \top \mbox{ U } \phi$
 	\item $\mbox{EG } \phi := \neg (\mbox{AF } (\neg \phi))$
@@ -116,7 +116,7 @@ $q \vDash \mbox{AG } \phi$ & ssi & tous les états atteignables depuis $q$ véri
 \end{tabular}
 
 \subsection{Négation}
-On peut définir la fonction $desc\_neg:CTL \to CTL$ qui permet de transformer une formule de CTL en formule équivalente où toutes les négations sont sur les littéraux :
+On peut définir la fonction $desc\_neg:CTL \to CTL$ qui permet de transformer une formule de CTL en formule équivalente où toutes les négations sont sur les littéraux :
 \begin{align*}
 &desc\_neg(\top) = \top \quad desc\_neg(\bot) = \bot\\
 &desc\_neg(p) = p \\
@@ -151,7 +151,7 @@ Le but ici est de parvenir à créer un jeu à partir d'une formule et d'une str
 \subsection{Jeux de parité}
 On appelle \emph{jeu de parité} un quadruplet $G = (V_E, V_A, R, c)$ où:
 \begin{itemize}
-\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Ève (respectivement Adam). On demande de plus que $V_e \cap V_a = \emptyset$. On note $V = V_e \sqcup V_a$.
+\item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Ève (respectivement Adam). On demande de plus que $V_E \cap V_A = \emptyset$. On note $V = V_E \sqcup V_A$.
 \item $R \subseteq V \times V$ est une relation de transition.
 \item $c : V \to (\mathbb{N} \cup \{\bot\})$ est une fonction qui associe une couleur ou $\bot$ à chaque état.
 \end{itemize}
@@ -162,25 +162,25 @@ Une partie à partir d'un état $q_0 \in V$ est gagnée par:
 \begin{itemize}
 \item Ève si est seulement si:
 	\begin{itemize}
-	\item Soit Adam est bloqué : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_A \land \omega^{n+1} (q_0) \notin V'$.
+	\item Soit Adam est bloqué : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_A \land \omega^{n+1} (q_0) \notin V'$.
 	\item Soit Ève visite infiniment souvent des états uniquement pairs: $\exists n \in \mathbb{N}, \forall m \geq n, (\omega^m(q_0) \in V_E \land c(\omega^m(q_0)) \neq \bot )\implies c(\omega^m(q_0)) = 0 \mod 2$.
 	\end{itemize}
 \item Adam si est seulement si:
 \begin{itemize}
-	\item Soit Ève est bloquée : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_E \land \omega^{n+1} (q_0) \notin V'$.
+	\item Soit Ève est bloquée : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_E \land \omega^{n+1} (q_0) \notin V'$.
 	\item Soit Adam visite infiniment souvent des états uniquement impairs: $\exists n \in \mathbb{N}, \forall m \geq n, (\omega^m(q_0) \in V_E \land c(\omega^m(q_0)) \neq \bot )\implies c(\omega^m(q_0)) = 1 \mod 2$.
 \end{itemize}
 \end{itemize}
 
 \subsubsection{Stratégie}
-On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E \to V$ (respectivement $\rho : V_A \to V$) telle que pour chaque $v$ dans $V_E$ (respectivement $V_A$), $(v, \rho(v)) \in R$.
+On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E' \to V$ (respectivement $\rho : V_A' \to V$), $V_E' \subseteq V_E$ et $V_A' \subseteq V_A$, telle que pour chaque $v$ dans $V_E'$ (respectivement $V_A'$), $(v, \rho(v)) \in R$.
 
-On appelle stratégie \emph{induite} par $\rho : V_E \to V$ et $\rho' : V_A \to V$, la fonction $\omega : (V_E \cup V_A \to V)$ définie par:
+On appelle stratégie \emph{induite} par $\rho : V_E' \to V$ et $\rho' : V_A' \to V$, la fonction $\omega : (V_E' \sqcup V_A' \to V)$ définie par:
 \\
 $$\omega(v) = \left \{
 \begin{array}{rcl}
-\rho(v) & si & v \in V_E\\
-\rho'(v) & si & v \in V_A\\
+\rho(v) & si & v \in V_E'\\
+\rho'(v) & si & v \in V_A'\\
 \end{array}
 \right .$$
 Une stratégie $\rho$ est dite gagnante pour Ève (respectivement Adam) si et seulement si pour toute stratégie $\rho'$ pour Adam (respectivement Ève), la partie induite par $\rho$ et $\rho'$ est gagnante pour Ève (respectivement Adam).
@@ -196,7 +196,7 @@ La résolution des jeux de parité est un problème dans $NP \cap coNP$, et on n
 
 On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement si il existe $V_1$, ..., $V_k$ une partition de $V = V_E \sqcup V_A$ telle que:
 \begin{enumerate}[a)]
-\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$.
+\item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$.
 \item La partition représente une convergence du jeu :\\
 $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
 \end{enumerate}
@@ -207,17 +207,17 @@ Les jeux faibles de parité se résolvent en temps polynomial comme nous le verr
 \subsection{Algorithme de construction du jeu}
 Nous allons maintenant définir un algorithme qui permet de construire un jeu faible de parité à partir d'une formule de CTL et d'une structure de Kripke. Nous allons ensuite montrer que ce jeu est \emph{faible} et qu'Ève gagne si et seulement si la formule est vraie dans la structure. Plus précisément, nous allons donner ici la fonction de transition du jeu.
 
-Soit $\phi$ une formule de CTL et $K = (Q,T,q_0,l)$  une structure de Kripke et $SF(\phi)$ l'ensemble de ses sous-formules.
+Soit $\phi$ une formule de CTL, $SF(\phi)$ l'ensemble de ses sous-formules et $K = (Q,T,q_0,l)$  une structure de Kripke .
 On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
 \begin{itemize}
 	\item $V = Q \times SF(\phi)$
-	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1\mid \mbox{A } \phi_1 \mbox{ U } \phi_2 \mid \mbox{A } \phi_1 \mbox{ W } \phi_2\}$
+	\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1 \}$
 	\item $V_E = V \backslash V_A$
 	\item $c(s,v) = \left \{
 	\begin{array}{rcl}
 		2 & si & v = \mbox{E } \phi_1 \mbox{ W } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ W } \phi_2\\
 		1 & si & v = \mbox{E } \phi_1 \mbox{ U } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ U } \phi_2\\
-		\bot && sinon
+		\bot && \text{sinon}
 	\end{array}
 	\right .$
 \end{itemize}
@@ -255,7 +255,7 @@ On identifie le jeu à un graphe et on va montrer que la partition $V_1, \dots, 
 Montrons maintenant qu'Ève a une stratégie gagnante dans $G$ si, et seulement si, $q_0 \vDash \phi$.
 
 \paragraph{$\implies$}
-On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va montrer que $q_0 \vDash \phi$. On procède par récurrence sur $\phi$.
+On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va montrer par récurrence sur $\phi$ que $q_0 \vDash \phi$.
 
 \begin{itemize}
 \item $\phi = p$. C'est à Ève de jouer et $succ(q_0,\phi) = \{(q_0, \top)\}$ ou $succ(q_0,\phi) = \{(q_0, \bot)\}$. Comme Ève a une stratégie gagnante, c'est qu'elle n'est pas bloquée dans le prochain état. Donc Adam l'est, donc $succ(q_0,\phi) = \{(q_0, \top)\}$, donc $p \in l(q_0)$ donc, $q_0 \vDash \phi$.
@@ -270,18 +270,27 @@ On suppose qu'Ève a une stratégie gagnante à partir de $(q_0, \phi)$. On va m
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme Ève a une stratégie gagnante, pour tous les successeurs $q$ de $q_0$, elle une stratégie gagnante à partir de $q$ et donc par récurrence que $q \vDash \psi$. Donc $q_0 \vDash \phi$.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. Ève a une stratégie gagnante, deux cas sont possibles :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{EX } \phi) \}$. C'est à Ève de jouer et elle a une stratégie gagnante, deux cas sont possibles :
 \begin{itemize}
 	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $q_0 \vDash \psi_2$ et donc $q_0 \vDash \phi$.
-	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{EX } \phi)$
-	Ève va répéter ce choix sur les successeurs de $s$ et il y a deux choix:
+	\item Soit Ève choisit $(s, \psi_1 \land \mbox{EX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{EX } \phi)$ et
+	elle va répéter ce choix sur les successeurs de $s$ et il y a deux choix:
 	\begin{itemize}
-		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vue que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
-		\item Soit un tel état n'existe pas et donc Ève "boucle" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vue que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
+		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vu que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
+		\item Soit un tel état n'existe pas et donc Ève "boucle" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vu que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
 	\end{itemize}
 \end{itemize}
 
-\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{AX } \phi) \}$. TODO
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(\phi) = \{ (s,\psi_2), (s, \psi_1 \land \mbox{AX } \phi) \}$. C'est à Ève de jouer et elle a une stratégie gagnante, deux cas sont possibles :
+\begin{itemize}
+	\item Soit Ève choisit $(s,\psi_2)$, et par hypothèse de récurrence $q_0 \vDash \psi_2$ et donc $q_0 \vDash \phi$.
+	\item Soit Ève choisit $(s, \psi_1 \land \mbox{AX } \phi)$. Donc, par récurrence, $s \vDash \psi_1$. De plus, Ève a une stratégie gagnante à partir de $(s,\mbox{AX } \phi)$.
+	Ève va répéter ce choix sur tous les successeurs de $s$ et il y a deux choix:
+	\begin{itemize}
+		\item Soit il existe un état $(q,\psi_2)$ qu'Ève va choisir, et donc, par récurrence, $q \vDash \psi_2$ et comme on a vu que pour tous états $q'$ sur le chemin entre $s$ et $q$, $q' \vDash \psi_1$, on a bien que $q_0 \vDash \phi$.
+		\item Soit un tel état n'existe pas et donc Adam force Ève à "boucler" sur un cycle composé avec infiniment souvent des états de la forme $(q,\phi)$. Comme elle a une stratégie gagnante, c'est que $c(\phi) = 0 \mod 2$ et donc que $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2 $, et donc, comme pour tous les états sur $q$ sur le cycle, on a vu que $q \vDash \psi_1$, on a bien $q_0 \vDash \phi$.
+	\end{itemize}
+\end{itemize}
 \end{itemize}
 
 \paragraph{$\Longleftarrow$}
@@ -293,34 +302,38 @@ On procède par récurrence sur $\phi$ :
 
 \item $\phi = \psi_2 \lor \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Ève de jouer. Comme $q_0 \vDash \phi$, $q_0 \vDash \psi_1$ ou $q_0 \vDash \psi_2$. Si, par exemple, $q_0 \vDash \psi_1$, par hypothèse de récurrence, on a qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$. Ève peut donc choisir d'aller dans cet état, et elle gagne. On procède de la même façon si $(q_0, \psi_2)$.
 
-\item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, $q_0 \vDash \psi_1$ et $q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence, qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
+\item $\phi = \psi_2 \land \psi_2$. On a donc $succ(q_0,\phi) = \{(q_0, \psi_1); (q_0, \psi_2) \}$ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, $q_0 \vDash \psi_1$ et $q_0 \vDash \psi_2$. On a donc par hypothèse de récurrence qu'Ève a une stratégie gagnante à partir de l'état $(q_0, \psi_1)$ et à partir de l'état $(q_0, \psi_2)$. Donc, quel que soit le coup que va jouer Adam, Ève a une stratégie gagnante.
 
-\item $\phi = \mbox{EX } \psi$. Donc $succ(s, \phi) = \{ (s', \psi) \mid (s,s') \in T \} $ et c'est à Ève de jouer. Comme $q_0 \vDash \phi$, il existe un successeur $q$ de $q_0$ tel que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève à partir de $(q, \psi)$. Comme c'est à Ève de jouer, il suffit qu'elle joue vers cet état.
+\item $\phi = \mbox{EX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Ève de jouer. Comme $q_0 \vDash \phi$, il existe un successeur $q$ de $q_0$ tel que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève à partir de $(q, \psi)$. Comme c'est à Ève de jouer, il suffit qu'elle joue vers cet état.
 
 \item $\phi = \mbox{AX } \psi$. Donc $succ(q_0, \phi) = \{ (q, \psi) \mid (q_0,q) \in T \} $ et c'est à Adam de jouer. Comme $q_0 \vDash \phi$, pour tous les successeurs $q$ de $q_0$, on a que $q \vDash \psi$. Donc, par hypothèse de récurrence, il existe une stratégie gagnante pour Ève pour chacun des $(q, \psi)$. C'est à Adam de jouer, mais quelque soit son choix, Ève a une stratégie gagnante. Donc Ève a une stratégie gagnante.
 
-\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possiblités :
+\item $\phi = \mbox{E } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possiblités :
 \begin{itemize}
 	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$. Il lui suffit donc de choisir cette transition.
 	\item Soit $q_0 \vDash \psi_1 \land \mbox{EX } \phi$.
-	par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\psi_1)$.
+	Par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\psi_1)$.
 	Montrons qu'elle en a aussi une à partir de $(q_0,\mbox{EX } \phi)$.
 	Il y a deux cas:
 	\begin{itemize}
 		\item Soit il existe un chemin à partir de $q_0$ tel que $\psi_1$ est vrai jusqu'à ce que $\psi_2$ le soit. Par récurrence sur la taille de ce chemin, montrons qu'Ève a une stratégie gagnante.\\
 		S'il est de taille 1, cela veut dire qu'il existe un successeur $q$ de $q_0$ tel que $\psi_2$ soit vrai, donc par récurrence, Ève a une stratégie gagnante à partir de $q$, il suffit donc à Ève de prendre le chemin $(q_0,q)$.\\
-		Sinon, Ève doit prendre le successeur $q$ de $q_0$ le long du chemin tel que $\psi_1$ soit vraie, donc $q \vdash \psi_1 \land \mbox{EX } \phi$, et donc, par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\mbox{EX } \phi)$.
-		\item Soit $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$ et il y a un chemin à partir de $q_0$ se finissant par un cycle tel que $\psi_1$ soit vrai sur tous les états de ce chemin. La stratégie d'Ève est donc simplement de suivre ce cycle à l'infini.
+		Sinon, Ève doit prendre le successeur $q$ de $q_0$ le long du chemin tel que $\psi_1$ soit vraie, donc $q \vDash \psi_1 \land \mbox{EX } \phi$, et donc, par récurrence, Ève a une stratégie gagnante à partir de $(q_0,\mbox{EX } \phi)$.
+		\item Soit $\phi = \mbox{E } \psi_1 \mbox{ W } \psi_2$ et il y a un chemin à partir de $q_0$ se finissant par un cycle tel que $\psi_1$ soit vrai sur tous les états de ce chemin. La stratégie d'Ève est donc simplement de suivre ce cycle à l'infini, car, pour tout $q$, $c(q,\mbox{E } \psi_1 \mbox{ W } \psi_2) = 0 \mod 2$.
 	\end{itemize}
 \end{itemize}
 Donc Ève a une stratégie gagnante dans tous les cas.
 
-\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{EX } \phi) \}$ et c'est à Adam de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
+\item $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$ ou $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$. Donc $succ(q_0,\phi) = \{ (q_0,\psi_2), (q_0,\psi_1 \land \mbox{AX } \phi) \}$ et c'est à Ève de jouer. $q_0 \vDash \phi$, il y a donc deux possibilités :
 \begin{itemize}
 	\item Soit $q_0 \vDash \psi_2$ et, par hypothèse de récurrence, alors Ève a une stratégie gagnante à partir de $(q_0,\psi_2)$.
-	\item Soit $q_0 \vDash \psi_1 \land \vDash \mbox{EX } \phi$. TODO
+	\item Soit $q_0 \vDash \psi_1 \land \vDash \mbox{AX } \phi$. Donc, $q_0 \vDash \psi_1$ et par hypothèse de récurrence, Ève a une stratégie gagnante à partir de $(q_0,\psi_1)$. De plus, $q_0 \vDash \mbox{AX } \phi$, donc pour tous les successeurs $q$ de $q_0$, $q \vDash \phi$.
+	\begin{itemize}
+	\item Si $\phi = \mbox{A } \psi_1 \mbox{ U } \psi_2$, c'est donc que quel que soit le chemin que l'on prend depuis un $q$ comme ci-dessus, on atteint un $q'$ tel que $q' \vDash \psi_2$. Par récurrence, Ève a une stratégie gagnante depuis $(q', \psi_2)$, donc elle en a une depuis $(q_0,\phi)$.
+	\item Si $\phi = \mbox{A } \psi_1 \mbox{ W } \psi_2$, c'est donc que quel que soit le chemin que l'on prend depuis un $q$ comme ci-dessus, soit on atteint un $q'$ tel que $q' \vDash \psi_2$, soit on visite infiniment souvent des états $q_i$ tels que $q_i \vDash \psi_1$. Si on est dans le premier cas, il suffit de reprendre la démonstration donnée ci-dessus. Sinon la stratégie d'Ève est simplement de suivre ce cycle à l'infini, car, pour tout $q$, $c(q,\mbox{E } \psi_1 \mbox{ W } \psi_2) = 0 \mod 2$.
+	\end{itemize}
 \end{itemize}
-Donc quelque-soit le choix d'Adam, Ève a une stratégie gagnante.
+Donc Ève a une stratégie gagnante dans tous les cas.
 \end{itemize}
 
 \subsection{Résolution des jeux faibles de parité}
@@ -330,7 +343,7 @@ Soit $\gamma$ un joueur (Ève ou Adam). On notera par la suite $\overline{\gamma
 \subsubsection{Prémisses}
 Nous allons utiliser quelques méthodes que nous n'allons pas définir:
 \begin{itemize}
-	\item $compute\_cfc$ renvoie la liste des Composantes Fortement Connexes d'un graphe orienté.
+	\item $compute\_cfc$ renvoie la liste des composantes fortement connexes (ou CFC) d'un graphe orienté.
 	\item $topological\_sort$ effectue un tri topologique des CFC, de sorte qu'une CFC $V_i$ se trouve avant une CFC $V_j$ si et seulement s'il n'y a pas de chemin entre un sommet de $V_j$ et un de $V_i$.
 	\item $reverse(l)$ renvoie une liste avec les éléments de $l$ dans l'ordre inverse.
 	\item $get\_winner(V_i)$ renvoie:
@@ -397,18 +410,18 @@ Voici maintenant un algorithme $solve\_weak\_game$ permettant de connaitre le ga
 \end{algorithm}
 
 \subsubsection{Terminaison}
-Montrons que $solve\_weak\_game$ termine. Cela revient à montrer que $propagate\_opposite$ termine. Or la fonction ne termine pas immédiatement seulement si un appel récursif a lieu, ce qui est le cas uniquement si la variable $CHANGED$ est mise à $TRUE$. Cependant cela n'arrive que si l'on assigne un gagnant à un état $y$ \emph{qui n'en avait pas avant}. L'ensemble des états étant fini, il y a un nombre fini d'appels récursifs et donc l'algorithme termine forcément.
+Montrons que $solve\_weak\_game$ termine. Cela revient à montrer que $propagate\_opposite$ termine. Or la fonction ne termine pas immédiatement seulement si un appel récursif a lieu, ce qui est le cas uniquement si la variable $CHANGED$ est mise à $TRUE$. Cependant cela n'arrive que si l'on assigne un gagnant à un état $y$ \emph{qui n'en avait pas avant}. L'ensemble des états étant finis, les appels récursifs se terminent forcément.
 
 \subsection{Correction}
-Montrons que $solve\_weak\_game$ est correcte, c'est-à-dire que\\ $solve\_weak\_game(q_0,V,E) = \gamma$ si et seulement s'il existe une stratégie gagnante pour $\gamma$.
+Montrons que $solve\_weak\_game$ est correcte, c'est-à-dire que $solve\_weak\_game(q_0,V,E) = \gamma$ si et seulement s'il existe une stratégie gagnante pour $\gamma$.
 
 \paragraph{$\implies$}
-Montrons par récurrence sur $k$ qu'à la fin du traitement d'une CFC $V_k$, on a correctement trouvé le gagnant de chaque état. Il suffit pour cela de montrer que $propagate\_opposite$ va effectivement attribuer les états remportés par $\overline{\gamma}$, et uniquement ceux-ci.
+Montrons en fait par récurrence sur $k$ qu'à la fin du traitement d'une CFC $V_k$, on a correctement attribué le gagnant de chaque état. Il suffit pour ça de montrer $propagate\_opposite$ va effectivement attribuer les états remportés par $\overline{\gamma}$, et uniquement ceux-ci.
 \subparagraph{Si $k = 1$:} on traite la première CFC. Remarquons que, comme les $V_k$ ont été ordonnées par ordre topologique inversé, les successeurs de tous les états de $V_1$  sont dans $V_1$.\\
 Si $V_1$ est réduite à un seul élément, c'est à $\gamma$ de jouer, mais il est bloqué, donc $\overline{\gamma}$ gagne cet état et $propagate\_opposite$ détecte bien ce cas (car pour l'unique état $x$ sans successeurs, $ALL$ vaudra $TRUE$).\\
 Sinon, $\gamma$ est le joueur qui gagne en restant dans la CFC, et quel que soit le joueur ayant le trait, il est obligé de rester dans la CFC, donc $\gamma$ gagne. $propagate\_opposite$ détecte bien ce cas, aucun état n'est gagnant pour $\overline{\gamma}$ et tous les états ont un successeur, donc pour tous les états $x \in V_1$, $ALL = FALSE$ et $EXI = FALSE$, donc $winners[x]$ ne sera pas initialisé.
 
-\subparagraph{Sinon:} on suppose que le résultat vrai pour toutes les CFC $V_i$, $i < k$.
+\subparagraph{Sinon:} on suppose le résultat vrai pour toutes les CFC $V_i$, $i < k$.
 \\
 Si $x \in V_k$ est un état gagnant pour $\overline{\gamma}$ c'est que :
 \begin{enumerate}
@@ -422,26 +435,25 @@ Choisissons un $y$ qui a ces propriétés et tel que $\pi$ soit le plus grand po
 \begin{itemize}
 	\item Si $\pi$ est un chemin de taille 1:
 	\begin{itemize}
-		\item Si l'on est dans le cas 1, il est clair que $EXI$ vaudra $TRUE$ (car $(x,y) \in E$), et donc que $winners[x] = \overline{\gamma}$.
-		\item Si l'on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$ et ils se trouvent tous des CFC d'indices plus petites (sinon cela contredirait l'hypothèse de maximalité sur la taille de $\pi$). Donc pour chaque successeur $y$ de $x$, $winners[y] = \overline{\gamma}$ et donc $ALL$ vaudra $TRUE$, et donc $winners[x] = \overline{\gamma}$.
+		\item Si on est dans le cas 1, il est clair que $EXI$ vaudra $TRUE$ (car $(x,y) \in E$), et donc que $winners[x] = \overline{\gamma}$.
+		\item Si on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$ et ils se trouvent tous des CFC d'indices plus petites (sinon cela contredirait l'hypothèse de maximalité sur la taille de $\pi$). Donc pour chaque successeur $y$ de $x$, $winners[y] = \overline{\gamma}$ et donc $ALL$ vaudra $TRUE$, et donc $winners[x] = \overline{\gamma}$.
 	\end{itemize}
-	\item Si $\pi$ est un chemin de taille $n$:
+	\item Si $\pi$ est un chemin de taille $n$
 		\begin{itemize}
-		\item Si l'on est dans le cas 1, $x$ a un successeur $y$ dans $\pi$ et donc par hypothèse de récurrence, $winners[y] = \overline{\gamma}$ et donc $EXI$ vaudra $TRUE$ et $winners[x] = \overline{\gamma}$.
-		\item Si l'on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$. Mais ils se trouvent soit dans une CFC d'indice plus petit, soit le long d'un chemin gagnant pour $\overline{\gamma}$ de taille plus petite que $\pi$, et donc par récurrence, $ALL$ vaudra $TRUE$ et donc $winners[x] = \overline{\gamma}$.
+		\item Si on est dans le cas 1, $x$ a un successeur $y$ dans $\pi$ et donc par hypothèse de récurrence, $winners[y] = \overline{\gamma}$ et donc $EXI$ vaudra $TRUE$ et $winners[x] = \overline{\gamma}$.
+		\item Si on est dans le cas 2, tous les successeurs de $x$ sont gagnants pour $\overline{\gamma}$. Mais ils se trouvent soit dans une CFC d'indice plus petites, soit le long d'un chemin gagnant pour $\overline{\gamma}$ de taille plus petite que $\pi$, et donc par récurrence, $ALL$ vaudra $TRUE$ et donc $winners[x] = \overline{\gamma}$.
 	\end{itemize}
 \end{itemize}
-\bigskip
 Réciproquement, si $winners[x] = \overline{\gamma}$ à la fin du traitement par $propagate\_opposite$, montrons que $x$ est gagnant pour $\overline{\gamma}$. Montrons ce résultat par récurrence sur l'indice de l'appel récursif $propagate\_opposite$ où $winners[x]$ a été mis à $\overline{\gamma}$. Notons tout d'abord que si $winners[x]$ a été mis à $\overline{\gamma}$ c'est que lors du traitement de $x$, la condition $(get\_player(x) = \overline{\gamma} \land EXI) \lor ALL $ était vraie.\\
 Si on est dans le premier appel à $propagate\_opposite$
 \begin{itemize}
-	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Mais comme on est dans le premier appel à $propagate\_opposite$ c'est que $y$ appartenait à une CFC d'indice plus petit. Donc, par hypothèse de récurrence, $y$ est gagnant pour $\overline{\gamma}$. Donc $x$ est gagnant pour $\overline{\gamma}$
+	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Mais comme on est dans le premier appel à $propagate\_opposite$ c'est que $y$ appartenait à une CFC d'indice plus basse. Donc, par hypothèse de récurrence, $y$ est gagnant pour $\overline{\gamma}$. Donc $x$ est gagnant pour $\overline{\gamma}$
 	\item Si $ALL$ était vrai, c'est que pour tous les successeurs $y$ de $x$, $winners[y] = \overline{\gamma}$, or on est dans le premier appel récursif à $propagate\_opposite$, donc tous les $y$ appartiennent à des CFC de plus petit indice, et donc par un argument similaire au premier point $x$ est gagnant pour $\overline{\gamma}$.
 \end{itemize}
 Si on est dans le $n$-ième appel récursif à $propagate\_opposite$,
 \begin{itemize}
-	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Donc soit $y$ a été mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, soit $y$ est dans une CFC d'indice plus petit. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
-	\item Si $ALL$ était vrai, c'est que pour tous les successeurs $y$ de $x$, $winners[y] = \overline{\gamma}$, donc tous les $y$ ont été mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, ou alors $y$ est dans une CFC d'indice plus petit. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
+	\item Si $get\_player(x) = \overline{\gamma} \land EXI$ était vrai, c'est qu'il existait un successeur $y$ de $x$ tel que $winners[y] = \overline{\gamma}$. Donc soit $y$ a était mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, ou car $y$ est dans une CFC d'indice plus petite. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
+	\item Si $ALL$ était vrai, c'est que pour tous les successeurs $y$ de $x$, $winners[y] = \overline{\gamma}$, donc tous les $y$  ont été mis à $\overline{\gamma}$ par un appel à $propagate\_opposite$ antérieur, ou car $y$ est dans une CFC d'indice plus petite. Dans tous les cas, on peut conclure que $x$ est gagnant pour $\overline{\gamma}$
 \end{itemize}
 
 Donc par récurrence, $x$ est gagnant  pour $\overline{\gamma}$.
