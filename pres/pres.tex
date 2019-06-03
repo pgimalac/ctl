@@ -2,10 +2,16 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+
 \usetheme{default}
-\begin{document}
 \author{Pierre Gimalac et Alexandre Moine}
-\title{Model-checking de CTL}
+\begin{document}
+\title{Model-checking de Computation Tree Logic}
 %\subtitle{}
 %\logo{}
 %\institute{}
@@ -18,16 +24,120 @@
 	\maketitle
 \end{frame}
 
-\section{Plan}
+\section*{Plan}
 
 \begin{frame}
 	\frametitle{Plan}
-	\tableofcontents
+	\tableofcontents[]
 \end{frame}
 
-\section{CTL}
+\section{Computation Tree Logic}
+\subsection{Structure de Kripke}
 \begin{frame}
-	\frametitle{CTL}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Structure de Kripke}
+
+    $(Q,T, q_0, l)$:
+    \begin{itemize}
+    \item $Q$ est un ensemble d'états
+    \item $T \subseteq Q \times Q$ est une relation de transition
+    \item $q_0 \in Q$ est l'état de départ
+    \item $l : Q \to \mathcal{P}(\Omega)$ est une fonction d'étiquetage
+    \end{itemize}
+
+    \pause
+    \bigskip
+    \textit{On considère le cas où $Q$ est fini et $T$ vérifie que tout élément est en relation avec au moins un élément}\\
+    \pause
+    \bigskip
+    Une exécution de $\mathcal{A} = (Q, T, q_0, l)$ est une fonction $\sigma : \mathbb{N} \to Q$ telle que $(\sigma(i), \sigma(i+1))\in T$. $Exec_\mathcal{A}(q)$ est l'ensemble des exécutions $\sigma$ de $\mathcal{A}$ telles que $\sigma(0) = q$.
+\end{frame}
+
+\subsection{Grammaire}
+\begin{frame}
+	\frametitle{Computation Tree Logic}
+    \framesubtitle{Grammaire}
+
+    \begin{align*}
+    \phi &::= \bot \mid \top \mid p \mid \neg \phi \mid \phi\land\phi \mid \phi\lor\phi \mid \\
+    &\quad \mbox{AX }\phi \mid \mbox{EX }\phi \mid
+    \mbox{A }\phi \mbox{ W } \phi \mid \mbox{E }\phi \mbox{ W } \phi \mid
+    \mbox{A }\phi \mbox{ U } \phi \mid \mbox{E }\phi \mbox{ U } \phi
+    \end{align*}
+
+    \pause
+    \small
+    On définit aussi:
+    \begin{itemize}
+        \item $\mbox{EF } \phi := \mbox{E } \top \mbox{ U } \phi$
+        \item $\mbox{AF } \phi := \mbox{A } \top \mbox{ U } \phi$
+        \item $\mbox{EG } \phi := \neg (\mbox{AF } (\neg \phi))$
+        \item $\mbox{AG } \phi := \neg (\mbox{EF } (\neg \phi))$
+    \end{itemize}
+\end{frame}
+
+\subsection{Satisfaction}
+\begin{frame}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Satisfaction}
+
+    \footnotesize
+    \begin{tabular}{lcl}
+    $q \vDash \top$ && est toujours vrai\\
+    $q \vDash \bot$ && n'est jamais vrai\\
+    $q \vDash p$ &ssi&
+    $p \in l (q)$\\
+    \pause[2]&& $p$ est une étiquette de $q$\pause[1]\\
+    $q \vDash \neg \psi$ &ssi&
+    $q \nvDash \psi$\\
+    \pause[2]&& $q$ ne vérifie pas $\psi$\pause[1]\\
+
+    $q \vDash \psi_1 \land \psi_2$ &ssi&
+    $q \vDash \psi_1\land q \vDash \psi_2$\\
+    \pause[2]&& $q$ vérifie $\phi_1$ et $q$ vérifie $\phi_2$\pause[1]\\
+
+    $q \vDash \psi_1 \lor \psi_2$ &ssi&
+    $q \vDash \psi_1\lor q \vDash \psi_2$\\
+    \pause[2]&& $q$ vérifie $\phi_1$ ou $q$ vérifie $\phi_2$\pause[1]\\
+
+    $q \vDash \mbox{EX } \psi$ &ssi&
+    $\exists \sigma \in Exec_\mathcal{A}(q)$, $\sigma(1) \vDash \psi$\\
+    \pause[2]&& il existe un successeur de $q$ vérifiant $\psi$\pause[1]\\
+
+    $q \vDash \mbox{AX } \psi$ &ssi&
+    $\forall \sigma \in Exec_\mathcal{A}(q)$, $\sigma(1) \vDash \psi$\\
+    \pause[2]&& tous les successeurs de $q$ vérifient $\psi$\pause[1]\\
+
+    \end{tabular}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Satisfaction}
+
+    \footnotesize
+    \begin{tabular}{lcl}
+    $q \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi&
+    $\exists \sigma \in Exec_\mathcal{A}(q)$, $\exists k \in \mathbb{N}$,\\
+    &&$\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
+    && \pause[2] il existe un chemin à partir de $q$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour) \pause[1]\\
+
+    $q \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi&
+    $\forall \sigma \in Exec_\mathcal{A}(q)$, $\exists k \in \mathbb{N}$,\\
+    &&$\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
+    &&\pause[2] pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\pause[1]\\
+
+    $q \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi&
+    $\exists \sigma \in Exec_\mathcal{A}(q)$, soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
+    & & \pause[2]soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2 \land \forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
+    && il existe un chemin à partir de $q$ tel que $\psi_1$\\&& est vrai jusqu'à ce que, peut-être, $\psi_2$ le soit\pause[1]\\
+
+    $q \vDash \mbox{A } \psi_1 \mbox{ W } \psi_2$ &ssi&
+    $\forall \sigma \in Exec_\mathcal{A}(q)$, soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
+    & & \pause[2]soit $\exists k\in \mathbb{N}$: $\sigma(k)\vDash \psi_2 \land \forall j \in \llbracket i; k \llbracket$: $\sigma(j) \vDash \psi_1$\\
+    && pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\pause[1]\\
+    \end{tabular}
+
 \end{frame}
 
 \section{Model-checking par marquage}
