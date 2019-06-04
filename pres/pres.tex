@@ -259,19 +259,30 @@
     \framesubtitle{Principe}
     L'algorithme de marquage de la structure de Krikpe $\mathcal{A} = (Q, T, q_0, l)$ pour une formule $\phi$ se fait récursivement avec les sous formules.\\\bigskip
 
-    On renvoie à chaque étape une fonction qui associe à chaque état de $Q$ un booléen.
+    On renvoie à chaque étape un tableau qui associe à chaque état de $Q$ un booléen.
 \end{frame}
 
 \begin{frame}
     \frametitle{Model-checking par marquage}
     \framesubtitle{Algorithme informel}
-    % \begin{tabular}{lcl}
-    %     $marquage(\mathcal{A}, \top)(q) = \top$&&\\
-    %     $marquage(\mathcal{A}, \bot)(q) = \bot$&&\\
-    %     $marquage(\mathcal{A}, p)(q) = \top$&ssi& $p\in l(q)$\\
-    %     $marquage(\mathcal{A}, \neg p)(q) = \top$&ssi&$p\notin l(q)$\\
-    %     $marquage(\mathcal{A}, EX\phi)(q) = \top$&ssi&$\exists (q, q') \in T, marquage(\mathcal{A}, \phi)(q') = \top$
-    % \end{tabular}
+
+    Dans une structure de Kripke $\mathcal{A}=(Q, T, q_0, l)$:\\\bigskip
+    \begin{tabular}{lcl}
+        $marquage(\top)[q] = \top$&&\\
+        $marquage(\bot)[q] = \bot$&&\\
+        $marquage(p)[q] = \top$&ssi& $p\in l[q]$\\
+        $marquage(\neg \phi)[q] = \top$&ssi&$marquage(\phi)[q] = \bot$\\
+        $marquage(\phi \lor \psi)[q] = \top$&ssi&$marquage(\phi)[q] = \top \lor marquage(\psi)[q] = \top$\\
+        $marquage(\phi \land \psi)[q] = \top$&ssi&$marquage(\phi)[q] = \top \land marquage(\psi)[q] = \top$\\
+        $marquage(EX\phi)[q] = \top$&ssi&$\exists (q, q') \in T, marquage(\phi)[q'] = \top$\\
+        $marquage(AX\phi)[q] = \top$&ssi&$\forall (q, q') \in T, marquage(\phi)[q'] = \top$\\
+    \end{tabular}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    \framesubtitle{Algorithme informel}
+
 \end{frame}
 
 \subsection{Exemple}
