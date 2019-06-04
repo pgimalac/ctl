@@ -249,6 +249,9 @@ On donne la fonction de successeur:
 		\item C'est un jeu faible, on peut considérer la partition induite par les composantes fortement connexes (CFC) du graphe dans un ordre topologique inversé.
 		\item C'est un jeu "intéressant", Ève a une stratégie gagnante si et seulement si la formule est vraie dans la structure.
 	\end{itemize}
+\bigskip
+\pause
+NB: Pour un joueur $\gamma$, on notera $\overline{\gamma}$ l'autre joueur.
 \end{frame}
 
 \subsection{Algorithme}
@@ -316,7 +319,7 @@ On donne la fonction de successeur:
 	\frametitle{Plan de preuve de correction}
 	$solve\_weak\_game$ termine. \\
 	\bigskip \pause
-	$solve\_weak\_game$ est correct: par récurrence sur les CFC (ordonnées par ordre topologique inversé), on montre qu'après traitement, $winners[x]$ contient le gagnant de l'état $x$.
+	$solve\_weak\_game$ est correcte: par récurrence sur les CFC (ordonnées par ordre topologique inversé), on montre qu'après traitement, $winners[x]$ contient le gagnant de l'état $x$.
 	\begin{itemize}
 		\item Pour une "feuille" de l'arbre des CFC $propagate\_opposite$ est correct.
 		\item Pour une CFC plus haute dans l'arbre, les états internes ne peuvent que mener à des états d'une CFC plus basse, dont on connait les gagnants par hypothèse de récurrence, ce qui permet de montrer dans $propagate\_opposite$ que:
