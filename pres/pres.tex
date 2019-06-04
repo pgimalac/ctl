@@ -13,6 +13,7 @@
 \usepackage{hyperref}
 \usepackage{multicol}
 
+
 \usetheme{default}
 \author{Pierre Gimalac et Alexandre Moine}
 \begin{document}
@@ -252,7 +253,8 @@ On donne la fonction de successeur:
 
 \subsection{Algorithme}
 \footnotesize
-\begin{algorithm}[h!]
+\begin{frame}[fragile]
+\begin{algorithm}[H]
     \caption{$solve\_weak\_game$}
 \begin{algorithmic}[1]
     \REQUIRE $(q_0, V, E)$ \COMMENT{l'état de départ et le graphe du jeu}
@@ -273,7 +275,10 @@ On donne la fonction de successeur:
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[h!]
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{algorithm}[H]
 \caption{$propagate\_opposite$}
 
 \begin{algorithmic}[1]
@@ -304,6 +309,7 @@ On donne la fonction de successeur:
     \RETURN
 \end{algorithmic}
 \end{algorithm}
+\end{frame}
 
 \subsection{Plan de preuve de correction}
 \begin{frame}
@@ -368,7 +374,8 @@ Formule à vérifier:
     \end{tabular}
 \end{frame}
 
-\begin{algorithm}[h!]
+\begin{frame}[fragile]
+\begin{algorithm}[H]
 \caption{$E\phi U\psi$}
 
 \begin{multicols}{2}
@@ -403,6 +410,8 @@ Formule à vérifier:
 \end{algorithmic}
 \end{multicols}
 \end{algorithm}
+
+\end{frame}
 
 \subsection{Exemple}
 \begin{frame}
