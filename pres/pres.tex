@@ -143,13 +143,70 @@
 \section{Model-checking par marquage}
 \begin{frame}
 	\frametitle{Model-checking par marquage}
+    L'algorithme de marquage de la structure de Krikpe $\mathcal{A} = (Q, T, q_0, l)$ pour une formule $\phi$ se fait récursivement avec les sous formules.\\\bigskip
+
+    On renvoie à chaque étape une fonction qui associe à chaque état de $Q$ un booléen.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    % \begin{tabular}{lcl}
+    %     $marquage(\mathcal{A}, \top)(q) = \top$&&\\
+    %     $marquage(\mathcal{A}, \bot)(q) = \bot$&&\\
+    %     $marquage(\mathcal{A}, p)(q) = \top$&ssi& $p\in l(q)$\\
+    %     $marquage(\mathcal{A}, \neg p)(q) = \top$&ssi&$p\notin l(q)$\\
+    %     $marquage(\mathcal{A}, EX\phi)(q) = \top$&ssi&$\exists (q, q') \in T, marquage(\mathcal{A}, \phi)(q') = \top$
+    % \end{tabular}
 \end{frame}
 
 
 \section{Model-checking par résolution de jeu faible de parité}
+\subsection{Jeu de parité}
 \begin{frame}
 	\frametitle{Model-checking par résolution de jeu faible de parité}
+    \framesubtitle{Jeu de parité}
+
+    $(V_E, V_A, R, c)$:
+    \begin{itemize}
+        \item $V_E$ (respectivement $V_A$) est l'ensemble des états jouables par Ève (respectivement Adam). On demande de plus que $V_E \cap V_A = \emptyset$. On note $V = V_E \sqcup V_A$.
+        \item $R \subseteq V \times V$ est une relation de transition.
+        \item $c : V \to (\mathbb{N} \cup \{\bot\})$ est une fonction qui associe une couleur ou $\bot$ à chaque état.
+    \end{itemize}
 \end{frame}
 
+\subsection{Partie, victoire et stratégie}
+\begin{frame}
+    \frametitle{Model-checking par résolution de jeu faible de parité}
+    \framesubtitle{Partie, victoire et stratégie}
+
+    Une partie est une fonction $\omega : V' \to V, V' \subseteq V$ telle que $\forall v \in V', (v,\omega(v)) \in R$
+
+    \pause
+    \bigskip
+
+    Une partie est gagnée par Ève à partir d'un état $q_0 \in V$ si est seulement si:
+    \begin{itemize}
+    \item Soit Adam est bloqué : $\exists n \in \mathbb{N}, \omega^n (q_0) \in V_A\backslash V'$.
+    \item Soit le minimum des couleurs (des états par lesquels on passe) que l'on voit une infinité de fois est pair.
+    \end{itemize}
+
+    \pause
+    \bigskip
+
+    On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E' \to V$ (respectivement $\rho : V_A' \to V$), $V_E' \subseteq V_E$ et $V_A' \subseteq V_A$, telle que pour chaque $v$ dans $V_E'$ (respectivement $V_A'$), $(v, \rho(v)) \in R$.
+\end{frame}
+
+\subsection{Jeu faible de parité}
+\begin{frame}
+    \frametitle{Model-checking par résolution de jeu faible de parité}
+    \framesubtitle{Jeu faible de parité}
+
+    On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement s'il existe $V_1$, ..., $V_k$ une partition de $V = V_E \sqcup V_A$ telle que:
+    \begin{enumerate}[a)]
+    \item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$.
+    \item La partition représente une convergence du jeu :\\
+    $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
+    \end{enumerate}
+\end{frame}
 
 \end{document}
