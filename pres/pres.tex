@@ -1,12 +1,16 @@
 \documentclass[11pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[french]{babel}
 \usepackage{lmodern}
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{hyperref}
 
 \usetheme{default}
 \author{Pierre Gimalac et Alexandre Moine}
@@ -31,10 +35,10 @@
 	\tableofcontents[]
 \end{frame}
 
-\section{Computation Tree Logic}
+\section{CTL}
 \subsection{Structure de Kripke}
 \begin{frame}
-    \frametitle{Computation Tree Logic}
+    \frametitle{CTL}
     \framesubtitle{Structure de Kripke}
 
     $(Q,T, q_0, l)$:
@@ -76,10 +80,10 @@
     \end{itemize}
 \end{frame}
 
-\subsection{Satisfaction}
+\subsection{Sémantique}
 \begin{frame}
     \frametitle{Computation Tree Logic}
-    \framesubtitle{Satisfaction}
+    \framesubtitle{Sémantique}
 
     \footnotesize
     \begin{tabular}{lcl}
@@ -140,25 +144,6 @@
 
 \end{frame}
 
-\section{Model-checking par marquage}
-\begin{frame}
-	\frametitle{Model-checking par marquage}
-    L'algorithme de marquage de la structure de Krikpe $\mathcal{A} = (Q, T, q_0, l)$ pour une formule $\phi$ se fait récursivement avec les sous formules.\\\bigskip
-
-    On renvoie à chaque étape une fonction qui associe à chaque état de $Q$ un booléen.
-\end{frame}
-
-\begin{frame}
-    \frametitle{Model-checking par marquage}
-    % \begin{tabular}{lcl}
-    %     $marquage(\mathcal{A}, \top)(q) = \top$&&\\
-    %     $marquage(\mathcal{A}, \bot)(q) = \bot$&&\\
-    %     $marquage(\mathcal{A}, p)(q) = \top$&ssi& $p\in l(q)$\\
-    %     $marquage(\mathcal{A}, \neg p)(q) = \top$&ssi&$p\notin l(q)$\\
-    %     $marquage(\mathcal{A}, EX\phi)(q) = \top$&ssi&$\exists (q, q') \in T, marquage(\mathcal{A}, \phi)(q') = \top$
-    % \end{tabular}
-\end{frame}
-
 
 \section{Model-checking par résolution de jeu faible de parité}
 \subsection{Jeu de parité}
@@ -207,6 +192,83 @@
     \item La partition représente une convergence du jeu :\\
     $\forall (x, y) \in R$, $x\in V_i, y \in V_j \Rightarrow i \leq j$.
     \end{enumerate}
+\end{frame}
+
+
+\subsection{Algorithme}
+\footnotesize
+\begin{algorithm}[h!]
+    \caption{$solve\_weak\_game$}
+\begin{algorithmic}[1]
+    \REQUIRE $(q_0, V, E)$ \COMMENT{l'état de départ et le graphe du jeu}
+    \STATE $CFC \leftarrow compute\_cfc(V, E)$
+    \STATE $CFC \leftarrow topological\_sort(CFC)$
+    \STATE $CFC \leftarrow reverse(CFC)$
+    \STATE $winners \leftarrow new\_array(size(V), \bot)$
+    \FOR { $V_k \in CFC$ }
+        \STATE $\gamma \leftarrow get\_winner(V_k)$
+        \STATE $propagate\_opposite(\gamma, V_k, E, winners)$
+        \FOR { $x \in V_k$ }
+            \IF { $winners[x] = \bot$ }
+                \STATE $winners[x] = \gamma$
+            \ENDIF
+        \ENDFOR
+    \ENDFOR
+    \RETURN $winners[q_0]$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h!]
+\caption{$propagate\_opposite$}
+
+\begin{algorithmic}[1]
+    \scriptsize
+    \REQUIRE $(\gamma, V, E, winners)$
+    \STATE $CHANGED \leftarrow FALSE$
+    \FOR{$x \in V$}
+        \IF{$winners[x] = \bot$}
+            \STATE $EXI \leftarrow FALSE$
+            \STATE $ALL \leftarrow TRUE$
+            \FOR {$(x,y) \in E$}
+                \IF{$winners[y] = \overline{\gamma}$}
+                    \STATE $EXI \leftarrow TRUE$
+                \ELSE
+                    \STATE $ALL \leftarrow FALSE$
+                \ENDIF
+            \ENDFOR
+            \IF{$(get\_player(x) = \overline{\gamma} \land EXI) \lor ALL $}
+                \STATE $CHANGED \leftarrow TRUE$
+                \STATE $winners[x] = \overline{\gamma}$
+                \STATE BREAK \COMMENT{Non nécessaire, mais simplifie la preuve}
+            \ENDIF
+        \ENDIF
+    \ENDFOR
+    \IF{$CHANGED$}
+        \STATE $propagate\_opposite(\gamma, V, E, winners)$
+    \ENDIF
+    \RETURN
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\section{Model-checking par marquage}
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    L'algorithme de marquage de la structure de Krikpe $\mathcal{A} = (Q, T, q_0, l)$ pour une formule $\phi$ se fait récursivement avec les sous formules.\\\bigskip
+
+    On renvoie à chaque étape une fonction qui associe à chaque état de $Q$ un booléen.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    % \begin{tabular}{lcl}
+    %     $marquage(\mathcal{A}, \top)(q) = \top$&&\\
+    %     $marquage(\mathcal{A}, \bot)(q) = \bot$&&\\
+    %     $marquage(\mathcal{A}, p)(q) = \top$&ssi& $p\in l(q)$\\
+    %     $marquage(\mathcal{A}, \neg p)(q) = \top$&ssi&$p\notin l(q)$\\
+    %     $marquage(\mathcal{A}, EX\phi)(q) = \top$&ssi&$\exists (q, q') \in T, marquage(\mathcal{A}, \phi)(q') = \top$
+    % \end{tabular}
 \end{frame}
 
 \end{document}
