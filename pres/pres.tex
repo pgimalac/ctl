@@ -253,8 +253,10 @@
 
 
 \section{Model-checking par marquage}
+\subsection{Principe}
 \begin{frame}
     \frametitle{Model-checking par marquage}
+    \framesubtitle{Principe}
     L'algorithme de marquage de la structure de Krikpe $\mathcal{A} = (Q, T, q_0, l)$ pour une formule $\phi$ se fait récursivement avec les sous formules.\\\bigskip
 
     On renvoie à chaque étape une fonction qui associe à chaque état de $Q$ un booléen.
@@ -262,6 +264,7 @@
 
 \begin{frame}
     \frametitle{Model-checking par marquage}
+    \framesubtitle{Algorithme informel}
     % \begin{tabular}{lcl}
     %     $marquage(\mathcal{A}, \top)(q) = \top$&&\\
     %     $marquage(\mathcal{A}, \bot)(q) = \bot$&&\\
@@ -269,6 +272,40 @@
     %     $marquage(\mathcal{A}, \neg p)(q) = \top$&ssi&$p\notin l(q)$\\
     %     $marquage(\mathcal{A}, EX\phi)(q) = \top$&ssi&$\exists (q, q') \in T, marquage(\mathcal{A}, \phi)(q') = \top$
     % \end{tabular}
+\end{frame}
+
+\subsection{Exemple}
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    \framesubtitle{Exemple: a$\lor$c}
+
+    \includegraphics[scale=0.4]{imgs/marquage1.png}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    \framesubtitle{Exemple: b}
+
+    \includegraphics[scale=0.4]{imgs/marquage2.png}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    \framesubtitle{Exemple: E a$\lor$c W b}
+
+    \includegraphics[scale=0.4]{imgs/marquage3.png}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model-checking par marquage}
+    \framesubtitle{Exemple: AX E a$\lor$c W b}
+
+    \includegraphics[scale=0.4]{imgs/marquage4.png}
+\end{frame}
+
+\section*{Conclusion}
+\begin{frame}
+    \frametitle{Conclusion}
 \end{frame}
 
 \end{document}
