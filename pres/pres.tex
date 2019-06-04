@@ -11,6 +11,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{hyperref}
+\usepackage{multicol}
 
 \usetheme{default}
 \author{Pierre Gimalac et Alexandre Moine}
@@ -327,7 +328,7 @@ On donne la fonction de successeur:
 	\includegraphics[scale=0.35]{imgs/g2.png}
 	\end{center}
 Formule à vérifier:
-	$$ \mbox{AX } (\mbox{A } (a \lor c) \mbox{ W } b) $$
+	$$ \mbox{AX } (\mbox{E } (a \lor c) \mbox{ W } b) $$
 \end{frame}
 
 \begin{frame}
@@ -361,15 +362,47 @@ Formule à vérifier:
         $marquage(\phi \lor \psi)[q] = \top$&ssi&$marquage(\phi)[q] = \top \lor marquage(\psi)[q] = \top$\\
         $marquage(\phi \land \psi)[q] = \top$&ssi&$marquage(\phi)[q] = \top \land marquage(\psi)[q] = \top$\\
         $marquage(EX\phi)[q] = \top$&ssi&$\exists (q, q') \in T, marquage(\phi)[q'] = \top$\\
-        $marquage(AX\phi)[q] = \top$&ssi&$\forall (q, q') \in T, marquage(\phi)[q'] = \top$\\
+        $marquage(AX\phi)[q] = \top$&ssi&$\forall (q, q') \in T, marquage(\phi)[q'] = \top$\\\\\pause
+        $E\phi W \psi$ &$\equiv$ &$\neg A \neg \psi U (\neg \phi \land \neg \psi)$\\
+        $A\phi W \psi$ &$\equiv$ &$\neg E \neg \psi U (\neg \phi \land \neg \psi)$\\
     \end{tabular}
 \end{frame}
 
-\begin{frame}
-    \frametitle{Model-checking par marquage}
-    \framesubtitle{Algorithme informel}
+\begin{algorithm}[h!]
+\caption{$E\phi U\psi$}
 
-\end{frame}
+\begin{multicols}{2}
+\begin{algorithmic}[1]
+%    \scriptsize
+    \REQUIRE $(Q, T, q_0, l)$
+    \STATE $m_\phi := marquage(\phi)$
+    \STATE $m_\psi := marquage(\psi)$
+    \STATE $eu := new\_array(|Q|, \bot)$
+    \STATE $dejavu := new\_array(|Q|, \bot)$
+    \STATE $L := \{\}$
+    \FOR{$q \in Q$}
+        \IF{$m_\psi[q]$}
+            \STATE $L := L + \{ q \}$
+            \STATE $dejavu[q] = \top$
+        \ENDIF
+    \ENDFOR
+    \WHILE{ $L$ is not empty}
+        \STATE $q := L.pop()$
+        \STATE $eu[q] := \top$
+        \FOR{$(q', q) \in T$}
+            \IF{not $dejavu[q']$}
+                \STATE $dejavu[q'] := \top$
+                \IF{$m_\phi[q']$}
+                    \STATE $L := L + \{q'\}$
+                \ENDIF
+            \ENDIF
+        \ENDFOR
+    \ENDWHILE
+
+    \RETURN eu
+\end{algorithmic}
+\end{multicols}
+\end{algorithm}
 
 \subsection{Exemple}
 \begin{frame}
