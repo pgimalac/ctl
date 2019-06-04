@@ -44,3 +44,4 @@ parser.mli
 *.toc
 *.bbl
 *.blg
+*.vrb
