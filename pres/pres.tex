@@ -124,12 +124,12 @@
     $q \vDash \mbox{E } \psi_1 \mbox{ U } \psi_2$ &ssi&
     $\exists \sigma \in Exec_\mathcal{A}(q)$, $\exists k \in \mathbb{N}$,\\
     &&$\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
-    && \pause[2] il existe un chemin à partir de $q$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour) \pause[1]\\
+    && \pause[2]il existe un chemin à partir de $q$ tel que $\psi_1$\\&& est vrai jusqu'à ce que $\psi_2$ le soit (et il le sera un jour) \pause[1]\\
 
     $q \vDash \mbox{A } \psi_1 \mbox{ U } \psi_2$ &ssi&
     $\forall \sigma \in Exec_\mathcal{A}(q)$, $\exists k \in \mathbb{N}$,\\
     &&$\sigma(k)\vDash \psi_2$ $\land$ $\forall j \in \llbracket 0; k\llbracket, \sigma(j)\vDash \psi_1$\\
-    &&\pause[2] pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\pause[1]\\
+    &&\pause[2]pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que $\psi_2$ le soit (et il le sera un jour)\pause[1]\\
 
     $q \vDash \mbox{E } \psi_1 \mbox{ W } \psi_2$ &ssi&
     $\exists \sigma \in Exec_\mathcal{A}(q)$, soit $\forall j \in \mathbb{N}$, $\sigma(j) \vDash \psi_1$\\
@@ -142,6 +142,17 @@
     && pour tout chemin partant de $q$, $\psi_1$ est vrai \\&& jusqu'à ce que, peut-être, $\psi_2$ le soit\pause[1]\\
     \end{tabular}
 
+\end{frame}
+
+\subsection{Model-cheking}
+\begin{frame}
+\frametitle{Model-checking}
+Pour:
+\begin{itemize}
+	\item Une structure de Kripke $K = (Q,T, q_0, l)$
+	\item Une formule de CTL $\phi$
+\end{itemize}
+Est-ce que $\phi$ est vraie dans $K$ ?
 \end{frame}
 
 
@@ -186,7 +197,7 @@
     \frametitle{Model-checking par résolution de jeu faible de parité}
     \framesubtitle{Jeu faible de parité}
 
-    On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement s'il existe $V_1$, ..., $V_k$ une partition de $V = V_E \sqcup V_A$ telle que:
+    On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement s'il existe $V_1$, ..., $V_k$ une partition ordonnée de $V = V_E \sqcup V_A$ telle que:
     \begin{enumerate}[a)]
     \item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$.
     \item La partition représente une convergence du jeu :\\
@@ -194,6 +205,49 @@
     \end{enumerate}
 \end{frame}
 
+\subsection{Construction d'un jeu faible de parité pour le model- checking de CTL}
+
+\begin{frame}
+	\frametitle{Construction d'un jeu faible de parité pour le model- checking de CTL}
+Soit $K = (Q,T,q_0,l)$  une structure de Kripke, et $\phi$ une formule de CTL \emph{où les négations ne sont que sur les littéraux}.\\
+On va construire un jeu de parité $G = (V_E,V_A,R,c)$ où:
+	\begin{itemize}
+		\item $V = Q \times SF(\phi)$
+		\item $V_A = \{(i, \top ) \in V\} \cup \{(i, \phi) \in V, \phi = \phi_1 \land \phi_2 \mid \mbox{AX } \phi_1 \}$
+		\item $V_E = V \backslash V_A$
+		\item $c(s,v) = \left \{
+		\begin{array}{rcl}
+		2 & si & v = \mbox{E } \phi_1 \mbox{ W } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ W } \phi_2\\
+		1 & si & v = \mbox{E } \phi_1 \mbox{ U } \phi_2\text{ ou }\mbox{A } \phi_1 \mbox{ U } \phi_2\\
+		\bot && \text{sinon}
+		\end{array}
+		\right .$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Construction d'un jeu faible de parité pour le model- checking de CTL}
+On donne la fonction de successeur:
+	\begin{itemize}
+		\item$ succ(s, \bot) = succ(s, \top) = \emptyset$
+		\item $succ(s, p) = \{(s,\top)\}$ si $p \in l(s)$, $\{(s,\bot)\}$ sinon
+		\item $succ(s, \neg p) = \{(s,\bot)\}$ si $p \in l(s)$, $\{(s,\top)\}$ sinon
+		\item $succ(s,\phi \land \psi) = succ(s, \phi \lor \psi) = \{(s,\phi), (s,\psi) \}$
+		\item $succ(s,EX \phi) = succ(s, AX \phi) = \{ (s', \phi) \mid (s,s') \in T \} $
+		\item $succ(s, \mbox{E } \phi \mbox{ U } \psi) = \{ (s,\psi), (s, \phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ U } \psi)) \}$
+		\item $succ(s, \mbox{A } \phi \mbox{ U } \psi) = \{ (s,\psi), (s, \phi \land \mbox{AX }  (\mbox{A } \phi \mbox{ U } \psi)) \}$
+		\item $succ(s, \mbox{E } \phi \mbox{ W } \psi) = \{ (s,\psi), (s, \phi \land \mbox{EX }  (\mbox{E } \phi \mbox{ W } \psi)) \}$
+		\item $succ(s, \mbox{A } \phi \mbox{ W } \psi) = \{ (s,\psi), (s, \phi \land \mbox{AX } (\mbox{A } \phi \mbox{ W } \psi)) \}$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Justification}
+	\begin{itemize}
+		\item C'est un jeu faible, on peut considérer la partition induite par les composantes fortement connexes (CFC) du graphe dans un ordre topologique inversé.
+		\item C'est un jeu "intéressant", Ève a une stratégie gagnante si et seulement si la formule est vraie dans la structure.
+	\end{itemize}
+\end{frame}
 
 \subsection{Algorithme}
 \footnotesize
