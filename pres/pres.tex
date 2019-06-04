@@ -250,7 +250,21 @@
 \end{algorithmic}
 \end{algorithm}
 
-
+\subsection{Plan de preuve de correction}
+\begin{frame}
+	\frametitle{Plan de preuve de correction}
+	$solve\_weak\_game$ termine. \\
+	\bigskip \pause
+	$solve\_weak\_game$ est correct: par récurrence sur les CFC (ordonnées par ordre topologique inversé), on montre qu'après traitement, $winners[x]$ contient le gagnant de l'état $x$.
+	\begin{itemize}
+		\item Pour une "feuille" de l'arbre des CFC $propagate\_opposite$ est correct.
+		\item Pour une CFC plus haute dans l'arbre, les états internes ne peuvent que mener à des états d'une CFC plus basse, dont on connait les gagnants par hypothèse de récurrence, ce qui permet de montrer dans $propagate\_opposite$ que:
+		\begin{itemize}
+			\item $EXI$ est à $TRUE$ $\iff$ il existe un successeur gagnant.
+			\item $ALL$ est à $TRUE$ $\iff$ tous les successeurs sont gagnants.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
 
 \section{Model-checking par marquage}
 \subsection{Principe}
