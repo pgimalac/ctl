@@ -4,6 +4,7 @@
 \usepackage[french]{babel}
 \usepackage{lmodern}
 
+\usepackage{listings}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -145,6 +146,79 @@
 
 \end{frame}
 
+\begin{frame}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Satisfaction}
+
+    \begin{tabular}{lcl}
+    $q \vDash \mbox{EF } \phi$ & ssi & il existe un chemin depuis $q$ permettant \\&& d'atteindre un état vérifiant $\phi$. \\
+    $q \vDash \mbox{AF } \phi$ & ssi & tous les chemins depuis $q$ permettent \\&&d'atteindre un état vérifiant $\phi$. \\
+    $q \vDash \mbox{EG } \phi$ & ssi & il existe un chemin depuis $q$ tel que \\&&tous les états de ce chemin satisfassent $\phi$.\\
+    $q \vDash \mbox{AG } \phi$ & ssi & tous les états atteignables depuis $q$ vérifient $\phi$.\\
+    \end{tabular}
+\end{frame}
+
+\subsection{Normalisation et représentation}
+\begin{frame}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Normalisation et représentation}
+
+    Descente de négation:
+    \begin{align*}
+    &neg(\mbox{EX } \phi) = \mbox{AX }neg(\phi)\\
+    &neg(\mbox{AX } \phi) = \mbox{EX }neg(\phi)\\
+    &neg(\mbox{E } \phi \mbox{ U } \psi) =\mbox{A } (neg(\psi)) \mbox{ W } (neg(\phi) \land neg(\psi))\\
+    &neg(\mbox{A } \phi \mbox{ U } \psi) =\mbox{E } (neg(\psi)) \mbox{ W } (neg(\phi) \land neg(\psi))\\
+    &neg(\mbox{E } \phi \mbox{ W } \psi) =\mbox{A } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))\\
+    &neg(\mbox{A } \phi \mbox{ W } \psi) =\mbox{E } (neg(\psi)) \mbox{ U } (neg(\phi) \land neg(\psi))
+    \end{align*}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Normalisation et représentation}
+
+    Réduction de la grammaire:
+        $$\phi ::= \top \mid p \mid \neg \phi \mid \phi \lor \phi \mid EX \phi \mid\mbox{ E }\phi\mbox{ U }\phi \mid\mbox{ A }\phi\mbox{ U }\phi$$
+
+    \pause
+    En effet:
+    \begin{tabular}{lcl}
+        $\bot$ &$\equiv$& $\neg \top$\\
+        $\phi \land \psi$ &$\equiv$& $\neg (\neg \phi \lor \neg \psi)$\\
+        $\mbox{AX }\phi$ &$\equiv$& $\neg\mbox{ EX }\neg \phi$\\
+        $\mbox{E }\phi\mbox{ W }\psi$ &$\equiv$& $\neg\mbox{ A }\neg \psi\mbox{ U }\neg(\phi \lor \psi)$\\
+        $\mbox{A }\phi\mbox{ W }\psi$ &$\equiv$& $\neg\mbox{ E }\neg \psi\mbox{ U }\neg(\phi \lor \psi)$\\
+    \end{tabular}
+\end{frame}
+
+\setlength{\columnsep}{-30pt}
+\begin{frame}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Normalisation et représentation}
+
+    Generalized Algebraic Data Types\\\bigskip
+
+    \scriptsize
+    \begin{multicols}{2}
+    \lstinputlisting[language=Caml, firstline=0, lastline=22]{../lib/formule.mli}
+    \bigskip
+    \phantom{.}
+    \end{multicols}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Computation Tree Logic}
+    \framesubtitle{Normalisation et représentation}
+
+    Generalized Algebraic Data Types\\\bigskip
+
+    \scriptsize
+    \lstinputlisting[language=Caml, firstline=24, lastline=33]{../lib/formule.mli}
+
+\end{frame}
 
 \section{Model-checking par résolution de jeu faible de parité}
 \subsection{Jeu de parité}
