@@ -288,6 +288,12 @@ Deux approches:
     \frametitle{Model-checking par résolution de jeu faible de parité}
     \framesubtitle{Jeu faible de parité}
 
+    Les jeux sont \emph{déterminés}, mais le problème de leur résolution est à-priori difficile ($\in NP \cap coNP$), et on ne sait pas s'il est dans $P$.\\
+    Mais on a un algorithme efficace pour résoudre les jeux faibles!
+
+    \pause
+    \bigskip
+
     On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement s'il existe $V_1$, ..., $V_k$ une partition ordonnée de $V = V_E \sqcup V_A$ telle que:
     \begin{enumerate}[a)]
     \item La couleur soit la même pour tous les états d'une classe de la partition : $\forall i \in \llbracket 1 ; k \rrbracket$, $\forall x, y \in V_i$, $(c(x) \neq \bot \land c(y) \neq \bot)  \implies c(x) = c(y)$.
