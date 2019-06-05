@@ -61,6 +61,15 @@
     Une exécution de $\mathcal{A} = (Q, T, q_0, l)$ est une fonction $\sigma : \mathbb{N} \to Q$ telle que $(\sigma(i), \sigma(i+1))\in T$. $Exec_\mathcal{A}(q)$ est l'ensemble des exécutions $\sigma$ de $\mathcal{A}$ telles que $\sigma(0) = q$.
 \end{frame}
 
+\subsection*{Exemple}
+\begin{frame}
+	\frametitle{Exemple}
+	\begin{center}
+		\includegraphics[scale=0.35]{imgs/g2.png}
+	\end{center}
+\end{frame}
+
+
 \subsection{Grammaire}
 \begin{frame}
 	\frametitle{Computation Tree Logic}
@@ -276,13 +285,23 @@ Deux approches:
     \pause
     \bigskip
 
-    On appelle une stratégie pour Ève (respectivement Adam) une fonction $\rho : V_E' \to V$ (respectivement $\rho : V_A' \to V$), $V_E' \subseteq V_E$ et $V_A' \subseteq V_A$, telle que pour chaque $v$ dans $V_E'$ (respectivement $V_A'$), $(v, \rho(v)) \in R$.
+	Une \emph{stratégie} pour un joueur est une fonction $\rho : V_X' \to V$ , $V_X' \subseteq V_X$, telle que pour chaque $v$ dans $V_X'$, $(v, \rho(v)) \in R$.
+
+	\bigskip
+
+    Une stratégie est \emph{gagnante} pour un joueur s'il gagne la partie quelle que soit la stratégie de l'autre joueur.
 \end{frame}
 
 \subsection{Jeu faible de parité}
 \begin{frame}
     \frametitle{Model-checking par résolution de jeu faible de parité}
     \framesubtitle{Jeu faible de parité}
+
+    Les jeux sont \emph{déterminés}, mais le problème de leur résolution est à-priori difficile ($\in NP \cap coNP$), et on ne sait pas s'il est dans $P$.\\
+    Mais on a un algorithme efficace pour résoudre les jeux faibles!
+
+    \pause
+    \bigskip
 
     On dit qu'un jeu de parité $G = (V_E,V_A,R,c)$ est \emph{faible}  si et seulement s'il existe $V_1$, ..., $V_k$ une partition ordonnée de $V = V_E \sqcup V_A$ telle que:
     \begin{enumerate}[a)]
@@ -534,12 +553,19 @@ Formule à vérifier:
 
 	\begin{center}
 	\includegraphics[scale=0.4]{imgs/marquage4.png}
-\end{center}
+	\end{center}
 \end{frame}
 
 \section*{Conclusion}
 \begin{frame}
     \frametitle{Conclusion}
+    On a vu deux méthodes théoriquement linéaires pour faire le model-checking de CTL.\\
+    Nos implémentations sont polynomiales (pour des raisons pratiques) mais peuvent être optimisées.
+
+    \bigskip
+
+    Des questions ?
+    
 \end{frame}
 
 \end{document}
