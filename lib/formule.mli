@@ -21,6 +21,7 @@ type _ tempUnop =
 
 type tempBinop = EU | AU | EW | AW
 
+(* attention : si l'on modifie le fichier, il faudra vérifier que la présentation contient les bonnes lignes *)
 type (_, 'a) formule =
   | B : bool -> ('t, 'a) formule
   | L : 'a lit -> ('t, 'a) formule
