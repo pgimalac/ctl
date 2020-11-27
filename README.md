@@ -22,10 +22,10 @@ La commande `dune build bin/checker.exe` compile l'ensemble des fichiers du proj
 
 Il existe deux modes d'utilisations, tous deux accessibles via la commande `dune exec bin/checker.exe ARGS`
 
-* `run graph [number [prof]]` avec  `graph` contenant un fichier représentant une structure de Kripke va tirer au hasard `number` formules de profondeur maxiamle `prof` et va faire leur model-checking.
+* `run graph [number [prof]]` avec  `graph` contenant un fichier représentant une structure de Kripke va tirer au hasard `number` formules de profondeur maximale `prof` et va faire leur model-checking.
 * `check graph start file` va faire le model-checking des formules contenues dans `file` sur la structure de Kripke contenue dans `graph` en partant de l'état `start`.
 
-Le model-checking d'une formule est efféctué avec deux méthodes différentes: par marquage et par résolution d'un jeu faible de parité.
+Le model-checking d'une formule est effectué avec deux méthodes différentes: par marquage et par résolution d'un jeu faible de parité.
 
 Le fichier DOT correspondant au dernier jeu testé sera sauvegardé dans un fichier `results.dot`.
 
@@ -36,3 +36,5 @@ Il est possible de représenter graphiquement le jeu associé à une formule ave
 ### Rapport
 
 Le fichier `rapport.tex` contient une présentation de la logique `CTL`, une explication de la méthode de marquage avec sa preuve ainsi qu'une explication et une preuve de la méthode utilisant les automates d'arbres et les jeux de parité.
+
+On peut générer `rapport.pdf` à partir du fichier `rapport.tex` en faisant `pdflatex rapport.tex` puis `bibtex rapport` et ensuite deux fois `pdflatex rapport.tex` (des fichiers intermédiaires sont générés pour gérer la bibliographie et les références aux sections).
