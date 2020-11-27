@@ -1,18 +1,16 @@
 type rich = Rich
 
-type 'a lit =
-  | N of 'a
-  | P of 'a
+type 'a lit = N of 'a | P of 'a
 
 type _ binop =
-    And : 'a binop
+  | And : 'a binop
   | Or : 'a binop
   | Xor : rich binop
   | Impl : rich binop
   | Eq : rich binop
 
 type _ tempUnop =
-    AX : 'a tempUnop
+  | AX : 'a tempUnop
   | EX : 'a tempUnop
   | AF : rich tempUnop
   | EF : rich tempUnop
@@ -26,14 +24,18 @@ type (_, 'a) formule =
   | B : bool -> ('t, 'a) formule
   | L : 'a lit -> ('t, 'a) formule
   | Not : ('t, 'a) formule -> (rich, 'a) formule
-  | Binop : 't binop * ('t, 'a) formule *
-              ('t, 'a) formule -> ('t, 'a) formule
+  | Binop : 't binop * ('t, 'a) formule * ('t, 'a) formule -> ('t, 'a) formule
   | TempUnop : 't tempUnop * ('t, 'a) formule -> ('t, 'a) formule
-  | TempBinop : tempBinop * ('t, 'a) formule *
-                  ('t, 'a) formule -> ('t, 'a) formule
+  | TempBinop :
+      tempBinop * ('t, 'a) formule * ('t, 'a) formule
+      -> ('t, 'a) formule
 
 val get_string_temp : 'a tempUnop -> string
+
 val get_string : 'a binop -> string
+
 val string_of_formule : ('a -> string) -> ('b, 'a) formule -> string
+
 val print_formule : ('a -> string) -> ('b, 'a) formule -> unit
+
 val generate_formulas : int -> int -> 'a list -> (rich, 'a) formule list
